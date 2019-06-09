@@ -1,4 +1,6 @@
+using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Tiny.Core;
 using Unity.Tiny.Core2D;
 using Unity.Tiny.Input;
@@ -15,19 +17,48 @@ namespace game
     {
         protected override void OnUpdate()
         {
-            var input = EntityManager.World.GetExistingSystem<InputSystem>();
             
-            Entities.WithAll<MoveWithInput>().ForEach((ref WorldCoord coord, ref Translation translation) =>
+            
+            Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
+                // There's only ever one "MoveWithInput" so maybe as well get the InputSystem inside the lambda.
+                var input = EntityManager.World.GetExistingSystem<InputSystem>();
+
+                var x = coord.x;
+                var y = coord.y;
+                
                 if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
-                    translation.Value.y += TinyRogueConstants.TileHeight; //y = y - 1;// localPosition.y += 0.16;
+                    y = y - 1;// localPosition.y += 0.16;
                 if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))    
-                    translation.Value.y -= TinyRogueConstants.TileHeight;//y = y + 1;// localPosition.y -= 0.16;
+                    y = y + 1;// localPosition.y -= 0.16;
                 if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
-                    translation.Value.x += TinyRogueConstants.TileWidth; //x = x + 1;// localPosition.x += 0.09;
+                    x = x + 1;// localPosition.x += 0.09;
                 if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
-                    translation.Value.x -= TinyRogueConstants.TileWidth; // x = x - 1;// localPosition.x -= 0.09;      
+                    x = x - 1;// localPosition.x -= 0.09;     
+
+           
+                Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
+                {
+                    // if the player is trying to move to this location, it's ok.
+                    if (tileCoord.x == x && tileCoord.y == y)
+                    {
+                        EntityManager.SetComponentData(player, tileCoord);
+                        EntityManager.SetComponentData(player, tileTrans);
+                    }
+                });
+
+             
             });
+            
+
+//            this.world.forEach([ViewportTile, WorldCoord, ut.Core2D.TransformLocalPosition], [ut.Subtractive(BlockMovement)], (viewPortTile, coord, pos) =>
+//            {
+//                if(coord.x == x && coord.y == y)
+//                {
+//                    this.world.setComponentData(player, coord);
+//                    this.world.setComponentData(player, pos);
+//                }
+//            })
         }
     }
 }

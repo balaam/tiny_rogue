@@ -4,7 +4,7 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
-        public struct MapData : IComponentData
+        public struct Viewport : IComponentData
         {
                 public int width;
                 public int height;

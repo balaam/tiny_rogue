@@ -10,7 +10,7 @@
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
-            "$type": "game.MapData, tiny_rogue",
+            "$type": "game.Viewport, tiny_rogue",
             "width": 80,
             "height": 25
         }, {
@@ -52,6 +52,8 @@
                 "StableTypeHash": 266869500686333426
             }, {
                 "StableTypeHash": 3206380062223837345
+            }, {
+                "StableTypeHash": 17743220034302784721
             }]
         }]
     }, {
@@ -125,7 +127,9 @@
             },
             "blending": 0
         }, {
-            "$type": "game.WorldCoord, tiny_rogue"
+            "$type": "game.WorldCoord, tiny_rogue",
+            "x": 10,
+            "y": 10
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
             "Index": 2
@@ -177,9 +181,17 @@
                 "StableTypeHash": 10023716853446313203
             }, {
                 "StableTypeHash": 11340511030919568210
+            }, {
+                "StableTypeHash": 837511310609896988
+            }, {
+                "StableTypeHash": 4244557941618249
             }]
         }, {
+            "$type": "game.BlockMovement, tiny_rogue"
+        }, {
             "$type": "game.MoveWithInput, tiny_rogue"
+        }, {
+            "$type": "game.Player, tiny_rogue"
         }]
     }, {
         "Components": [{
