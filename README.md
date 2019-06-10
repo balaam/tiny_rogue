@@ -7,7 +7,7 @@ A simple roguelike made to explore Unity Tiny and ECS style programming.
 *UnityEditor:* Version 2019.2.x
 I'm using 0b5 (e3a10156d6de).
 
-(and it's using Unity Tiny 0.15.3-preview but this should get setup automatically from you via the Package Manager).
+(and it's using Unity Tiny 0.15.3-preview but this should get setup automatically for you via the Package Manager).
 
 ## Running the Project
 
@@ -41,4 +41,11 @@ height: 16 / 100 = 0.16
 ```
 
 If there's a character at 0,0 and you want a tile to sit flush next to it then you set that tiles position to 0.09, 0.
+
+### Contributors
+
+_Add your name here to confirm you can push to this repository._
+
+@danielsc
+
 
