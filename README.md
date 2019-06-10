@@ -4,21 +4,14 @@ A simple roguelike made to explore Unity Tiny and ECS style programming.
 
 ## Requirements
 
-*UnityEditor:* Latest 2019.2.x
-I'm using 0b5 (e3a10156d6de) which is an internal release.
+*UnityEditor:* Version 2019.2.x
+I'm using 0b5 (e3a10156d6de).
 
-*com.unity.tiny* I'm using the latest from the DOTs repo on the `release/tinymode` branch.
-ca9a2da5ce6ded73fb0cb97d7733afe10b61a769
-
-1. Make a directory like `hw19`.
-2. Checkout dots into `hw19/dots`.
-3. Checkout this repo into `hw19/rogue` (the dir name doesn't matter)
-
-It's more complicated than it otherwise would be because we're using the very latest version of Tiny so we can use C#. It doesn't use the "cloud" package manager but instead references one on disk. 
+(and it's using Unity Tiny 0.15.3-preview but this should get setup automatically from you via the Package Manager).
 
 ## Running the Project
 
-If you open the project and press play you should get a player with word "Hello" written in the center in an ASCII font.
+If you open the project and press play you should get a player in a big room.
 
 ## 2d Graphics and Project Setup Details
 
