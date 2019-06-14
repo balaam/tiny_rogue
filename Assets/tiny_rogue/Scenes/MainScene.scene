@@ -93,7 +93,8 @@
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300174, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300176, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300178, "Type": 3},
-        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300180, "Type": 3}],
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300180, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300192, "Type": 3}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
@@ -340,6 +341,8 @@
                 "sprite": "774294035a06409d730a7ad36d9e6144"
             }, {
                 "sprite": "079f6a664b5d2786ce45e10007168390"
+            }, {
+                "sprite": "9c2b16ff7d4fa42f398aa52dc47eec67"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -414,6 +417,14 @@
             },
             "blending": 0
         }, {
+            "$type": "game.ExperiencePoints, tiny_rogue"
+        }, {
+            "$type": "game.HealthPoints, tiny_rogue",
+            "max": 10
+        }, {
+            "$type": "game.Level, tiny_rogue",
+            "level": 1
+        }, {
             "$type": "game.WorldCoord, tiny_rogue",
             "x": 10,
             "y": 10
@@ -427,7 +438,7 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
-                "x": -3.51,
+                "x": -1000,
                 "y": 0.16
             }
         }, {
@@ -472,6 +483,12 @@
                 "StableTypeHash": 837511310609896988
             }, {
                 "StableTypeHash": 4244557941618249
+            }, {
+                "StableTypeHash": 10671612036134325838
+            }, {
+                "StableTypeHash": 5231504323926280887
+            }, {
+                "StableTypeHash": 8481167400895813168
             }]
         }, {
             "$type": "game.BlockMovement, tiny_rogue"

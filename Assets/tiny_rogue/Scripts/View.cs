@@ -35,18 +35,18 @@ namespace game
 		    int writeToX = x;
 		    foreach (char c in s)
 		    {
-			    SetViewTile(em, new int2(writeToX, y), c);
+			    Blit(em, new int2(writeToX, y), c);
 			    writeToX++;
 		    }
 	    }
 
 		// Get this working then see if you can remove entity manager, or cache one
-	    public void SetViewTile(EntityManager em, int2 xy, int c)
+	    public void Blit(EntityManager em, int2 xy, int c)
 	    {
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
 		    s.sprite = SpriteSystem.AsciiToSprite[c];
 		    em.SetComponentData(e, s);
-	    }
+	    }	    
     }
 }

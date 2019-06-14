@@ -29,6 +29,11 @@ namespace game
         eGameState _state = eGameState.Startup;
         View _view = new View();
 
+        public View View
+        {
+            get { return _view; }
+        }
+
         private bool TryGenerateViewport()
         {
             if (!SpriteSystem.Loaded) // can't make the viewport without sprites.
@@ -154,6 +159,11 @@ namespace game
                     GenerateLevel();
                     _state = eGameState.InGame;
                 }
+            }
+            else if (_state == eGameState.InGame)
+            {
+                var sbs = World.GetOrCreateSystem<StatusBarSystem>();
+                sbs.OnUpdateManual(EntityManager, PostUpdateCommands);   
             }
         }
     }
