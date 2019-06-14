@@ -5,6 +5,33 @@
     "AssetReferences": [
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300070, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300092, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300000, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300130, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300132, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300134, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300136, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300138, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300140, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300142, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300144, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300146, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300148, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300150, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300152, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300154, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300156, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300158, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300160, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300162, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300164, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300166, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300168, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300170, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300172, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300174, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300176, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300178, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300180, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300002, "Type": 3}],
     "Entities": [{
         "Components": [{
@@ -26,11 +53,13 @@
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
-                "c": "M"
+                "c": "V"
             }, {
-                "c": "a"
+                "c": "i"
             }, {
-                "c": "p"
+                "c": "e"
+            }, {
+                "c": "w"
             }]
         }, {
             "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
@@ -60,7 +89,34 @@
         "Components": [{
             "$type": "game.SpriteLookUp, tiny_rogue",
             "Hash": "2f7af0b6dd50b2b26a25295f04d030a0",
-            "Dot": "07d52395ecf8843a7caa0a44e6574e40"
+            "Dot": "07d52395ecf8843a7caa0a44e6574e40",
+            "Space": "3c15e9cd5d43439bf47001c9c493b0ab",
+            "A": "60474d46bb10af18759712dca1c9431e",
+            "B": "0e3fdb63c6f3ddd0df7d3cde2d16e65c",
+            "C": "388bf5d612d4cc5b0aa9e60681b5a54a",
+            "D": "8cfbeebb393eb1fbab86d05197e55bea",
+            "E": "474fc6243560261e110832ceb9c3f0ae",
+            "F": "6d31bf9084a0440b104c2c4dc139e4a1",
+            "G": "2e5d596f74f3be569fd02c4ae2d2f230",
+            "H": "34071d8a35d297c2233f74535ef06204",
+            "I": "f4250c4274a7a9b80ad3f452f4527b27",
+            "J": "8b5f1d60d390d1f58cae914047815fde",
+            "K": "2d291d69823d2cb533e1be9e8d2c524f",
+            "L": "efc88fe5d40b2ba6500eb3e0db698f9d",
+            "M": "e97773754b6b3419ef34195a0ff1f4cc",
+            "N": "f15cd17b941b3722cec367fab63b8b41",
+            "O": "ca5de8a3dc31564005ccc379aced6683",
+            "P": "1963340c1a5038b5a26a91486fc9bad9",
+            "Q": "78c21afaac294ed253a0fd0d0cf18429",
+            "R": "31d053421c95f4a61595429306899073",
+            "S": "60c16d73a198d81e70360d6fc0785685",
+            "T": "4f633ecb1a74b9e270eb95552b6bdee0",
+            "U": "c9ff5f02326e699155e2b7561bbbd0a3",
+            "V": "e3aba466225d0483c994d70763440916",
+            "W": "3bc68f28932f382cb62c8b6ae26eaf4d",
+            "X": "9d0b3849444ea720a50d4f5fd8f2da27",
+            "Y": "774294035a06409d730a7ad36d9e6144",
+            "Z": "079f6a664b5d2786ce45e10007168390"
         }, {
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
@@ -111,6 +167,14 @@
                 "StableTypeHash": 6230510713115312350
             }, {
                 "StableTypeHash": 11761315603995326009
+            }, {
+                "StableTypeHash": 2585402366023931842
+            }, {
+                "StableTypeHash": 119358575166930915
+            }, {
+                "StableTypeHash": 3786193111806855166
+            }, {
+                "StableTypeHash": 3042049798743644135
             }]
         }]
     }, {

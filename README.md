@@ -13,6 +13,14 @@ I'm using 0b5 (e3a10156d6de).
 
 If you open the project and press play you should get a player in a big room.
 
+## Release
+
+Set the project to build in Web (ASM JS) under release. 
+Do a build.
+Delete the data in the `./docs` directory.
+Copy the data from [Library/DotsRuntimeBuild/build/tiny_rogue/tiny_rogue-asmjs-release] to [./docs]
+Rename `tiny_rogue.html` to `index.html`
+
 ## 2d Graphics and Project Setup Details
 
 Character size: 

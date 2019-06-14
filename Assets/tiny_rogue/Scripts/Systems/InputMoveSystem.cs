@@ -17,8 +17,6 @@ namespace game
     {
         protected override void OnUpdate()
         {
-            
-            
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
                 // There's only ever one "MoveWithInput" so maybe as well get the InputSystem inside the lambda.
@@ -36,7 +34,6 @@ namespace game
                 if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
                     x = x - 1;// localPosition.x -= 0.09;     
 
-           
                 Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
                 {
                     // if the player is trying to move to this location, it's ok.
@@ -46,19 +43,7 @@ namespace game
                         EntityManager.SetComponentData(player, tileTrans);
                     }
                 });
-
-             
             });
-            
-
-//            this.world.forEach([ViewportTile, WorldCoord, ut.Core2D.TransformLocalPosition], [ut.Subtractive(BlockMovement)], (viewPortTile, coord, pos) =>
-//            {
-//                if(coord.x == x && coord.y == y)
-//                {
-//                    this.world.setComponentData(player, coord);
-//                    this.world.setComponentData(player, pos);
-//                }
-//            })
         }
     }
 }

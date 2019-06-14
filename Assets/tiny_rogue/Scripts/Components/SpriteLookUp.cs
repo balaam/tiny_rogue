@@ -4,12 +4,15 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
+		// This is definitely not the "correct" way but it works
         public struct SpriteLookUp : IComponentData
-        {
+        {	        
             [EntityWithComponents(typeof(Sprite2D))]
             public Entity Hash;
             [EntityWithComponents(typeof(Sprite2D))]
             public Entity Dot;
+			[EntityWithComponents(typeof(Sprite2D))]
+			public Entity Space;
             [EntityWithComponents(typeof(Sprite2D))]
             public Entity A;
             [EntityWithComponents(typeof(Sprite2D))]
@@ -62,5 +65,58 @@ namespace game
             public Entity Y;
             [EntityWithComponents(typeof(Sprite2D))]
             public Entity Z;
+	        
+			[EntityWithComponents(typeof(Sprite2D))]
+            public Entity ALower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity BLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity CLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity DLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity ELower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity FLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity GLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity HLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity ILower;
+//			[EntityWithComponents(typeof(Sprite2D))]
+//            public Entity JLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity KLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity LLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity MLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity NLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity OLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity PLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity QLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity RLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity SLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity TLower;
+//			[EntityWithComponents(typeof(Sprite2D))]
+//            public Entity ULower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity VLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity WLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity XLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity YLower;
+//            [EntityWithComponents(typeof(Sprite2D))]
+//            public Entity ZLower;
         }
 }
