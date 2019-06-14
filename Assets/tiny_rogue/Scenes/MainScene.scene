@@ -3,9 +3,71 @@
     "Guid": "47b2702d9bcf406ab824394185184228",
     "SerializedVersion": 1,
     "AssetReferences": [
-        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300070, "Type": 3},
-        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300092, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300000, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300002, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300004, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300006, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300008, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300010, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300012, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300014, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300016, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300018, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300020, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300022, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300024, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300026, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300028, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300030, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300032, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300034, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300036, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300038, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300040, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300042, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300044, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300046, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300048, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300050, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300052, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300054, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300056, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300058, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300060, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300062, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300064, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300066, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300068, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300070, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300072, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300074, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300076, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300078, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300080, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300082, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300084, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300086, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300088, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300090, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300092, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300094, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300096, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300098, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300100, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300102, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300104, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300106, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300108, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300110, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300112, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300114, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300116, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300118, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300120, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300122, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300124, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300126, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300128, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300130, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300132, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300134, "Type": 3},
@@ -31,8 +93,7 @@
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300174, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300176, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300178, "Type": 3},
-        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300180, "Type": 3},
-        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300002, "Type": 3}],
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300180, "Type": 3}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
@@ -87,37 +148,6 @@
         }]
     }, {
         "Components": [{
-            "$type": "game.SpriteLookUp, tiny_rogue",
-            "Hash": "2f7af0b6dd50b2b26a25295f04d030a0",
-            "Dot": "07d52395ecf8843a7caa0a44e6574e40",
-            "Space": "3c15e9cd5d43439bf47001c9c493b0ab",
-            "A": "60474d46bb10af18759712dca1c9431e",
-            "B": "0e3fdb63c6f3ddd0df7d3cde2d16e65c",
-            "C": "388bf5d612d4cc5b0aa9e60681b5a54a",
-            "D": "8cfbeebb393eb1fbab86d05197e55bea",
-            "E": "474fc6243560261e110832ceb9c3f0ae",
-            "F": "6d31bf9084a0440b104c2c4dc139e4a1",
-            "G": "2e5d596f74f3be569fd02c4ae2d2f230",
-            "H": "34071d8a35d297c2233f74535ef06204",
-            "I": "f4250c4274a7a9b80ad3f452f4527b27",
-            "J": "8b5f1d60d390d1f58cae914047815fde",
-            "K": "2d291d69823d2cb533e1be9e8d2c524f",
-            "L": "efc88fe5d40b2ba6500eb3e0db698f9d",
-            "M": "e97773754b6b3419ef34195a0ff1f4cc",
-            "N": "f15cd17b941b3722cec367fab63b8b41",
-            "O": "ca5de8a3dc31564005ccc379aced6683",
-            "P": "1963340c1a5038b5a26a91486fc9bad9",
-            "Q": "78c21afaac294ed253a0fd0d0cf18429",
-            "R": "31d053421c95f4a61595429306899073",
-            "S": "60c16d73a198d81e70360d6fc0785685",
-            "T": "4f633ecb1a74b9e270eb95552b6bdee0",
-            "U": "c9ff5f02326e699155e2b7561bbbd0a3",
-            "V": "e3aba466225d0483c994d70763440916",
-            "W": "3bc68f28932f382cb62c8b6ae26eaf4d",
-            "X": "9d0b3849444ea720a50d4f5fd8f2da27",
-            "Y": "774294035a06409d730a7ad36d9e6144",
-            "Z": "079f6a664b5d2786ce45e10007168390"
-        }, {
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
@@ -126,6 +156,191 @@
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 5544385172088507114,
             "b": 13246502558108825471
+        }, {
+            "$type": "Unity.Tiny.Core2D.SpriteAtlas, Unity.Tiny.Sprite2D",
+            "Elements": [{
+                "sprite": "3c15e9cd5d43439bf47001c9c493b0ab"
+            }, {
+                "sprite": "f7e01a39abd9a5e5f03157746d0948c8"
+            }, {
+                "sprite": "0010ca42f3f929e473f9aade7e855993"
+            }, {
+                "sprite": "f720ce9c7c1f6c635b910a7ec265551a"
+            }, {
+                "sprite": "9e02e42192242a0a934133f42aa1f74d"
+            }, {
+                "sprite": "994931c74886a90f63b57319b598f274"
+            }, {
+                "sprite": "f2a26e2a1da38eb2cbba6dee05e69591"
+            }, {
+                "sprite": "68f6dc3d753d1960b4693379328dfc31"
+            }, {
+                "sprite": "8bbe0246c883dd1343862514e1eb8b78"
+            }, {
+                "sprite": "d6e9a0ba9e6d802bc63efa8bfe57a304"
+            }, {
+                "sprite": "b3a66c4f5c5a3b7b80685fdc9c8d8e2b"
+            }, {
+                "sprite": "f999a75d54c4e693dc9bf11de787257e"
+            }, {
+                "sprite": "f52aaf78b2e629ac7374d737731dcca0"
+            }, {
+                "sprite": "7b75f7c4364f835d905b07f33b3bb924"
+            }, {
+                "sprite": "bb9dd57aea9188c234df2884b5891e9e"
+            }, {
+                "sprite": "311d94d2bb91f69de331a93986b403de"
+            }, {
+                "sprite": "59576e97b658efc3d3be408a3f4d27bd"
+            }, {
+                "sprite": "c5654bbf0d2e1da5c9b02b24838cf063"
+            }, {
+                "sprite": "292e98b2ebbc59e2413f0943cc5d459b"
+            }, {
+                "sprite": "622cbb61d60784b2f901bda7711728ee"
+            }, {
+                "sprite": "4dbce83b8a13f8c2b58e6c3892165f89"
+            }, {
+                "sprite": "c3e07b1cd95de745520d2e0a67595a4f"
+            }, {
+                "sprite": "0a1d8f0b3ef6a7936ad347136d1d2edf"
+            }, {
+                "sprite": "74340f6c3c6fe0f9c66034e746abcd8b"
+            }, {
+                "sprite": "bce3d411b5873d764731de7a7a05008f"
+            }, {
+                "sprite": "89a20ffac58c979b88d2932aea89bcca"
+            }, {
+                "sprite": "9003959e458c261c6cba875aec550fad"
+            }, {
+                "sprite": "f4d66448d62985200e9bba8b73229eb5"
+            }, {
+                "sprite": "83ac7498fc59c05aa581892fd3681e69"
+            }, {
+                "sprite": "9acb64083e1589640e491478836e3820"
+            }, {
+                "sprite": "ffc25a98b2ac7c009ff8fc0ecb6bfa8a"
+            }, {
+                "sprite": "0af53922bdea21c6507eb0e153c19189"
+            }, {
+                "sprite": "4a99744c16fdc8ecf160c71d7f8cc886"
+            }, {
+                "sprite": "e363f808aba072c76d05359e3f1d39ab"
+            }, {
+                "sprite": "f591a9711bc39e21e3bf953b10a92764"
+            }, {
+                "sprite": "2f7af0b6dd50b2b26a25295f04d030a0"
+            }, {
+                "sprite": "2fda118c002d0cb7b8ad47402eb0e70d"
+            }, {
+                "sprite": "2a2c719cf114549ef4856bd1d05e94a6"
+            }, {
+                "sprite": "7494c00bd9504cb050da3da52af09efa"
+            }, {
+                "sprite": "6a0adbd646aed25fdbe3c6c59475e1ae"
+            }, {
+                "sprite": "c82910320e19bf430c90a6f63a3c03b4"
+            }, {
+                "sprite": "d623ebe375eb046ec128ef954286cfdb"
+            }, {
+                "sprite": "48cf21e8095d1fefccd8a93b18fd51ca"
+            }, {
+                "sprite": "47291c8e2d60d20da5a1175cf6eb0dc8"
+            }, {
+                "sprite": "2a6bcf0402161ad5384a01f84845da49"
+            }, {
+                "sprite": "23ba1802ed82dc602e1bb5cc9f55a2b8"
+            }, {
+                "sprite": "07d52395ecf8843a7caa0a44e6574e40"
+            }, {
+                "sprite": "9510b390205de4e8bfc8553576d99599"
+            }, {
+                "sprite": "39353c5e52791d93f9d38e679b68ebaf"
+            }, {
+                "sprite": "f2e69bc0aa022982d5ff68b3086375af"
+            }, {
+                "sprite": "12de70ba46dfbb186712492b11c6422a"
+            }, {
+                "sprite": "d01f08bcf0b2e208a8f2fd3006579c12"
+            }, {
+                "sprite": "672cabc1a62e8edf1b4e7de78e4a705a"
+            }, {
+                "sprite": "0b0f409a935148b95ca5de737814df05"
+            }, {
+                "sprite": "8be7c269818d12e02708f58c1168e1ff"
+            }, {
+                "sprite": "69f84251068de28204521a7caa274268"
+            }, {
+                "sprite": "711158edd707af189205b3a7e83c6a5a"
+            }, {
+                "sprite": "9db36c5dde8789db2b31158521583850"
+            }, {
+                "sprite": "36054f8942660b4df6838233b18de82e"
+            }, {
+                "sprite": "4dd2f329c399d733c3f57ff3766282d9"
+            }, {
+                "sprite": "241bad8accddb7440c4c640bd3faa8e1"
+            }, {
+                "sprite": "7a9763b8fcc006dfef604af83c814c03"
+            }, {
+                "sprite": "d8d0f360f15bf0835ac032c6fd975786"
+            }, {
+                "sprite": "d9b49afe65eb34ffc6ec03da2f0dc907"
+            }, {
+                "sprite": "11a533a6e9b84e684022eaabc8a382b9"
+            }, {
+                "sprite": "60474d46bb10af18759712dca1c9431e"
+            }, {
+                "sprite": "0e3fdb63c6f3ddd0df7d3cde2d16e65c"
+            }, {
+                "sprite": "388bf5d612d4cc5b0aa9e60681b5a54a"
+            }, {
+                "sprite": "8cfbeebb393eb1fbab86d05197e55bea"
+            }, {
+                "sprite": "474fc6243560261e110832ceb9c3f0ae"
+            }, {
+                "sprite": "6d31bf9084a0440b104c2c4dc139e4a1"
+            }, {
+                "sprite": "2e5d596f74f3be569fd02c4ae2d2f230"
+            }, {
+                "sprite": "34071d8a35d297c2233f74535ef06204"
+            }, {
+                "sprite": "f4250c4274a7a9b80ad3f452f4527b27"
+            }, {
+                "sprite": "8b5f1d60d390d1f58cae914047815fde"
+            }, {
+                "sprite": "2d291d69823d2cb533e1be9e8d2c524f"
+            }, {
+                "sprite": "efc88fe5d40b2ba6500eb3e0db698f9d"
+            }, {
+                "sprite": "e97773754b6b3419ef34195a0ff1f4cc"
+            }, {
+                "sprite": "f15cd17b941b3722cec367fab63b8b41"
+            }, {
+                "sprite": "ca5de8a3dc31564005ccc379aced6683"
+            }, {
+                "sprite": "1963340c1a5038b5a26a91486fc9bad9"
+            }, {
+                "sprite": "78c21afaac294ed253a0fd0d0cf18429"
+            }, {
+                "sprite": "31d053421c95f4a61595429306899073"
+            }, {
+                "sprite": "60c16d73a198d81e70360d6fc0785685"
+            }, {
+                "sprite": "4f633ecb1a74b9e270eb95552b6bdee0"
+            }, {
+                "sprite": "c9ff5f02326e699155e2b7561bbbd0a3"
+            }, {
+                "sprite": "e3aba466225d0483c994d70763440916"
+            }, {
+                "sprite": "3bc68f28932f382cb62c8b6ae26eaf4d"
+            }, {
+                "sprite": "9d0b3849444ea720a50d4f5fd8f2da27"
+            }, {
+                "sprite": "774294035a06409d730a7ad36d9e6144"
+            }, {
+                "sprite": "079f6a664b5d2786ce45e10007168390"
+            }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -172,10 +387,18 @@
             }, {
                 "StableTypeHash": 119358575166930915
             }, {
+                "StableTypeHash": 3042049798743644135
+            }, {
+                "StableTypeHash": 13553773402369783449
+            }, {
+                "StableTypeHash": 2808581199008031712
+            }, {
                 "StableTypeHash": 3786193111806855166
             }, {
-                "StableTypeHash": 3042049798743644135
+                "StableTypeHash": 17756019045314699737
             }]
+        }, {
+            "$type": "game.SpriteLookUp, tiny_rogue"
         }]
     }, {
         "Components": [{

@@ -112,13 +112,12 @@ namespace game
 
             Entities.WithAll<Tile>().ForEach((Entity e, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer) =>
             {
-                    
-                    var x = tileCoord.x;
-                    var y = tileCoord.y;
-                
+                var x = tileCoord.x;
+                var y = tileCoord.y;
                 
                 bool isVWall = (x == 0 || x == _view.Width - 1) && y > 0 && y < _view.Height - 2;
                 bool isHWall = (y == 1 || y == _view.Height - 2);
+                
                 if(isVWall || isHWall)
                 {
                     renderer.sprite = SpriteSystem.AsciiToSprite['#'];
@@ -152,8 +151,6 @@ namespace game
                 var input = EntityManager.World.GetExistingSystem<InputSystem>();
                 if (input.GetKeyDown(KeyCode.Space))
                 {
-                    // Generate dungeon
-                    // Enter game
                     GenerateLevel();
                     _state = eGameState.InGame;
                 }
