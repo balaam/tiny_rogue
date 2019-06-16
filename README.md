@@ -1,6 +1,7 @@
 # Tiny Rogue
 
 A simple roguelike made to explore Unity Tiny and ECS style programming.
+[Play it here](https://balaam.github.io/tiny_rogue/)
 
 ## Requirements
 
