@@ -4,6 +4,6 @@ namespace game
 {
     public struct ExperiencePoints : IComponentData 
     {
-    	public int current;
+    	public int now;
     }
 }
