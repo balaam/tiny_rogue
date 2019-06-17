@@ -9,7 +9,7 @@ namespace game
     public class StatusBarSystem : ComponentSystem
     {
         protected override void OnUpdate() {}
-
+        
         private string NumberToFixedString3(int value)
         {
             char[] output = new char[3];
@@ -54,7 +54,7 @@ namespace game
 
             // Might be a nice ECS-way to do this but I'm just going to jump directly to the memory for a first pass.
 
-            Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level /*, ref Gold gp*/) =>
+            Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level, ref Gold gp) =>
             {
                 var gss = World.GetOrCreateSystem<GameStateSystem>();
 
@@ -62,6 +62,8 @@ namespace game
                 var hpMaxAsStr = NumberToFixedString3(hp.max);
 
                 var lvlAsStr = NumberToFixedString2(level.level);
+                
+                //var xpMaxAsStr = "???";
                 
               
                 // Start with these
@@ -72,18 +74,21 @@ namespace game
                 // Exp:000/000  11 chars    38
                 // 4 space      4           42
                 // Gold:000     8 chars     50
-                string hpStr1 = string.Concat("HP:", hpNowAsStr);
-                string hpStr2 = string.Concat(" (", hpMaxAsStr, ")");
+                
+                
+                // If you have two strings interpolations it doesn't work
+                string hpStr1 = $"HP:{hpNowAsStr}";
+                string hpStr2 = $"({hpMaxAsStr})";
                 gss.View.Blit(entityManager, 0, gss.View.Height - 1, hpStr1);
                 gss.View.Blit(entityManager, hpStr1.Length, gss.View.Height - 1, hpStr2);
                 
-                string lvlStr = string.Concat("LEVEL:", lvlAsStr);
+                string lvlStr = $"LEVEL:{lvlAsStr}";
                 gss.View.Blit(entityManager, 15, gss.View.Height - 1, lvlStr);
-                
-                string xpStr = "EXP:000/000";
+
+                string xpStr = $"EXP:{xp.now.ToString()}/???";
                 gss.View.Blit(entityManager, 27, gss.View.Height - 1, xpStr);
                 
-                string gpStr = "GOLD:000/000";
+                string gpStr = $"GOLD:{gp.count.ToString()}";
                 gss.View.Blit(entityManager, 42, gss.View.Height - 1, gpStr);
 
             });
