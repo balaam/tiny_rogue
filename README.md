@@ -55,6 +55,8 @@ If there's a character at 0,0 and you want a tile to sit flush next to it then y
 
 _Add your name here to confirm you can push to this repository._
 
-@danielsc
+[@danielsc](https://github.com/balaam) <br/>
+[@jimmy-jam](https://github.com/jimmy-jam) <br/>  
+
 
 
