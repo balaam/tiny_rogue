@@ -16,7 +16,7 @@ If you open the project and press play you should get a player in a big room.
 
 ## Release
 
-Set the project to build in Web (ASM JS) under release. 
+Set the project to build in Web (ASM JS) under release.
 Do a build.
 Delete the data in the `./docs` directory.
 Copy the data from [Library/DotsRuntimeBuild/build/tiny_rogue/tiny_rogue-asmjs-release] to [./docs]
@@ -24,10 +24,10 @@ Rename `tiny_rogue.html` to `index.html`
 
 ## 2d Graphics and Project Setup Details
 
-Character size: 
+Character size:
     9 x 16 pixels
     0.09 x 0.16 world space units
-Resolution: 
+Resolution:
     80 x 25 characters
     720 x 400 pixels
 Camera half vertical height:
@@ -46,7 +46,7 @@ Unity has a `Pixels Per Unity` setting that maps the size of a single pixel to w
 The size of a single ASCII character in Unity units can worked out by dividing it's pixel size by the PPU.
 ```
 width:	9  / 100 = 0.09
-height: 16 / 100 = 0.16 
+height: 16 / 100 = 0.16
 ```
 
 If there's a character at 0,0 and you want a tile to sit flush next to it then you set that tiles position to 0.09, 0.
@@ -56,7 +56,8 @@ If there's a character at 0,0 and you want a tile to sit flush next to it then y
 _Add your name here to confirm you can push to this repository._
 
 [@danielsc](https://github.com/balaam) <br/>
-[@jimmy-jam](https://github.com/jimmy-jam) <br/>  
+[@jimmy-jam](https://github.com/jimmy-jam) <br/>
+[@chris-addison](https://github.com/chris-addison) <br />
 
 
 
