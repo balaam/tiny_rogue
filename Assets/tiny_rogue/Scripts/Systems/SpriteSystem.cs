@@ -20,7 +20,7 @@ namespace game
             if (SpriteSystem.Loaded)
                 return;
 
-            Entities.ForEach((Entity entity, ref SpriteLookUp lookUp) =>
+            Entities.WithAll<SpriteLookUp>().ForEach((Entity entity) =>
             {
                 // This bit is generated, not sure of a better way to handle this at the moment.  
                 // See Utils/gen_char_map.rb
