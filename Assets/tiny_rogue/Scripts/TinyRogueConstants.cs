@@ -4,5 +4,6 @@ namespace game
     {
         public static float TileWidth = 0.09f;
 		public static float TileHeight = 0.16f;
+        public static int StartPlayerHealth = 10;
     }
 }

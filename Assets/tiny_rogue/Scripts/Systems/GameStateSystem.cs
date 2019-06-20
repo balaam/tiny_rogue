@@ -29,9 +29,11 @@ namespace game
         eGameState _state = eGameState.Startup;
         View _view = new View();
         TurnManager _turnManager = new TurnManager();
+        ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
 
         public View View => _view;
         public TurnManager TurnManager => _turnManager;
+        public bool IsInGame => (_state == eGameState.InGame);
 
         private bool TryGenerateViewport()
         {
@@ -55,18 +57,8 @@ namespace game
             
             if (!foundMap)
                 return false;
-            
-            var a = EntityManager.CreateArchetype(new ComponentType[]
-            {
-                typeof(Parent),
-                typeof(Translation),
-                typeof(WorldCoord), // should be view coord?
-                typeof(Rotation),
-                typeof(Sprite2DRenderer),
-                typeof(LayerSorting),
-                typeof(Tile)
-            });
-            
+
+            _archetypeLibrary.Init(EntityManager);
             var startX = -(math.floor(width/2) * TinyRogueConstants.TileWidth);
             var startY = math.floor(height / 2) * TinyRogueConstants.TileHeight;
 
@@ -74,29 +66,13 @@ namespace game
             for (int i = 0; i < width * height; i++)
             {
                 int2 xy = View.IndexToXY(i, width);
-                
-                Entity e = EntityManager.CreateEntity(a);
-                Sprite2DRenderer s = new Sprite2DRenderer();
-                Translation t = new Translation();
-                Parent p = new Parent();
-                WorldCoord c = new WorldCoord(); // ViewCoord?
-                p.Value = mapEntity;
-                t.Value = new float3(
+                float3 pos =  new float3(
                     startX + (xy.x * TinyRogueConstants.TileWidth), 
                     startY - (xy.y * TinyRogueConstants.TileHeight), 0);
                 
-                c.x = xy.x;
-                c.y = xy.y;
-                
-                s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
-                s.sprite = SpriteSystem.AsciiToSprite[' '];
-                
-                EntityManager.SetComponentData(e, s);
-                EntityManager.SetComponentData(e, t);
-                EntityManager.SetComponentData(e, p);
-                EntityManager.SetComponentData(e, c);
-
-                Entity instance = EntityManager.Instantiate(e);
+                Entity instance = _archetypeLibrary.CreateTile(
+                    EntityManager, xy.x, xy.y, pos, mapEntity);
+           
                 this._view.ViewTiles[i] = instance;
             }
 
@@ -132,6 +108,12 @@ namespace game
                     renderer.sprite = SpriteSystem.AsciiToSprite['.'];
                 }
             });
+            
+            // Hard code a couple of spear traps, so the player can die.
+            var trap1Coord = new int2(12, 12);
+            var trap2Coord = new int2(13, 11);
+            _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
+            _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
         } 
        
 
@@ -143,12 +125,8 @@ namespace game
                 {
                     bool done = TryGenerateViewport();
                     if (done)
-                    {
-                        Debug.Log("Moving to Title Screen State.");
-                        _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
-                        _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
-                        _state = eGameState.Title;
-                    }
+                       MoveToTitleScreen();
+                    
                 } break;
                 case eGameState.Title:
                 {
@@ -162,23 +140,71 @@ namespace game
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
                         // Place the player
-                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
+                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
                         {
-                            translation = View.ViewCoordToWorldPos(coord);
+                            coord.x = 10;
+                            coord.y = 10;
+                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                            
+                            hp.max = TinyRogueConstants.StartPlayerHealth;
+                            hp.now = hp.max;
                         });
                         _state = eGameState.InGame;
                     }
                 } break;
                 case eGameState.InGame:
                 {
+                    var input = World.GetExistingSystem<InputMoveSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
-                    sbs.OnUpdateManual(EntityManager, PostUpdateCommands);  
+                    var ds = World.GetExistingSystem<DeathSystem>();
+                    sbs.OnUpdateManual();  
+                    input.OnUpdateManual();  
                     
-                    if(TurnManager.NeedToTickTurn)
+                    if(TurnManager.NeedToTickTurn || TurnManager.TurnCount == 0)
                         TurnManager.OnTurn();
                     
+                    ds.OnUpdateManual();
+                    
                 } break;
+                case eGameState.GameOver:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        MoveToTitleScreen();
+                    }
+                    
+                }
+                break;
             }
+        }
+
+        public void MoveToGameOver()
+        { 
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();
+            log.Clear();
+            // Clear the screen.
+            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
+            {
+                renderer.sprite = SpriteSystem.AsciiToSprite[' '];
+            });
+            
+            _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
+            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _state = eGameState.GameOver;
+            
+        }
+
+        public void MoveToTitleScreen()
+        {
+            // Clear the screen.
+            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
+            {
+                renderer.sprite = SpriteSystem.AsciiToSprite[' '];
+            });
+            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
+            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _state = eGameState.Title;
         }
     }
 }

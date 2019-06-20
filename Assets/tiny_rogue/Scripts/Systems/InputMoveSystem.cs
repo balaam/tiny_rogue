@@ -1,8 +1,5 @@
 using System;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
-using Unity.Tiny.Core;
 using Unity.Tiny.Core2D;
 using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
@@ -16,8 +13,10 @@ namespace game
 {
     public class InputMoveSystem : ComponentSystem
     {
-        protected override void OnUpdate()
-        {
+        protected override void OnUpdate() { }
+        
+        public void OnUpdateManual()
+        {   
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
                 var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
@@ -37,7 +36,8 @@ namespace game
                     x = x - 1;
                 if (input.GetKeyDown(KeyCode.Space))
                 {
-                    Debug.Log("Wait");
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                    log.AddLog("You wait a turn.");
                     turnManager.NeedToTickTurn = true;
                 }
 
