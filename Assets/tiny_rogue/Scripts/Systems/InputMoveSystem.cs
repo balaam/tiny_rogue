@@ -19,24 +19,23 @@ namespace game
         {
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
-                // There's only ever one "MoveWithInput" so maybe as well get the InputSystem inside the lambda.
                 var input = EntityManager.World.GetExistingSystem<InputSystem>();
 
                 var x = coord.x;
                 var y = coord.y;
                 
                 if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
-                    y = y - 1;// localPosition.y += 0.16;
+                    y = y - 1;
                 if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))    
-                    y = y + 1;// localPosition.y -= 0.16;
+                    y = y + 1;
                 if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
-                    x = x + 1;// localPosition.x += 0.09;
+                    x = x + 1;
                 if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
-                    x = x - 1;// localPosition.x -= 0.09;     
+                    x = x - 1;     
 
                 Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
                 {
-                    // if the player is trying to move to this location, it's ok.
+                    // This location the player wants to move has nothing blocking them, so update their position.
                     if (tileCoord.x == x && tileCoord.y == y)
                     {
                         EntityManager.SetComponentData(player, tileCoord);
