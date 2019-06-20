@@ -9,61 +9,43 @@ namespace game
     public class StatusBarSystem : ComponentSystem
     {
         protected override void OnUpdate() {}
-        
-        private string NumberToFixedString3(int value)
-        {
-            char[] output = new char[3];
 
-            output[0] = ' ';
-            output[1] = ' ';
-            output[2] = ' ';
-                            
-            var vStr = value.ToString();
-            if (vStr.Length >= 1)
-                output[2] = vStr[vStr.Length - 1];
-            if (vStr.Length >= 2)
-                output[1] = vStr[vStr.Length - 2];
-            if (vStr.Length >= 3)
-                output[0] = vStr[vStr.Length - 3];
-            
+        /// <summary>
+        /// Copies the characters from the end of a string and pads with space if no characters are available.
+        /// e.g. CopyFromEnd(9696, 3) -> "696", CopyFromEnd(1, 3) -> "  1"
+        /// </summary>
+        private string CopyFromEnd(string source, int amount, char padChar = ' ')
+        {
+            char[] output = new char[amount];
+
+            for (int i = 0; i < amount; i++)
+            {
+                int sourceIndex = source.Length - (i + 1);
+                int outputIndex = output.Length - (i + 1);
+
+                if (sourceIndex < 0)
+                    output[outputIndex] = padChar;
+                else
+                    output[outputIndex] = source[sourceIndex];
+            }
             return new string(output);
         }
         
-        private string NumberToFixedString2(int value)
-        {
-            char[] output = new char[2];
-            output[0] = ' ';
-            output[1] = ' ';
-            
-            var vStr = value.ToString();
-            if (vStr.Length >= 1)
-                output[1] = vStr[vStr.Length - 1];
-            if (vStr.Length >= 2)
-                output[0] = vStr[vStr.Length - 2];
-
-            return new string(output);
-        }
-
         public void OnUpdateManual(EntityManager entityManager, EntityCommandBuffer commandBuffer)
         {
-            // Keep trying to get the line of tiles that makes up the status bar
-
-            // Each frame,
-            // If you can get the player 
-            // Render out the details
-
-            // Might be a nice ECS-way to do this but I'm just going to jump directly to the memory for a first pass.
-
             Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level, ref Gold gp) =>
             {
                 var gss = World.GetOrCreateSystem<GameStateSystem>();
+                View view = gss.View;
 
-                var hpNowAsStr = NumberToFixedString3(hp.now);
-                var hpMaxAsStr = NumberToFixedString3(hp.max);
-
-                var lvlAsStr = NumberToFixedString2(level.level);
+                var hpNowAsStr = CopyFromEnd(hp.now.ToString(), 3);
+                var hpMaxAsStr = hp.max.ToString();
+                var lvlAsStr = CopyFromEnd(level.level.ToString(), 3);
+                var xpNowAsStr = CopyFromEnd(xp.now.ToString(), 3);
+                var xpMaxAsStr = "???";
+                var gpAsStr = CopyFromEnd(gp.count.ToString(), 4, '0');
                 
-                //var xpMaxAsStr = "???";
+                
                 
               
                 // Start with these
@@ -77,19 +59,21 @@ namespace game
                 
                 
                 // If you have two strings interpolations it doesn't work
+                int yPos = view.Height - 1;
                 string hpStr1 = $"HP:{hpNowAsStr}";
                 string hpStr2 = $"({hpMaxAsStr})";
-                gss.View.Blit(entityManager, 0, gss.View.Height - 1, hpStr1);
-                gss.View.Blit(entityManager, hpStr1.Length, gss.View.Height - 1, hpStr2);
+                view.Blit(entityManager, new int2(0, yPos), hpStr1);
+                view.Blit(entityManager, new int2(hpStr1.Length, yPos), hpStr2);
                 
                 string lvlStr = $"LEVEL:{lvlAsStr}";
-                gss.View.Blit(entityManager, 15, gss.View.Height - 1, lvlStr);
+                view.Blit(entityManager, new int2(15, yPos), lvlStr);
 
-                string xpStr = $"EXP:{xp.now.ToString()}/???";
-                gss.View.Blit(entityManager, 27, gss.View.Height - 1, xpStr);
+                string xpStr = $"EXP:{xpNowAsStr}/";
+                xpStr = string.Concat(xpStr, xpMaxAsStr);
+                view.Blit(entityManager, new int2(27, yPos), xpStr);
                 
-                string gpStr = $"GOLD:{gp.count.ToString()}";
-                gss.View.Blit(entityManager, 42, gss.View.Height - 1, gpStr);
+                string gpStr = $"GOLD:{gpAsStr}";
+                view.Blit(entityManager, new int2(42, yPos), gpStr);
 
             });
         }

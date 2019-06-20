@@ -4,9 +4,11 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
+    /// <summary>
+    /// Reads in the ASCII sprites and stores then in an array indexable by the chars decimal value. i.e. A is 65
+    /// </summary>
     public class SpriteSystem : ComponentSystem
     {
-        // Probably need wrapping up into some better names classes
         public static Entity[] AsciiToSprite = new Entity[256];
         static bool _loaded = false;
 
@@ -17,22 +19,18 @@ namespace game
 
         protected override void OnUpdate()
         {
-            if (SpriteSystem.Loaded)
+            if (SpriteSystem._loaded)
                 return;
 
             Entities.WithAll<SpriteLookUp>().ForEach((Entity entity) =>
             {
-                // This bit is generated, not sure of a better way to handle this at the moment.  
-                // See Utils/gen_char_map.rb
+                DynamicBuffer<SpriteAtlas> atlas = EntityManager.GetBuffer<SpriteAtlas>(entity);
 
-                DynamicBuffer<SpriteAtlas> o = EntityManager.GetBuffer<SpriteAtlas>(entity);
-
-                for (int i = 0; i < o.Length; i++)
-                    AsciiToSprite[i] = o[i].sprite;
+                for (int i = 0; i < atlas.Length; i++)
+                    AsciiToSprite[i] = atlas[i].sprite;
 
                 SpriteSystem._loaded = true;
             });
-
         }
     }
 }
