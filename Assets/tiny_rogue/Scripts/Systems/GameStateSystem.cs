@@ -71,7 +71,7 @@ namespace game
                     startY - (xy.y * TinyRogueConstants.TileHeight), 0);
                 
                 Entity instance = _archetypeLibrary.CreateTile(
-                    EntityManager, xy.x, xy.y, pos, mapEntity);
+                    EntityManager, xy, pos, mapEntity);
            
                 this._view.ViewTiles[i] = instance;
             }
@@ -81,7 +81,6 @@ namespace game
             return true;
         }
 
-        
         public void GenerateLevel()
         {
             // Removing blocking tags from all tiles
@@ -114,8 +113,10 @@ namespace game
             var trap2Coord = new int2(13, 11);
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
-        } 
-       
+
+            var crownCoord = new int2(13, 12);
+            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+        }
 
         protected override void OnUpdate()
         {
@@ -130,7 +131,6 @@ namespace game
                 } break;
                 case eGameState.Title:
                 {
-                    // Wait for space
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
@@ -139,6 +139,7 @@ namespace game
                         TurnManager.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
+                        
                         // Place the player
                         Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
                         {
@@ -170,17 +171,13 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
-                    {
-                        MoveToTitleScreen();
-                    }
-                    
-                }
-                break;
+                        MoveToTitleScreen();                    
+                } break;
             }
         }
 
-        public void MoveToGameOver()
-        { 
+        private void CleanUpGameWorld()
+        {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             log.Clear();
             // Clear the screen.
@@ -189,10 +186,17 @@ namespace game
                 renderer.sprite = SpriteSystem.AsciiToSprite[' '];
             });
             
-            _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
-            _state = eGameState.GameOver;
+            // Destroy everything that's not a tile or the player.
+            Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
+            {
+                t.Value = TinyRogueConstants.OffViewport;
+                PostUpdateCommands.DestroyEntity(entity);
+            });
             
+            Entities.WithAll<Player>().ForEach((ref Translation pos) =>
+            {
+                pos.Value = TinyRogueConstants.OffViewport;
+            });  
         }
 
         public void MoveToTitleScreen()
@@ -205,6 +209,22 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
             _state = eGameState.Title;
+        }
+
+        public void MoveToGameOver()
+        { 
+            CleanUpGameWorld();
+            _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
+            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _state = eGameState.GameOver;
+        }
+        
+        public void MoveToGameWin()
+        {
+            CleanUpGameWorld(); 
+            _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
+            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            _state = eGameState.GameOver;
         }
     }
 }

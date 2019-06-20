@@ -20,8 +20,7 @@ namespace game
                     {
                         var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                         gss.MoveToGameOver();
-                        // Move the character off screen.
-                        pos.Value = new float3(-9999, -9999, 0);
+                        pos.Value = TinyRogueConstants.OffViewport;
                     }
                     else
                     {

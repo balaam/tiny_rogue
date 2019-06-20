@@ -52,7 +52,7 @@ namespace game
                     if (tileCoord.x == x && tileCoord.y == y)
                     {
                         EntityManager.SetComponentData(player, tileCoord);
-                        EntityManager.SetComponentData(player, tileTrans);
+                        EntityManager.SetComponentData(player, tileTrans);                        
                         turnManager.NeedToTickTurn = true;
                     }
                 });
