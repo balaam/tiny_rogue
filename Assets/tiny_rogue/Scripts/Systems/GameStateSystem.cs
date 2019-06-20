@@ -28,8 +28,10 @@ namespace game
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
+        TurnManager _turnManager = new TurnManager();
 
         public View View => _view;
+        public TurnManager TurnManager => _turnManager;
 
         private bool TryGenerateViewport()
         {
@@ -155,6 +157,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
+                        TurnManager.ResetTurnCount();
                         _state = eGameState.InGame;
                     }
                 } break;
@@ -162,6 +165,10 @@ namespace game
                 {
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     sbs.OnUpdateManual(EntityManager, PostUpdateCommands);  
+                    
+                    if(TurnManager.NeedToTickTurn)
+                        TurnManager.OnTurn();
+                    
                 } break;
             }
         }
