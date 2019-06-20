@@ -31,7 +31,7 @@ namespace game
             return new string(output);
         }
         
-        public void OnUpdateManual(EntityManager entityManager, EntityCommandBuffer commandBuffer)
+        public void OnUpdateManual()
         {
             Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level, ref Gold gp) =>
             {
@@ -58,18 +58,18 @@ namespace game
                 int yPos = view.Height - 1;
                 string hpStr1 = $"HP:{hpNowAsStr}";
                 string hpStr2 = $"({hpMaxAsStr})";
-                view.Blit(entityManager, new int2(0, yPos), hpStr1);
-                view.Blit(entityManager, new int2(hpStr1.Length, yPos), hpStr2);
+                view.Blit(EntityManager, new int2(0, yPos), hpStr1);
+                view.Blit(EntityManager, new int2(hpStr1.Length, yPos), hpStr2);
                 
                 string lvlStr = $"LEVEL:{lvlAsStr}";
-                view.Blit(entityManager, new int2(15, yPos), lvlStr);
+                view.Blit(EntityManager, new int2(15, yPos), lvlStr);
 
                 string xpStr = $"EXP:{xpNowAsStr}/";
                 xpStr = string.Concat(xpStr, xpMaxAsStr);
-                view.Blit(entityManager, new int2(27, yPos), xpStr);
+                view.Blit(EntityManager, new int2(27, yPos), xpStr);
                 
                 string gpStr = $"GOLD:{gpAsStr}";
-                view.Blit(entityManager, new int2(42, yPos), gpStr);
+                view.Blit(EntityManager, new int2(42, yPos), gpStr);
 
             });
         }
