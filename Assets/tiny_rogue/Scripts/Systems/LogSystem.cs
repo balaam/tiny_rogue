@@ -44,7 +44,7 @@ namespace game
 
             if (_newLogs.Count > 0)
             {
-                // Write the new log line out, remove it frmo the new list and add it to the old list.
+                // Write the new log line out, remove it from the new list and add it to the old list.
                 LogEntry topLog =  _newLogs[0];
                 _newLogs.RemoveAtSwapBack(0);
                 _oldLogs.Add(topLog);
