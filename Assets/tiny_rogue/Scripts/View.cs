@@ -56,20 +56,20 @@ namespace game
 	    }
 
 	    /// <summary>
-	    /// Given an integer coordinate in view space translate it to unity world space
+	    /// Given an integer coordinate in view space translate it to unity world space position
 	    /// </summary>
 	    /// <param name="coord">A coordinate in the viewport</param>
-	    /// <returns>A translation in world space units at the position of the view coord.</returns>
-	    public Translation ViewCoordToWorldPos(WorldCoord coord)
+	    /// <returns>A position in world space units at the position of the view coord.</returns>
+	    public float3 ViewCoordToWorldPos(int2 coord)
 	    {
 		    var startX = -(math.floor(Width/2) * TinyRogueConstants.TileWidth);
 		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileHeight;
 		    
-		    Translation translation = new Translation();
-		    translation.Value = new float3(
+		    var pos = new float3(
 			    startX + (coord.x * TinyRogueConstants.TileWidth), 
 			    startY - (coord.y * TinyRogueConstants.TileHeight), 0);
-		    return translation;
+		    return pos;
 	    }
+
     }
 }

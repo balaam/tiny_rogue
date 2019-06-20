@@ -37,10 +37,17 @@ namespace game
             var entry = new LogEntry { text = log };
             _newLogs.Add(entry);
         }
+
+        public void Clear()
+        {
+            _newLogs.Clear();
+            _oldLogs.Clear();
+        }
         
         public override void OnTurn(uint turnNumber)
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            View view = gss.View;
 
             if (_newLogs.Count > 0)
             {
@@ -48,14 +55,14 @@ namespace game
                 LogEntry topLog =  _newLogs[0];
                 _newLogs.RemoveAtSwapBack(0);
                 _oldLogs.Add(topLog);
-                gss.View.ClearLine(EntityManager, 0, '.');
-                gss.View.Blit(EntityManager, new int2(0,0), topLog.text);
+                view.ClearLine(EntityManager, 0, ' ');
+                view.Blit(EntityManager, new int2(0,0), topLog.text);
                 
                 if(_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
             else
-                gss.View.ClearLine(EntityManager, 0, '.');
+                view.ClearLine(EntityManager, 0, ' ');
         }
     }
 }

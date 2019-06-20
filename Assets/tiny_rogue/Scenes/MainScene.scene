@@ -910,6 +910,7 @@
             "$type": "game.Gold, tiny_rogue"
         }, {
             "$type": "game.HealthPoints, tiny_rogue",
+            "now": 10,
             "max": 10
         }, {
             "$type": "game.Level, tiny_rogue",
@@ -933,7 +934,7 @@
             }
         }, {
             "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
-            "order": 1
+            "order": 2
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
