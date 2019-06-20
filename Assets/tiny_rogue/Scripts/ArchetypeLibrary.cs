@@ -11,6 +11,7 @@ namespace game
     {
         public EntityArchetype Tile { get; private set; }
         public EntityArchetype SpearTrap { get; private set; }
+        public EntityArchetype Crown { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -33,9 +34,19 @@ namespace game
                 typeof(LayerSorting),  
                 typeof(SpearTrap)
             });
+            
+            Crown = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord), // should be view coord?
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),  
+                typeof(Crown)
+            });
         }
 
-        public Entity CreateTile(EntityManager entityManager, int x, int y, float3 pos, Entity parent)
+        public Entity CreateTile(EntityManager entityManager, int2 xy, float3 pos, Entity parent)
         {
             Entity entity = entityManager.CreateEntity(Tile);
             Sprite2DRenderer s = new Sprite2DRenderer();
@@ -44,9 +55,9 @@ namespace game
             WorldCoord c = new WorldCoord(); // ViewCoord?
             p.Value = parent;
             t.Value = pos;
-                
-            c.x = x;
-            c.y = y;
+
+            c.x = xy.x;
+            c.y = xy.y;
                 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
             s.sprite = SpriteSystem.AsciiToSprite[' '];
@@ -57,10 +68,9 @@ namespace game
             entityManager.SetComponentData(entity, c);
             
             return entityManager.Instantiate(entity);
-
         }
 
-        public Entity CreateSpearTrap(EntityManager entityManager,int2 xy, float3 pos)
+        public Entity CreateSpearTrap(EntityManager entityManager, int2 xy, float3 pos)
         {
             Entity entity = entityManager.CreateEntity(SpearTrap);
             
@@ -75,6 +85,31 @@ namespace game
                 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
             s.sprite = SpriteSystem.AsciiToSprite['^'];
+            l.order = 1;
+            
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            
+            return entityManager.Instantiate(entity);
+        }
+
+        public Entity CreateCrown(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            Entity entity = entityManager.CreateEntity(Crown);
+            
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+            
+            s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
+            s.sprite = SpriteSystem.AsciiToSprite[127];
             l.order = 1;
             
             entityManager.SetComponentData(entity, s);
