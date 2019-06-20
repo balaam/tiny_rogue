@@ -1,10 +1,11 @@
+using System;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core;
 using Unity.Tiny.Core2D;
-using Unity.Tiny.Input;
-
+using UnityEngine;
+using KeyCode = Unity.Tiny.Input.KeyCode;
 #if !UNITY_WEBGL
 using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 #else
@@ -19,7 +20,9 @@ namespace game
         {
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
+                var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                 var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                var turnManager = gss.TurnManager;
 
                 var x = coord.x;
                 var y = coord.y;
@@ -31,7 +34,12 @@ namespace game
                 if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
                     x = x + 1;
                 if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
-                    x = x - 1;     
+                    x = x - 1;
+                if (input.GetKeyDown(KeyCode.Space))
+                {
+                    Debug.Log("Wait");
+                    turnManager.NeedToTickTurn = true;
+                }
 
                 Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
                 {
@@ -40,6 +48,7 @@ namespace game
                     {
                         EntityManager.SetComponentData(player, tileCoord);
                         EntityManager.SetComponentData(player, tileTrans);
+                        turnManager.NeedToTickTurn = true;
                     }
                 });
             });
