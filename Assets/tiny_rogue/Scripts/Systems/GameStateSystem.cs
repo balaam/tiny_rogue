@@ -154,10 +154,18 @@ namespace game
                 {
                     // Wait for space
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
                         TurnManager.ResetTurnCount();
+                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+                        log.AddLog("HAPPY HACKWEEK!");
+                        // Place the player
+                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
+                        {
+                            translation = View.ViewCoordToWorldPos(coord);
+                        });
                         _state = eGameState.InGame;
                     }
                 } break;
