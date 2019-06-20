@@ -29,10 +29,7 @@ namespace game
         eGameState _state = eGameState.Startup;
         View _view = new View();
 
-        public View View
-        {
-            get { return _view; }
-        }
+        public View View => _view;
 
         private bool TryGenerateViewport()
         {
@@ -138,32 +135,34 @@ namespace game
 
         protected override void OnUpdate()
         {
-            // In Startup create the viewport
-            if (_state == eGameState.Startup)
+            switch (_state)
             {
-                bool done = TryGenerateViewport();
-                if (done)
+                case eGameState.Startup:
                 {
-                    Debug.Log("Moving to Title Screen State.");
-                    _view.Blit(EntityManager, 0, 0, "TINY ROGUE");
-                    _view.Blit(EntityManager, 30, 20,"PRESS SPACE TO BEGIN");
-                    _state = eGameState.Title;
-                }
-            }
-            else if(_state == eGameState.Title)
-            {
-                // Wait for space
-                var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                if (input.GetKeyDown(KeyCode.Space))
+                    bool done = TryGenerateViewport();
+                    if (done)
+                    {
+                        Debug.Log("Moving to Title Screen State.");
+                        _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
+                        _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+                        _state = eGameState.Title;
+                    }
+                } break;
+                case eGameState.Title:
                 {
-                    GenerateLevel();
-                    _state = eGameState.InGame;
-                }
-            }
-            else if (_state == eGameState.InGame)
-            {
-                var sbs = World.GetOrCreateSystem<StatusBarSystem>();
-                sbs.OnUpdateManual(EntityManager, PostUpdateCommands);   
+                    // Wait for space
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        GenerateLevel();
+                        _state = eGameState.InGame;
+                    }
+                } break;
+                case eGameState.InGame:
+                {
+                    var sbs = World.GetOrCreateSystem<StatusBarSystem>();
+                    sbs.OnUpdateManual(EntityManager, PostUpdateCommands);  
+                } break;
             }
         }
     }
