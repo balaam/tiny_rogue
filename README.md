@@ -16,32 +16,38 @@ If you open the project and press play you should get a player in a big room.
 
 ## Release
 
-Set the project to build in Web (ASM JS) under release.
-Do a build.
-Delete the data in the `./docs` directory.
-Copy the data from [Library/DotsRuntimeBuild/build/tiny_rogue/tiny_rogue-asmjs-release] to [./docs]
-Rename `tiny_rogue.html` to `index.html`
+1. Set the project to build in Web (ASM JS) under release.
+2. Do a build.
+3. Delete the data in the `./docs` directory.
+4. Copy the data from [Library/DotsRuntimeBuild/build/tiny_rogue/tiny_rogue-asmjs-release] to [./docs]
+5. Rename `tiny_rogue.html` to `index.html`
 
 ## 2d Graphics and Project Setup Details
 
 Character size:
-    9 x 16 pixels
-    0.09 x 0.16 world space units
+ - 9 x 16 pixels
+ - 0.09 x 0.16 world space units
+ 
 Resolution:
-    80 x 25 characters
-    720 x 400 pixels
+ - 80 x 25 characters
+ - 720 x 400 pixels
+ 
 Camera half vertical height:
-    2 world units
+ - 2 world units
 
 ### Graphic Setup Details
 
 The character set included in this project is from an IBM PC and contains ASCII and a number of extended characters.
 
 The glyphs in the texture are width:9 x height:16 in pixels.
+
 Console terminals can display width:80 x height:25 in characters.
+
 Giving a pixel resolution of 720 x 400 pixels.
 
+
 Unity has a `Pixels Per Unity` setting that maps the size of a single pixel to world units. By default it's 100. This means 100 pixels would fit in a single unit in Unity. Some internal systems consider a world unit to be 1 meter but for this game it can just be considered to be a arbitary unit.
+
 
 The size of a single ASCII character in Unity units can worked out by dividing it's pixel size by the PPU.
 ```
