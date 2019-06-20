@@ -45,10 +45,7 @@ namespace game
                 var xpMaxAsStr = "???";
                 var gpAsStr = CopyFromEnd(gp.count.ToString(), 4, '0');
                 
-                
-                
-              
-                // Start with these
+                // Let's start with these
                 // HP:000(000)  11 chars
                 // 4 space      4           15
                 // Level:00     8 chars     23
@@ -56,7 +53,6 @@ namespace game
                 // Exp:000/000  11 chars    38
                 // 4 space      4           42
                 // Gold:000     8 chars     50
-                
                 
                 // If you have two strings interpolations it doesn't work
                 int yPos = view.Height - 1;
