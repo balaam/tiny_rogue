@@ -53,7 +53,7 @@ namespace game
             {
                 // Write the new log line out, remove it from the new list and add it to the old list.
                 LogEntry topLog =  _newLogs[0];
-                _newLogs.RemoveAtSwapBack(0);
+                _newLogs.RemoveAt(0);
                 _oldLogs.Add(topLog);
                 view.ClearLine(EntityManager, 0, ' ');
                 view.Blit(EntityManager, new int2(0,0), topLog.text);
