@@ -982,13 +982,15 @@
                 "StableTypeHash": 8481167400895813168
             }, {
                 "StableTypeHash": 15293753345900471037
+            }, {
+                "StableTypeHash": 7693371993889051491
             }]
         }, {
             "$type": "game.BlockMovement, tiny_rogue"
         }, {
-            "$type": "game.MoveWithInput, tiny_rogue"
-        }, {
             "$type": "game.Player, tiny_rogue"
+        }, {
+            "$type": "game.PlayerInput, tiny_rogue"
         }]
     }, {
         "Components": [{
