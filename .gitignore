@@ -29,6 +29,7 @@
 .idea/
 Assets/Samples.meta
 Assets/Samples/
+Assets/EntityCache.meta
 
 # Visual Studio cache directory
 .vs/
