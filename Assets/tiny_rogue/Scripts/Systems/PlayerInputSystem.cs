@@ -13,17 +13,7 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
-    public enum Action
-    {
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        Wait,
-        Interact,
-        None
-    }
-    
+
     public class PlayerInputSystem : ComponentSystem
     {
         protected override void OnUpdate() { }
@@ -51,9 +41,8 @@ namespace game
         {   
             Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
-                var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                 var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
-                var turnManager = gss.TurnManager;
 
                 var x = coord.x;
                 var y = coord.y;
@@ -74,10 +63,10 @@ namespace game
                         x = x - 1;
                         break;
                     case Action.Interact:
-                        gss.Interact(x,y);
+                        pas.Interact(x,y);
                         break;
                     case Action.Wait:
-                        gss.Wait();
+                        pas.Wait();
                         break;
                     case Action.None:
                         break;
@@ -91,7 +80,7 @@ namespace game
                 
                 // Move if we've moved
                 if (x != coord.x || y != coord.y)
-                    gss.TryMove(player, x, y);
+                    pas.TryMove(player, x, y);
 
             });
         }
