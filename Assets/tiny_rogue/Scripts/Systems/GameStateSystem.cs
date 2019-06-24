@@ -25,6 +25,7 @@ namespace game
             InGame,
             Replay,
             GameOver,
+            NextLevel,
             DebugLevelSelect,
         }
 
@@ -88,7 +89,7 @@ namespace game
             // Removing blocking tags from all tiles
             Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
             {
-                EntityManager.RemoveComponent(entity, typeof(BlockMovement)); 
+                PostUpdateCommands.RemoveComponent(entity, typeof(BlockMovement)); 
             });
 
             Entities.WithAll<Tile>().ForEach((Entity e, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer) =>
@@ -120,6 +121,9 @@ namespace game
             var trap2Coord = new int2(13, 11);
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
+
+            var stairwayCoord = new int2(22, 15);
+            _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
 
             var crownCoord = new int2(13, 12);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
@@ -213,6 +217,25 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();                    
                 } break;
+                case eGameState.NextLevel:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                    if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        GenerateLevel();
+                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+
+                        // Place the player
+                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        {
+                            coord.x = 10;
+                            coord.y = 10;
+                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                        });
+                        _state = eGameState.InGame;
+                    }
+                    } break;
                 case eGameState.DebugLevelSelect:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -286,6 +309,14 @@ namespace game
             _state = eGameState.GameOver;
         }
 
+        public void MoveToNextLevel()
+        {
+            CleanUpGameWorld();
+            _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
+            _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
+            _state = eGameState.NextLevel;
+        }
+
         private void MoveToDebugLevelSelect()
         {
             // Clear the screen.
@@ -297,7 +328,6 @@ namespace game
             _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
             _state = eGameState.DebugLevelSelect;
-            
         }
     }
 }

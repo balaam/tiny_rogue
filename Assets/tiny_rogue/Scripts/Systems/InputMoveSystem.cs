@@ -21,6 +21,7 @@ namespace game
             MoveLeft,
             MoveRight,
             Wait,
+            Interact,
             None
         }
         
@@ -37,6 +38,8 @@ namespace game
                 return Action.MoveRight;
             if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
                 return Action.MoveLeft;
+            if (input.GetKeyDown(KeyCode.Z))
+                return Action.Interact;
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
 
@@ -68,6 +71,17 @@ namespace game
                     case Action.MoveLeft:
                         x = x - 1;
                         break;
+                    case Action.Interact:
+                    {
+                        Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
+                        {
+                            if (x == stairCoord.x && y == stairCoord.y)
+                            {
+                                gss.MoveToNextLevel();
+                                return;
+                            }
+                        });
+                    } break;
                     case Action.Wait:
                     {
                         var log = EntityManager.World.GetExistingSystem<LogSystem>();
