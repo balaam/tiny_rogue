@@ -33,7 +33,7 @@ namespace game
         
         public void OnUpdateManual()
         {
-            Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level, ref Gold gp) =>
+            Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level, ref GoldCount gp) =>
             {
                 var gss = World.GetOrCreateSystem<GameStateSystem>();
                 View view = gss.View;

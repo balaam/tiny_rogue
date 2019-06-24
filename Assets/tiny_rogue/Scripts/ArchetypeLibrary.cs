@@ -13,6 +13,7 @@ namespace game
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
         public EntityArchetype  Stairway { get; private set; }
+        public EntityArchetype  Gold { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -54,6 +55,16 @@ namespace game
                 typeof(Sprite2DRenderer),
                 typeof(LayerSorting),
                 typeof(Stairway)
+            });
+
+            Gold = em.CreateArchetype(new ComponentType[] //trying
+            {                                             //to
+                typeof(Parent),                           //avoid
+                typeof(Translation),                      //any
+                typeof(WorldCoord), // should be view coord? //merge
+                typeof(Sprite2DRenderer),                 //conflicts
+                typeof(LayerSorting),                     //hopefully
+                typeof(Gold)
             });
         }
 
@@ -149,6 +160,32 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
 
+            return entity;
+        }
+
+        public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            // TODO: randomly spawn across level
+            Entity entity = entityManager.CreateEntity(Gold);
+            
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+            
+            s.color = new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f);
+            s.sprite = SpriteSystem.AsciiToSprite[236];
+            l.order = 1;
+            
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            
             return entity;
         }
     }
