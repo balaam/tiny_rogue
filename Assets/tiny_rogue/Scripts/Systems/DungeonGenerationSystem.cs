@@ -8,6 +8,12 @@ namespace game
     [AlwaysUpdateSystem]
     public class DungeonGenerationSystem : ComponentSystem
     {
+        private enum HallDirection
+        {
+            Horizontal,
+            Vertical
+        }
+
         private struct Room
         {
             public int startX;
@@ -165,7 +171,7 @@ namespace game
                 while (currentX < to)
                 {
                     int2 xy = new int2(currentX, y);
-                    UpdateTile(xy);
+                    CreateHallwayTile(xy, HallDirection.Horizontal);
                     CreateWallsIfEmpty(
                         new int2(currentX, y + 1),
                         new int2(currentX, y - 1),
@@ -181,7 +187,7 @@ namespace game
                 while (currentX > to)
                 {
                     int2 xy = new int2(currentX, y);
-                    UpdateTile(xy);
+                    CreateHallwayTile(xy, HallDirection.Horizontal);
                     CreateWallsIfEmpty(
                         new int2(currentX, y + 1),
                         new int2(currentX, y - 1),
@@ -202,7 +208,7 @@ namespace game
                 while (currentY < to)
                 {
                     int2 xy = new int2(x, currentY);
-                    UpdateTile(xy);
+                    CreateHallwayTile(xy, HallDirection.Vertical);
                     CreateWallsIfEmpty(
                         new int2(x + 1, currentY), 
                         new int2(x - 1, currentY), 
@@ -218,7 +224,7 @@ namespace game
                 while (currentY > to)
                 {
                     int2 xy = new int2(x, currentY);
-                    UpdateTile(xy);
+                    CreateHallwayTile(xy, HallDirection.Vertical);
                     CreateWallsIfEmpty(
                        new int2(x + 1, currentY),
                        new int2(x - 1, currentY),
@@ -286,10 +292,32 @@ namespace game
             EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
         }
 
-        private void UpdateTile(int2 xy)
+        private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
             var entity = _view.ViewTiles[View.XYToIndex(xy, _view.Width)];
-            if (EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.AsciiToSprite['#'])
+
+            int2 neighbor1 = xy;
+            int2 neighbor2 = xy;
+
+            if(direction == HallDirection.Horizontal)
+            {
+                neighbor1.y += 1;
+                neighbor2.y -= 1;
+            }
+            else
+            {
+                neighbor1.x += 1;
+                neighbor2.x -= 1;
+            }
+
+            var neighborEntityOne = _view.ViewTiles[View.XYToIndex(neighbor1, _view.Width)];
+            var neighborEntityTwo = _view.ViewTiles[View.XYToIndex(neighbor2, _view.Width)];
+
+            bool tileIsWall = EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.AsciiToSprite['#'];
+            bool neighbor1IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityOne).sprite == SpriteSystem.AsciiToSprite['#'];
+            bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.AsciiToSprite['#'];
+
+            if(tileIsWall && neighbor1IsWall && neighbor2IsWall)
                 SetTileToChar(xy, 'D');
             else
                 SetTileToChar(xy, '.');
