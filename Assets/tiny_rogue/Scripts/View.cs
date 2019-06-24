@@ -44,12 +44,12 @@ namespace game
 
 	    public void Blit(EntityManager em, int2 xy, int c)
 	    {
-#if TINY_ASCII
+			if( !TinyRogueConstants.ascii )
+				return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
 		    s.sprite = SpriteSystem.IndexSprites[c];
 		    em.SetComponentData(e, s);
-#endif
 	    }
 
 	    public void ClearLine(EntityManager em, int line, char clearChar)
@@ -82,10 +82,11 @@ namespace game
 	    public float3 PlayerViewCoordToWorldPos(int2 coord)
 	    {
 		    var pos = ViewCoordToWorldPos(coord);
-#if !TINY_ASCII
-		    pos.x += TinyRogueConstants.HalfTile;
-		    pos.y -= TinyRogueConstants.HalfTile;
-#endif
+		    if (!TinyRogueConstants.ascii)
+		    {
+			    pos.x += TinyRogueConstants.HalfTile;
+			    pos.y -= TinyRogueConstants.HalfTile;
+		    }
 		    Debug.Log(pos.ToString());
 		    return pos;
 	    }
