@@ -60,16 +60,16 @@ namespace game
                 return false;
 
             _archetypeLibrary.Init(EntityManager);
-            var startX = -(math.floor(width / 2) * TinyRogueConstants.TileWidth);
-            var startY = math.floor(height / 2) * TinyRogueConstants.TileHeight;
+            var startX = -(math.floor(width / 2) * TinyRogueConstants.TileSize);
+            var startY = math.floor(height / 2) * TinyRogueConstants.TileSize;
 
             _view.ViewTiles = new Entity[width * height];
             for (int i = 0; i < width * height; i++)
             {
                 int2 xy = View.IndexToXY(i, width);
                 float3 pos =  new float3(
-                    startX + (xy.x * TinyRogueConstants.TileWidth),
-                    startY - (xy.y * TinyRogueConstants.TileHeight), 0);
+                    startX + (xy.x * TinyRogueConstants.TileSize),
+                    startY - (xy.y * TinyRogueConstants.TileSize), 0);
 
                 Entity instance = _archetypeLibrary.CreateTile(
                     EntityManager, xy, pos, mapEntity);
@@ -101,7 +101,7 @@ namespace game
                 if (isVWall || isHWall)
                 {
                     // TODO: actually show wall -- add sprite
-                    renderer.sprite = SpriteSystem.IndexSprites[1];
+                    renderer.sprite = SpriteSystem.IndexSprites[2];
                     PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
                 }
                 else
@@ -129,13 +129,14 @@ namespace game
         {
             GenerateEmptyLevel();
 
-
+            Debug.Log("Generate");
             // Place the player
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
             {
+                Debug.Log("position");
                 coord.x = 10;
                 coord.y = 10;
-                translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                translation.Value = View.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
 
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
@@ -177,7 +178,7 @@ namespace game
                         {
                             coord.x = 10;
                             coord.y = 10;
-                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                            translation.Value = View.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
 
                             hp.max = TinyRogueConstants.StartPlayerHealth;
                             hp.now = hp.max;

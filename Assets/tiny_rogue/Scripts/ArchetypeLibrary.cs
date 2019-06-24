@@ -86,7 +86,7 @@ namespace game
 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
             // TODO: need to figure out spike-trap sprite
-            s.sprite = SpriteSystem.IndexSprites[0];
+            s.sprite = SpriteSystem.IndexSprites[2];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
