@@ -40,8 +40,15 @@ namespace game
                     y = y - 1;
                 if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))    
                     y = y + 1;
-                if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
+                if (input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    if(playerOnStairs)
+                    {
+                        gss.MoveToNextLevel();
+                        return;
+                    }
                     x = x + 1;
+                }
                 if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
                     x = x - 1;
                 if (input.GetKeyDown(KeyCode.Space))
