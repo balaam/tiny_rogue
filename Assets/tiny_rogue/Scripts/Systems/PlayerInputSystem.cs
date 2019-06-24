@@ -36,6 +36,30 @@ namespace game
 
             return Action.None;
         }
+
+        private WorldCoord GetMove(Action a)
+        {
+            WorldCoord c = new WorldCoord();
+            switch (a)
+            {
+                case Action.MoveUp:
+                    c.y += 1;
+                    break;
+                case Action.MoveDown:
+                    c.y -= 1;
+                    break;
+                case Action.MoveRight:
+                    c.x += 1;
+                    break;
+                case Action.MoveLeft:
+                    c.x -= 1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(a));
+            }
+
+            return c;
+        }
         
         public void OnUpdateManual()
         {   
@@ -44,26 +68,19 @@ namespace game
                 var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                 var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
 
-                var x = coord.x;
-                var y = coord.y;
-
                 var action = GetAction();
+                
                 switch (action)
                 {
                     case Action.MoveUp:
-                        y = y - 1;
-                        break;
                     case Action.MoveDown:
-                        y = y + 1;
-                        break;
                     case Action.MoveRight:
-                        x = x + 1;
-                        break;
                     case Action.MoveLeft:
-                        x = x - 1;
+                        var move = GetMove(action);
+                        pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y });
                         break;
                     case Action.Interact:
-                        pas.Interact(x,y);
+                        pas.Interact(coord);
                         break;
                     case Action.Wait:
                         pas.Wait();
@@ -78,10 +95,6 @@ namespace game
                 if( action != Action.None )
                     rec.AddAction(action);
                 
-                // Move if we've moved
-                if (x != coord.x || y != coord.y)
-                    pas.TryMove(player, x, y);
-
             });
         }
     }
