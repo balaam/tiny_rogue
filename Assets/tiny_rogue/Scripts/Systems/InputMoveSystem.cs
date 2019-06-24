@@ -25,15 +25,26 @@ namespace game
 
                 var x = coord.x;
                 var y = coord.y;
-                
+
                 if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                     y = y - 1;
                 if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))    
                     y = y + 1;
-                if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
+                if (input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
                     x = x + 1;
                 if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
                     x = x - 1;
+                if(input.GetKeyDown(KeyCode.Z))
+                {
+                    Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
+                    {
+                        if (x == stairCoord.x && y == stairCoord.y)
+                        {
+                            gss.MoveToNextLevel();
+                            return;
+                        }
+                    });
+                }
                 if (input.GetKeyDown(KeyCode.Space))
                 {
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
