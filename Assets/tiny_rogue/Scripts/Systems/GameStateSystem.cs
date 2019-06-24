@@ -23,6 +23,7 @@ namespace game
             Startup, // generate required entities etc
             Title,
             InGame,
+            Replay,
             GameOver,
             NextLevel,
             DebugLevelSelect,
@@ -103,6 +104,10 @@ namespace game
                     {
                         MoveToDebugLevelSelect();
                     }
+                    else if (input.GetKeyDown(KeyCode.R))
+                    {
+                        
+                    }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
                         var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
@@ -115,7 +120,7 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    var input = World.GetExistingSystem<InputMoveSystem>();
+                    var input = World.GetExistingSystem<PlayerInputSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     var ds = World.GetExistingSystem<DeathSystem>();
                     sbs.OnUpdateManual();  
@@ -126,6 +131,10 @@ namespace game
                     
                     ds.OnUpdateManual();
                     
+                } break;
+                case eGameState.Replay:
+                {
+                    // TODO: Replay recorded input
                 } break;
                 case eGameState.GameOver:
                 {
@@ -144,7 +153,7 @@ namespace game
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
 
                         // Place the player
-                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
                         {
                             coord.x = 10;
                             coord.y = 10;
