@@ -13,7 +13,12 @@ namespace game
 {
     public class InputMoveSystem : ComponentSystem
     {
-        protected override void OnUpdate() { }
+        protected override void OnUpdate()
+        {
+            //var x = World.GetOrCreateSystem<InventorySystem>();
+            //x.AddItem();
+
+        }
         
         public void OnUpdateManual() 
         {
