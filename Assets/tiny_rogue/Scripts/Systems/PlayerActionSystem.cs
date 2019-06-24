@@ -14,7 +14,7 @@ namespace game
         Interact,
         None
     }
-    
+
     public class PlayerActionSystem : ComponentSystem
     {
         protected override void OnUpdate()
@@ -29,11 +29,11 @@ namespace game
             base.OnCreate();
         }
 
-        public void Interact(int x, int y)
+        public void Interact(WorldCoord c)
         {
             Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
             {
-                if (x == stairCoord.x && y == stairCoord.y)
+                if (c.x == stairCoord.x && c.y == stairCoord.y)
                     gss.MoveToNextLevel();
             });
         }
@@ -45,12 +45,12 @@ namespace game
             gss.TurnManager.NeedToTickTurn = true;
         }
 
-        public void TryMove(Entity e, int x, int y)
+        public void TryMove(Entity e, WorldCoord c)
         {
             Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
             {
                 // This location the player wants to move has nothing blocking them, so update their position.
-                if (tileCoord.x == x && tileCoord.y == y)
+                if (tileCoord.x == c.x && tileCoord.y == c.y)
                 {
                     EntityManager.SetComponentData(e, tileCoord);
                     EntityManager.SetComponentData(e, tileTrans);                        
