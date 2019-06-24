@@ -15,7 +15,7 @@ namespace game
     {
         protected override void OnUpdate() { }
         
-        public void OnUpdateManual()
+        public void OnUpdateManual(EntityCommandBuffer commandBuffer)
         {   
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
@@ -48,11 +48,38 @@ namespace game
                 
                 Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
                 {
-                    // This location the player wants to move has nothing blocking them, so update their position.
+                    if (!input.GetKey(KeyCode.LeftControl))
+                    {
+                        // This location the player wants to move has nothing blocking them, so update their position.
+                        if (tileCoord.x == x && tileCoord.y == y)
+                        {
+                            EntityManager.SetComponentData(player, tileCoord);
+                            EntityManager.SetComponentData(player, tileTrans);
+                            turnManager.NeedToTickTurn = true;
+                        }
+                    }
+                });
+
+                Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer, ref Door door) =>
+                {
                     if (tileCoord.x == x && tileCoord.y == y)
                     {
-                        EntityManager.SetComponentData(player, tileCoord);
-                        EntityManager.SetComponentData(player, tileTrans);                        
+                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                        if (!door.Opened)
+                        {
+                            log.AddLog("You opened a door.");
+                            door.Opened = true;
+                            commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
+                            renderer.sprite = SpriteSystem.AsciiToSprite['\\'];
+                        }
+                        else if(input.GetKey(KeyCode.LeftControl))
+                        {
+                            log.AddLog("You closed a door.");
+                            door.Opened = false;
+                            commandBuffer.AddComponent(doorEntity, new BlockMovement());
+                            renderer.sprite = SpriteSystem.AsciiToSprite['|'];
+                        }
+
                         turnManager.NeedToTickTurn = true;
                     }
                 });

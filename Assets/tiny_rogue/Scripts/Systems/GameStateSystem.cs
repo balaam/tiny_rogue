@@ -125,7 +125,7 @@ namespace game
                         var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                         var ds = World.GetExistingSystem<DeathSystem>();
                         sbs.OnUpdateManual();
-                        input.OnUpdateManual();
+                        input.OnUpdateManual(PostUpdateCommands);
 
                         if (TurnManager.NeedToTickTurn || TurnManager.TurnCount == 0)
                             TurnManager.OnTurn();

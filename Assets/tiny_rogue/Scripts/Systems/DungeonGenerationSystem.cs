@@ -48,8 +48,12 @@ namespace game
             {
                 Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
                     {
-                        if (renderer.sprite == SpriteSystem.AsciiToSprite['D'])
-                            PostUpdateCommands.AddComponent<Door>(e, new Door());
+                        if (renderer.sprite == SpriteSystem.AsciiToSprite['|'])
+                        {
+                            PostUpdateCommands.AddComponent<Door>(e, new Door() {Opened = false});
+                            PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
+                        }
+
                         if (renderer.sprite == SpriteSystem.AsciiToSprite['#'])
                             PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
                     });
@@ -318,7 +322,7 @@ namespace game
             bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.AsciiToSprite['#'];
 
             if(tileIsWall && neighbor1IsWall && neighbor2IsWall)
-                SetTileToChar(xy, 'D');
+                SetTileToChar(xy, '|');
             else
                 SetTileToChar(xy, '.');
         }
