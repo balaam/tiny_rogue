@@ -13,7 +13,7 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
-    public class InputMoveRecordedSystem : ComponentSystem
+    public class PlayerInputRecordSystem : ComponentSystem
     {
         private List<Action> ActionStream = new List<Action>();
 
