@@ -123,6 +123,10 @@ namespace game
 
             var crownCoord = new int2(13, 12);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            
+            var collectibleCoord = new int2(15,12);
+            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord,
+                _view.ViewCoordToWorldPos(collectibleCoord));
         }
 
         public void GenerateCombatTestLevel()

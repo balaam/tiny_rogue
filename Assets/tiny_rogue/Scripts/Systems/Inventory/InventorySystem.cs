@@ -37,8 +37,8 @@ namespace game
                     {
                         if(EntityManager.HasComponent(creature, typeof(Player)))
                         {
-                            //var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                            //log.AddLog("You found a " + pickable.name);
+                            var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                            log.AddLog("You found a " + pickable.name);
                             
                             var input = EntityManager.World.GetExistingSystem<InputSystem>();
 
