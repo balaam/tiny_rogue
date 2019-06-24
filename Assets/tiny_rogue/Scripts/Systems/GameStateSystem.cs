@@ -127,6 +127,10 @@ namespace game
 
             var crownCoord = new int2(13, 12);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+
+            //TODO: random positions for gold
+            var goldCoord = new int2(50, 15);
+            _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
         }
 
         public void GenerateCombatTestLevel()
