@@ -144,7 +144,7 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(18, 222, 23);
-            s.sprite = SpriteSystem.AsciiToSprite['>'];
+            s.sprite = SpriteSystem.AsciiToSprite['Z'];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
