@@ -26,15 +26,18 @@ namespace game
             GameOver,
             NextLevel,
             DebugLevelSelect,
+            HiScoreScreen,
         }
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
         TurnManager _turnManager = new TurnManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        ScoreManager _scoreManager = new ScoreManager();
 
         public View View => _view;
         public TurnManager TurnManager => _turnManager;
+        public ScoreManager ScoreManager => _scoreManager;
         public bool IsInGame => (_state == eGameState.InGame);
 
         private bool TryGenerateViewport()
@@ -168,6 +171,10 @@ namespace game
                     {
                         MoveToDebugLevelSelect();
                     }
+                    else if(input.GetKeyDown(KeyCode.H))
+                    {
+                        MoveToHiScores();
+                    }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
@@ -204,6 +211,7 @@ namespace game
                 } break;
                 case eGameState.GameOver:
                 {
+                    _scoreManager.SetHiScores();
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();                    
@@ -226,7 +234,7 @@ namespace game
                         });
                         _state = eGameState.InGame;
                     }
-                    } break;
+                } break;
                 case eGameState.DebugLevelSelect:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -241,6 +249,15 @@ namespace game
                         _state = eGameState.InGame;
                     }
                     else if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        MoveToTitleScreen();
+                    }
+                } break;
+                case eGameState.HiScoreScreen:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                    if(input.GetKeyDown(KeyCode.Space))
                     {
                         MoveToTitleScreen();
                     }
@@ -289,6 +306,7 @@ namespace game
             CleanUpGameWorld();
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _scoreManager.SetHiScores();
             _state = eGameState.GameOver;
         }
         
@@ -306,6 +324,17 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
+        }
+
+        public void MoveToHiScores()
+        {
+            CleanUpGameWorld();
+            _view.Blit(EntityManager, new int2(0, 0), "HiScores");
+            for(int i = 1; i < 11; i++)
+            {
+                _view.Blit(EntityManager, new int2(0, 1 * i), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(5, 1 * i), _scoreManager.HiScores[i-1]);
+            }
         }
 
         private void MoveToDebugLevelSelect()

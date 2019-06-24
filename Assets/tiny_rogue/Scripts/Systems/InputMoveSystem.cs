@@ -40,6 +40,7 @@ namespace game
                     {
                         if (x == stairCoord.x && y == stairCoord.y)
                         {
+                            gss.ScoreManager.IncreaseScore(20);
                             gss.MoveToNextLevel();
                             return;
                         }
