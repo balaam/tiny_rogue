@@ -24,6 +24,7 @@ namespace game
             Title,
             InGame,
             GameOver,
+            DebugLevelSelect,
         }
 
         eGameState _state = eGameState.Startup;
@@ -81,7 +82,7 @@ namespace game
             return true;
         }
 
-        public void GenerateLevel()
+        private void GenerateEmptyLevel()
         {
             // Removing blocking tags from all tiles
             Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
@@ -107,6 +108,11 @@ namespace game
                     renderer.sprite = SpriteSystem.AsciiToSprite['.'];
                 }
             });
+        }
+
+        public void GenerateLevel()
+        {
+            GenerateEmptyLevel();
             
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = new int2(12, 12);
@@ -115,6 +121,27 @@ namespace game
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
 
             var crownCoord = new int2(13, 12);
+            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+        }
+
+        public void GenerateCombatTestLevel()
+        {
+            GenerateEmptyLevel();
+            
+            
+            // Place the player
+            Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            {
+                coord.x = 10;
+                coord.y = 10;
+                translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                            
+                hp.max = TinyRogueConstants.StartPlayerHealth;
+                hp.now = hp.max;
+            });
+            
+            // Create 'Exit'
+            var crownCoord = new int2(1, 2);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
         }
 
@@ -133,7 +160,11 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
+                    if (input.GetKeyDown(KeyCode.D))
+                    {
+                        MoveToDebugLevelSelect();
+                    }
+                    else if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
                         TurnManager.ResetTurnCount();
@@ -173,6 +204,24 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();                    
                 } break;
+                case eGameState.DebugLevelSelect:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+
+                    if (input.GetKeyDown(KeyCode.Alpha1))
+                    {
+                        GenerateCombatTestLevel();
+                        TurnManager.ResetTurnCount();
+                        log.AddLog("This is a room to test the combat system");
+                        log.AddLog("Move to the crown to exit");
+                        _state = eGameState.InGame;
+                    }
+                    else if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        MoveToTitleScreen();
+                    }
+                } break;
             }
         }
 
@@ -208,6 +257,7 @@ namespace game
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
 
@@ -225,6 +275,20 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
             _state = eGameState.GameOver;
+        }
+
+        private void MoveToDebugLevelSelect()
+        {
+            // Clear the screen.
+            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
+            {
+                renderer.sprite = SpriteSystem.AsciiToSprite[' '];
+            });
+            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
+            _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
+            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
+            _state = eGameState.DebugLevelSelect;
+            
         }
     }
 }
