@@ -23,6 +23,7 @@ namespace game
             Startup, // generate required entities etc
             Title,
             InGame,
+            Replay,
             GameOver,
             NextLevel,
             DebugLevelSelect,
@@ -137,7 +138,7 @@ namespace game
             
             
             // Place the player
-            Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
             {
                 coord.x = 10;
                 coord.y = 10;
@@ -171,9 +172,13 @@ namespace game
                     {
                         MoveToDebugLevelSelect();
                     }
-                    else if(input.GetKeyDown(KeyCode.H))
+                    else if (input.GetKeyDown(KeyCode.H))
                     {
                         MoveToHiScores();
+                    }
+                    else if (input.GetKeyDown(KeyCode.R))
+                    {
+
                     }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
@@ -181,14 +186,14 @@ namespace game
                         TurnManager.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
-                        
+
                         // Place the player
-                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
                         {
                             coord.x = 10;
                             coord.y = 10;
                             translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-                            
+
                             hp.max = TinyRogueConstants.StartPlayerHealth;
                             hp.now = hp.max;
                         });
@@ -197,7 +202,7 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    var input = World.GetExistingSystem<InputMoveSystem>();
+                    var input = World.GetExistingSystem<PlayerInputSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     var ds = World.GetExistingSystem<DeathSystem>();
                     sbs.OnUpdateManual();  
@@ -208,6 +213,10 @@ namespace game
                     
                     ds.OnUpdateManual();
                     
+                } break;
+                case eGameState.Replay:
+                {
+                    // TODO: Replay recorded input
                 } break;
                 case eGameState.GameOver:
                 {
@@ -226,7 +235,7 @@ namespace game
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
 
                         // Place the player
-                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
                         {
                             coord.x = 10;
                             coord.y = 10;
@@ -265,6 +274,36 @@ namespace game
             }
         }
 
+        public void Interact(int x, int y)
+        {
+            Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
+            {
+                if (x == stairCoord.x && y == stairCoord.y)
+                    MoveToNextLevel();
+            });
+        }
+
+        public void Wait()
+        {
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();
+            log.AddLog("You wait a turn.");
+            TurnManager.NeedToTickTurn = true;
+        }
+
+        public void TryMove(Entity e, int x, int y)
+        {
+            Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
+            {
+                // This location the player wants to move has nothing blocking them, so update their position.
+                if (tileCoord.x == x && tileCoord.y == y)
+                {
+                    EntityManager.SetComponentData(e, tileCoord);
+                    EntityManager.SetComponentData(e, tileTrans);                        
+                    TurnManager.NeedToTickTurn = true;
+                }
+            });
+        }
+        
         private void CleanUpGameWorld()
         {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
