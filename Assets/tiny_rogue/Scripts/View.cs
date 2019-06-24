@@ -33,12 +33,12 @@ namespace game
 	    
 	    public void Blit(EntityManager em, int2 xy, string s)
 	    {
-		    int writeToX = xy.x;
-		    foreach (char c in s)
-		    {
-			    Blit(em, new int2(writeToX, xy.y), c);
-			    writeToX++;
-		    }
+//		    int writeToX = xy.x;
+//		    foreach (char c in s)
+//		    {
+//			    Blit(em, new int2(writeToX, xy.y), c);
+//			    writeToX++;
+//		    }
 	    }
 
 	    public void Blit(EntityManager em, int2 xy, int c)
@@ -51,8 +51,8 @@ namespace game
 
 	    public void ClearLine(EntityManager em, int line, char clearChar)
 	    {
-		    for (int i = 0; i < Width; i++)
-			    Blit(em, new int2(i, line), clearChar);
+//		    for (int i = 0; i < Width; i++)
+//			    Blit(em, new int2(i, line), clearChar);
 	    }
 
 	    /// <summary>
