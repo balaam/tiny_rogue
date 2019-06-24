@@ -339,11 +339,11 @@ namespace game
         public void MoveToHiScores()
         {
             CleanUpGameWorld();
-            _view.Blit(EntityManager, new int2(0, 0), "HiScores");
+            _view.Blit(EntityManager, new int2(40, 7), "HiScores");
             for(int i = 1; i < 11; i++)
             {
-                _view.Blit(EntityManager, new int2(0, 1 * i), i.ToString() + ": ");
-                _view.Blit(EntityManager, new int2(5, 1 * i), _scoreManager.HiScores[i - 1].ToString());
+                _view.Blit(EntityManager, new int2(40, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(45, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
             }
         }
 
