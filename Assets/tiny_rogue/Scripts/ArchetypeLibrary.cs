@@ -67,7 +67,7 @@ namespace game
             entityManager.SetComponentData(entity, p);
             entityManager.SetComponentData(entity, c);
             
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateSpearTrap(EntityManager entityManager, int2 xy, float3 pos)
