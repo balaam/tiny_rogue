@@ -195,6 +195,8 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "c362f96b55fc4cf9af112e056572a3d3"
         }, {
+            "$type": "game.GraphicsSettings, tiny_rogue"
+        }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
@@ -262,6 +264,8 @@
                 "StableTypeHash": 17378348762221180850
             }, {
                 "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 5494849717997478739
             }]
         }]
     }]
