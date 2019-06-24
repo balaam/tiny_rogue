@@ -6,28 +6,31 @@ using UnityEngine;
 
 namespace game
 {
+    
+    [UpdateAfter(typeof(TurnSystemGroup))]
     public class DeathSystem : ComponentSystem
     {
-        protected override void OnUpdate() { }
-
-        public void OnUpdateManual()
-        {
-            Entities.ForEach((Entity creature, ref HealthPoints hp, ref Translation pos) =>
+        protected override void OnUpdate() 
+        { 
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            if (gss.IsInGame)
             {
-                if (hp.now <= 0)
+                Entities.ForEach((Entity creature, ref HealthPoints hp, ref Translation pos) =>
                 {
-                    if(EntityManager.HasComponent(creature, typeof(Player)))
+                    if (hp.now <= 0)
                     {
-                        var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                        gss.MoveToGameOver();
-                        pos.Value = TinyRogueConstants.OffViewport;
+                        if (EntityManager.HasComponent(creature, typeof(Player)))
+                        {
+                            gss.MoveToGameOver(PostUpdateCommands);
+                            pos.Value = TinyRogueConstants.OffViewport;
+                        }
+                        else
+                        {
+                            PostUpdateCommands.DestroyEntity(creature);
+                        }
                     }
-                    else
-                    {
-                        PostUpdateCommands.DestroyEntity(creature);
-                    }
-                }
-            });
+                });
+            }
         }
     }
 

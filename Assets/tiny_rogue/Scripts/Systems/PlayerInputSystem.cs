@@ -14,10 +14,9 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 namespace game
 {
 
+    [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
-        protected override void OnUpdate() { }
-
         private Action GetAction()
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -61,41 +60,45 @@ namespace game
             return c;
         }
         
-        public void OnUpdateManual()
-        {   
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
+        protected override void OnUpdate() 
+        { 
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            if (gss.IsInGame)
             {
-                var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
-
-                var action = GetAction();
-                
-                switch (action)
+                Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
                 {
-                    case Action.MoveUp:
-                    case Action.MoveDown:
-                    case Action.MoveRight:
-                    case Action.MoveLeft:
-                        var move = GetMove(action);
-                        pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y });
-                        break;
-                    case Action.Interact:
-                        pas.Interact(coord);
-                        break;
-                    case Action.Wait:
-                        pas.Wait();
-                        break;
-                    case Action.None:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException("Unhandled input");
-                }
-                
-                // Save the action to the action stream
-                if( action != Action.None )
-                    rec.AddAction(action);
-                
-            });
+                    var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
+                    var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
+
+                    var action = GetAction();
+                    
+                    switch (action)
+                    {
+                        case Action.MoveUp:
+                        case Action.MoveDown:
+                        case Action.MoveRight:
+                        case Action.MoveLeft:
+                            var move = GetMove(action);
+                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y });
+                            break;
+                        case Action.Interact:
+                            pas.Interact(coord);
+                            break;
+                        case Action.Wait:
+                            pas.Wait();
+                            break;
+                        case Action.None:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("Unhandled input");
+                    }
+                    
+                    // Save the action to the action stream
+                    if( action != Action.None )
+                        rec.AddAction(action);
+                    
+                });
+            }
         }
     }
 }
