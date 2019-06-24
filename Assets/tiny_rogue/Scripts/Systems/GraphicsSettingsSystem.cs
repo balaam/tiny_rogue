@@ -15,25 +15,6 @@ namespace game
 {
     public static class GlobalGraphicsSettings
     {
-        public static bool ascii;
-    }
-    
-    public struct GraphicsSettings : IComponentData
-    {
-        public bool ascii;
-    }
-    
-    public class GraphicsSettingsSystem : ComponentSystem
-    {
-
-        protected override void OnCreate()
-        {
-            Entities.ForEach( (ref GraphicsSettings g) => { GlobalGraphicsSettings.ascii = g.ascii; });
-            base.OnCreate();
-        }
-
-        protected override void OnUpdate()
-        {
-        }
+        public static bool ascii = true;
     }
 }
