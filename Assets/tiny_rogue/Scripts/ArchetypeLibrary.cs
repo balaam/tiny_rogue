@@ -12,6 +12,7 @@ namespace game
         public EntityArchetype Tile { get; private set; }
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
+        public EntityArchetype  Stairway { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -43,6 +44,16 @@ namespace game
                 typeof(Sprite2DRenderer),
                 typeof(LayerSorting),  
                 typeof(Crown)
+            });
+
+            Stairway = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord), // should be view coord?
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),
+                typeof(Stairway)
             });
         }
 
@@ -117,6 +128,30 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
             
+            return entityManager.Instantiate(entity);
+        }
+        public Entity CreateStairway(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            Entity entity = entityManager.CreateEntity(Stairway);
+
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+
+            s.color = new Unity.Tiny.Core2D.Color(18, 222, 23);
+            s.sprite = SpriteSystem.AsciiToSprite['Z'];
+            l.order = 1;
+
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+
             return entityManager.Instantiate(entity);
         }
     }
