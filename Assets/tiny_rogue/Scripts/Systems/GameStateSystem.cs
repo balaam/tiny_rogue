@@ -40,7 +40,7 @@ namespace game
         {
             if (!SpriteSystem.Loaded) // can't make the viewport without sprites.
                 return false;
-
+            
             Entity mapEntity = Entity.Null;
 
             int width = -1;
@@ -60,7 +60,7 @@ namespace game
                 return false;
 
             _archetypeLibrary.Init(EntityManager);
-            var startX = -(math.floor(width/2) * TinyRogueConstants.TileWidth);
+            var startX = -(math.floor(width / 2) * TinyRogueConstants.TileWidth);
             var startY = math.floor(height / 2) * TinyRogueConstants.TileHeight;
 
             _view.ViewTiles = new Entity[width * height];
@@ -98,10 +98,10 @@ namespace game
                 bool isVWall = (x == 0 || x == _view.Width - 1) && y > 0 && y < _view.Height - 2;
                 bool isHWall = (y == 1 || y == _view.Height - 2);
 
-                if(isVWall || isHWall)
+                if (isVWall || isHWall)
                 {
                     // TODO: actually show wall -- add sprite
-                    renderer.sprite = SpriteSystem.IndexSprites[0];
+                    renderer.sprite = SpriteSystem.IndexSprites[1];
                     PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
                 }
                 else
@@ -252,31 +252,32 @@ namespace game
 
         public void MoveToTitleScreen()
         {
+            Debug.Log("Move to title screen");
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 // TODO: need to figure out empty/none tile
                 renderer.sprite = SpriteSystem.IndexSprites[0];
             });
-            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
-            _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
+            //_view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
+            //_view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            //_view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
 
         public void MoveToGameOver()
         {
-            CleanUpGameWorld();
-            _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            //CleanUpGameWorld();
+            //_view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
+            //_view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
             _state = eGameState.GameOver;
         }
 
         public void MoveToGameWin()
         {
-            CleanUpGameWorld();
-            _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            //CleanUpGameWorld();
+            //_view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
+            //_view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
             _state = eGameState.GameOver;
         }
 
@@ -288,9 +289,9 @@ namespace game
                 // TODO: need to figure out empty/none tile
                 renderer.sprite = SpriteSystem.IndexSprites[0];
             });
-            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
-            _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
+            //_view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
+            //_view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
+            //_view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
             _state = eGameState.DebugLevelSelect;
 
         }

@@ -3,17 +3,19 @@
     "Guid": "47b2702d9bcf406ab824394185184228",
     "SerializedVersion": 1,
     "AssetReferences": [
-        { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": -6999349021849353306, "Type": 3},
+        { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": -185754564972660784, "Type": 3},
+        { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": 4362628941167296021, "Type": 3},
         { "Guid": "c35ac13d1289444da9d06da1e7b0fbfb", "FileId": 4613293699916264117, "Type": 3}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
-            "$type": "game.Map, tiny_rogue",
-            "width": 10,
-            "height": 10
+            "$type": "game.Viewport, tiny_rogue",
+            "width": 80,
+            "height": 25
         }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 1
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 5504126710941958152,
@@ -24,11 +26,13 @@
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
-                "c": "M"
+                "c": "V"
             }, {
-                "c": "a"
+                "c": "i"
             }, {
-                "c": "p"
+                "c": "e"
+            }, {
+                "c": "w"
             }]
         }, {
             "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
@@ -52,14 +56,12 @@
                 "StableTypeHash": 3206380062223837345
             }, {
                 "StableTypeHash": 17743220034302784721
-            }, {
-                "StableTypeHash": 4535965258978903841
             }]
         }]
     }, {
         "Components": [{
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
+            "Index": 3
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 6592111707614366091,
@@ -67,7 +69,9 @@
         }, {
             "$type": "Unity.Tiny.Core2D.SpriteAtlas, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "sprite": "f373a5d1cce721e23b4abdf412df93e8"
+                "sprite": "216bdbf1f4a7a38d1cd7f9206eb1ed6d"
+            }, {
+                "sprite": "d9ae3bd3a5472605a2b8a531b8e311cd"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -129,7 +133,7 @@
             "$type": "game.WorldCoord, tiny_rogue"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
+            "Index": 2
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 14079089624513006841,
@@ -141,7 +145,7 @@
             }
         }, {
             "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
-            "order": 4
+            "order": 2
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -197,8 +201,7 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "c362f96b55fc4cf9af112e056572a3d3"
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
         }, {
