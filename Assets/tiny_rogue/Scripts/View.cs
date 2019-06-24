@@ -2,6 +2,7 @@ using System;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace game
 {
@@ -62,12 +63,26 @@ namespace game
 	    /// <returns>A position in world space units at the position of the view coord.</returns>
 	    public float3 ViewCoordToWorldPos(int2 coord)
 	    {
-		    var startX = -(math.floor(Width / 2) * TinyRogueConstants.TileWidth);
-		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileHeight;
+		    var startX = -(math.floor(Width / 2) * TinyRogueConstants.TileSize);
+		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileSize;
 		    
 		    var pos = new float3(
-			    startX + (coord.x * TinyRogueConstants.TileWidth), 
-			    startY - (coord.y * TinyRogueConstants.TileHeight), 0);
+			    startX + (coord.x * TinyRogueConstants.TileSize), 
+			    startY - (coord.y * TinyRogueConstants.TileSize), 0);
+		    return pos;
+	    }
+	    
+	    /// <summary>
+	    /// Given an integer coordinate in view space translate it to unity world space position
+	    /// </summary>
+	    /// <param name="coord">A coordinate in the viewport</param>
+	    /// <returns>A position in world space units at the position of the view coord.</returns>
+	    public float3 PlayerViewCoordToWorldPos(int2 coord)
+	    {
+		    var pos = ViewCoordToWorldPos(coord);
+		    pos.x += TinyRogueConstants.HalfTile;
+		    pos.y -= TinyRogueConstants.HalfTile;
+		    Debug.Log(pos.ToString());
 		    return pos;
 	    }
 

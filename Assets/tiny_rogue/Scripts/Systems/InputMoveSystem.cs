@@ -1,5 +1,6 @@
 using System;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Tiny.Core2D;
 using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
@@ -51,8 +52,17 @@ namespace game
                     // This location the player wants to move has nothing blocking them, so update their position.
                     if (tileCoord.x == x && tileCoord.y == y)
                     {
+                        var trans = new Translation
+                        {
+                            Value =
+                            {
+                                x = tileTrans.Value.x + TinyRogueConstants.HalfTile, 
+                                y = tileTrans.Value.y - TinyRogueConstants.HalfTile, 
+                                z = tileTrans.Value.z
+                            }
+                        };
                         EntityManager.SetComponentData(player, tileCoord);
-                        EntityManager.SetComponentData(player, tileTrans);
+                        EntityManager.SetComponentData(player, trans);
                         turnManager.NeedToTickTurn = true;
                     }
                 });
