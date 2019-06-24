@@ -907,7 +907,7 @@
         }, {
             "$type": "game.ExperiencePoints, tiny_rogue"
         }, {
-            "$type": "game.Gold, tiny_rogue"
+            "$type": "game.GoldCount, tiny_rogue"
         }, {
             "$type": "game.HealthPoints, tiny_rogue",
             "now": 10,
@@ -984,6 +984,8 @@
                 "StableTypeHash": 15293753345900471037
             }, {
                 "StableTypeHash": 7693371993889051491
+            }, {
+                "StableTypeHash": 10723762297176986422
             }]
         }, {
             "$type": "game.BlockMovement, tiny_rogue"

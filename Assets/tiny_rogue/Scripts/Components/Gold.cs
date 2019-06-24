@@ -4,6 +4,6 @@ namespace game
 {
     public struct Gold : IComponentData 
     {
-    	public int count;
+    	//This is the gold coins on the floor
     }
 }
