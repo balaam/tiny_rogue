@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using game;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
@@ -8,9 +11,31 @@ namespace game
 {
     public class LevelGenerationSystem : ComponentSystem
     {
+        
+        // this will probably become more complex
+        private enum LevelType
+        {
+            DEFAULT,
+            COMBAT
+        };
+        private NativeQueue<LevelType> queue = new NativeQueue<LevelType>(Allocator.Persistent);
+        
         protected override void OnUpdate()
         {
-            // Does nothing... not the best System ever created
+            if (queue.Count == 0) return;
+
+            var level = queue.Dequeue();
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+
+            switch (level)
+            {
+                case LevelType.COMBAT:
+                    GenerateCombatTestLevel(gss);
+                    break;
+                default:
+                    GenerateLevel(gss);
+                    break;
+            }
         }
 
         private void GenerateEmptyLevel(GameStateSystem gss)
@@ -41,7 +66,7 @@ namespace game
             });
         }
 
-        public void GenerateLevel(GameStateSystem gss)
+        private void GenerateLevel(GameStateSystem gss)
         {
             GenerateEmptyLevel(gss);
             
@@ -56,11 +81,12 @@ namespace game
 
             var crownCoord = new int2(13, 12);
             gss.ArchetypeLibrary.CreateCrown(EntityManager, crownCoord, gss.View.ViewCoordToWorldPos(crownCoord));
+                                    
+            PlacePlayer(gss);
         }
-        public void GenerateCombatTestLevel(GameStateSystem gss)
+
+        private void PlacePlayer(GameStateSystem gss)
         {
-            GenerateEmptyLevel(gss);
-            
             // Place the player
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
             {
@@ -71,10 +97,28 @@ namespace game
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
             });
-            
+
+        }
+
+        private void GenerateCombatTestLevel(GameStateSystem gss)
+        {
+            GenerateEmptyLevel(gss);
+            PlacePlayer(gss);  
+
             // Create 'Exit'
             var crownCoord = new int2(1, 2);
             gss.ArchetypeLibrary.CreateCrown(EntityManager, crownCoord, gss.View.ViewCoordToWorldPos(crownCoord));
         }
+
+        public void QueueGenerateLevel()
+        {
+            queue.Enqueue(LevelType.DEFAULT);
+        }
+        
+        public void QueueCombatTestLevel()
+        {
+            queue.Enqueue(LevelType.COMBAT);
+        }
+
     }
 }

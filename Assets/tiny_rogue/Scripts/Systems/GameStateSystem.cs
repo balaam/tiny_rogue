@@ -106,21 +106,10 @@ namespace game
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
                         var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
-                        levelGeneration.GenerateLevel(this);
+                        levelGeneration.QueueGenerateLevel();
                         TurnManager.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
-                        
-                        // Place the player
-                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
-                        {
-                            coord.x = 10;
-                            coord.y = 10;
-                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-                            
-                            hp.max = TinyRogueConstants.StartPlayerHealth;
-                            hp.now = hp.max;
-                        });
                         _state = eGameState.InGame;
                     }
                 } break;
@@ -151,7 +140,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
-                        levelGeneration.GenerateLevel(this);
+                        levelGeneration.QueueGenerateLevel();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
 
                         // Place the player
@@ -172,7 +161,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Alpha1))
                     {
                         var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
-                        levelGeneration.GenerateCombatTestLevel(this);
+                        levelGeneration.QueueCombatTestLevel();
                         TurnManager.ResetTurnCount();
                         log.AddLog("This is a room to test the combat system");
                         log.AddLog("Move to the crown to exit");
