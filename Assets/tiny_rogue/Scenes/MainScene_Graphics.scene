@@ -2,7 +2,13 @@
     "FileType": "Scene",
     "Guid": "47b2702d9bcf406ab824394185184229",
     "SerializedVersion": 1,
-    "AssetReferences": [],
+    "AssetReferences": [
+        { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -6397690473321333150, "Type": 3},
+        { "Guid": "31bc0b240ebaf314ab1502e9f91fa233", "FileId": 21300000, "Type": 3},
+        { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 9192807146851360899, "Type": 3},
+        { "Guid": "44f4955cf1d226949803ba6d075276c3", "FileId": 21300000, "Type": 3},
+        { "Guid": "3ff60003353b9c7498d4a8996ff3ec79", "FileId": 21300000, "Type": 3},
+        { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5115618752126089108, "Type": 3}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
@@ -64,7 +70,17 @@
             "b": 10882363987038063221
         }, {
             "$type": "Unity.Tiny.Core2D.SpriteAtlas, Unity.Tiny.Sprite2D",
-            "Elements": [{}, {}, {}, {}]
+            "Elements": [{
+                "sprite": "df63c28000c55726110c1185fae68092"
+            }, {
+                "sprite": "a6173722243e4fe866e5f0ace547ffd6"
+            }, {
+                "sprite": "f919cb9df6879af0a26de100b1d9ad17"
+            }, {
+                "sprite": "f5f31e23aa33b05a97bac992949306c4"
+            }, {
+                "sprite": "51b33fa061527d087a89da42f3f6b10e"
+            }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -113,6 +129,7 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DRenderer, Unity.Tiny.Sprite2D",
+            "sprite": "61f9d8efa25b73d93944f5894ed0ece3",
             "color": {
                 "r": 1,
                 "g": 1,
