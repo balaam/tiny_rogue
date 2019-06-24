@@ -13,17 +13,7 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
-    public enum Action
-    {
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        Wait,
-        Interact,
-        None
-    }
-    
+
     public class PlayerInputSystem : ComponentSystem
     {
         protected override void OnUpdate() { }
@@ -46,38 +36,54 @@ namespace game
 
             return Action.None;
         }
+
+        private WorldCoord GetMove(Action a)
+        {
+            WorldCoord c = new WorldCoord();
+            switch (a)
+            {
+                case Action.MoveUp:
+                    c.y += 1;
+                    break;
+                case Action.MoveDown:
+                    c.y -= 1;
+                    break;
+                case Action.MoveRight:
+                    c.x += 1;
+                    break;
+                case Action.MoveLeft:
+                    c.x -= 1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(a));
+            }
+
+            return c;
+        }
         
         public void OnUpdateManual()
         {   
             Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
-                var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                 var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
-                var turnManager = gss.TurnManager;
-
-                var x = coord.x;
-                var y = coord.y;
 
                 var action = GetAction();
+                
                 switch (action)
                 {
                     case Action.MoveUp:
-                        y = y - 1;
-                        break;
                     case Action.MoveDown:
-                        y = y + 1;
-                        break;
                     case Action.MoveRight:
-                        x = x + 1;
-                        break;
                     case Action.MoveLeft:
-                        x = x - 1;
+                        var move = GetMove(action);
+                        pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y });
                         break;
                     case Action.Interact:
-                        gss.Interact(x,y);
+                        pas.Interact(coord);
                         break;
                     case Action.Wait:
-                        gss.Wait();
+                        pas.Wait();
                         break;
                     case Action.None:
                         break;
@@ -89,10 +95,6 @@ namespace game
                 if( action != Action.None )
                     rec.AddAction(action);
                 
-                // Move if we've moved
-                if (x != coord.x || y != coord.y)
-                    gss.TryMove(player, x, y);
-
             });
         }
     }
