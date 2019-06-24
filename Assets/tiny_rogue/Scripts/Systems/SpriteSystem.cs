@@ -9,7 +9,7 @@ namespace game
     /// </summary>
     public class SpriteSystem : ComponentSystem
     {
-        public static Entity[] AsciiToSprite = new Entity[256];
+        public static Entity[] IndexSprites = new Entity[256];
         static bool _loaded = false;
 
         public static bool Loaded
@@ -27,7 +27,7 @@ namespace game
                 DynamicBuffer<SpriteAtlas> atlas = EntityManager.GetBuffer<SpriteAtlas>(entity);
 
                 for (int i = 0; i < atlas.Length; i++)
-                    AsciiToSprite[i] = atlas[i].sprite;
+                    IndexSprites[i] = atlas[i].sprite;
 
                 SpriteSystem._loaded = true;
             });
