@@ -44,7 +44,7 @@ namespace game
 
 	    public void Blit(EntityManager em, int2 xy, int c)
 	    {
-			if( !TinyRogueConstants.ascii )
+			if( !GlobalGraphicsSettings.ascii )
 				return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
@@ -82,7 +82,7 @@ namespace game
 	    public float3 PlayerViewCoordToWorldPos(int2 coord)
 	    {
 		    var pos = ViewCoordToWorldPos(coord);
-		    if (!TinyRogueConstants.ascii)
+		    if (!GlobalGraphicsSettings.ascii)
 		    {
 			    pos.x += TinyRogueConstants.HalfTile;
 			    pos.y -= TinyRogueConstants.HalfTile;
