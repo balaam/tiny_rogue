@@ -82,8 +82,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, p);
             entityManager.SetComponentData(entity, c);
-
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateSpearTrap(EntityManager entityManager, int2 xy, float3 pos)
@@ -112,8 +111,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
-
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateCrown(EntityManager entityManager, int2 xy, float3 pos)
@@ -142,8 +140,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
-
-            return entityManager.Instantiate(entity);
+            return entity;
         }
         public Entity CreateStairway(EntityManager entityManager, int2 xy, float3 pos)
         {
@@ -158,8 +155,13 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(18, 222, 23);
+            s.color = new Unity.Tiny.Core2D.Color(18/255.0f, 222/255.0f, 23.0f/255.0f);
+#if TINY_ASCII
             s.sprite = SpriteSystem.IndexSprites['Z'];
+#else
+            // TODO: need to figure out empty/none tile
+            s.sprite = SpriteSystem.IndexSprites[3];
+#endif
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -167,7 +169,7 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
 
-            return entityManager.Instantiate(entity);
+            return entity;
         }
     }
 }
