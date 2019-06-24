@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using UnityEngine;
@@ -13,48 +14,87 @@ namespace game
 {
     public class InputMoveSystem : ComponentSystem
     {
+        enum Action
+        {
+            MoveUp,
+            MoveDown,
+            MoveLeft,
+            MoveRight,
+            Wait,
+            Interact,
+            None
+        }
+        
         protected override void OnUpdate() { }
+
+        private Action GetAction()
+        {
+            var input = EntityManager.World.GetExistingSystem<InputSystem>();
+            if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
+                return Action.MoveUp;
+            if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))  
+                return Action.MoveDown;
+            if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
+                return Action.MoveRight;
+            if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
+                return Action.MoveLeft;
+            if (input.GetKeyDown(KeyCode.Z))
+                return Action.Interact;
+            if (input.GetKeyDown(KeyCode.Space))
+                return Action.Wait;
+
+            return Action.None;
+        }
         
         public void OnUpdateManual()
         {   
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
                 var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                var input = EntityManager.World.GetExistingSystem<InputSystem>();
                 var turnManager = gss.TurnManager;
 
                 var x = coord.x;
                 var y = coord.y;
 
-                if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
-                    y = y - 1;
-                if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))    
-                    y = y + 1;
-                if (input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
-                    x = x + 1;
-                if(input.GetKeyDown(KeyCode.A) || input.GetKeyDown(KeyCode.LeftArrow))
-                    x = x - 1;
-                if(input.GetKeyDown(KeyCode.Z))
+                var action = GetAction();
+                switch (action)
                 {
-                    Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
+                    case Action.MoveUp:
+                        y = y - 1;
+                        break;
+                    case Action.MoveDown:
+                        y = y + 1;
+                        break;
+                    case Action.MoveRight:
+                        x = x + 1;
+                        break;
+                    case Action.MoveLeft:
+                        x = x - 1;
+                        break;
+                    case Action.Interact:
                     {
-                        if (x == stairCoord.x && y == stairCoord.y)
+                        Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
                         {
-                            gss.MoveToNextLevel();
-                            return;
-                        }
-                    });
+                            if (x == stairCoord.x && y == stairCoord.y)
+                            {
+                                gss.MoveToNextLevel();
+                                return;
+                            }
+                        });
+                    } break;
+                    case Action.Wait:
+                    {
+                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                        log.AddLog("You wait a turn.");
+                        turnManager.NeedToTickTurn = true;
+                    } break;
+                    case Action.None:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("Unhandled input");
                 }
-                if (input.GetKeyDown(KeyCode.Space))
-                {
-                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                    log.AddLog("You wait a turn.");
-                    turnManager.NeedToTickTurn = true;
-                }
-
-                bool wantsToMove = (x != coord.x || y != coord.y);
-
-                if (!wantsToMove)
+                
+                if (x == coord.x && y == coord.y)
                     return;
                 
                 Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
