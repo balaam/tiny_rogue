@@ -21,6 +21,9 @@ namespace game
         {
             if (SpriteSystem._loaded)
                 return;
+            
+            // Get the graphics settings
+            Entities.ForEach((ref GraphicsSettings gs) => { GlobalGraphicsSettings.ascii = gs.ascii; });
 
             Entities.WithAll<SpriteLookUp>().ForEach((Entity entity) =>
             {
