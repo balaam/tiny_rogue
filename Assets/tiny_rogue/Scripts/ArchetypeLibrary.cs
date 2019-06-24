@@ -86,7 +86,7 @@ namespace game
 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
             // TODO: need to figure out spike-trap sprite
-            s.sprite = SpriteSystem.IndexSprites[2];
+            s.sprite = SpriteSystem.IndexSprites[1];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -112,7 +112,7 @@ namespace game
 
             s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
             // TODO: need to figure out crown tile
-            s.sprite = SpriteSystem.IndexSprites[0];
+            s.sprite = SpriteSystem.IndexSprites[3];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
