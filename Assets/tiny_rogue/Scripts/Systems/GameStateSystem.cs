@@ -35,6 +35,7 @@ namespace game
         public View View => _view;
         public TurnManager TurnManager => _turnManager;
         public bool IsInGame => (_state == eGameState.InGame);
+        public ArchetypeLibrary ArchetypeLibrary => _archetypeLibrary;
 
         private bool TryGenerateViewport()
         {
@@ -82,69 +83,6 @@ namespace game
             return true;
         }
 
-        private void GenerateEmptyLevel()
-        {
-            // Removing blocking tags from all tiles
-            Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
-            {
-                EntityManager.RemoveComponent(entity, typeof(BlockMovement)); 
-            });
-
-            Entities.WithAll<Tile>().ForEach((Entity e, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer) =>
-            {
-                var x = tileCoord.x;
-                var y = tileCoord.y;
-                
-                bool isVWall = (x == 0 || x == _view.Width - 1) && y > 0 && y < _view.Height - 2;
-                bool isHWall = (y == 1 || y == _view.Height - 2);
-                
-                if(isVWall || isHWall)
-                {
-                    renderer.sprite = SpriteSystem.AsciiToSprite['#'];
-                    PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
-                }
-                else
-                {
-                    renderer.sprite = SpriteSystem.AsciiToSprite['.'];
-                }
-            });
-        }
-
-        public void GenerateLevel()
-        {
-            GenerateEmptyLevel();
-            
-            // Hard code a couple of spear traps, so the player can die.
-            var trap1Coord = new int2(12, 12);
-            var trap2Coord = new int2(13, 11);
-            _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
-            _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
-
-            var crownCoord = new int2(13, 12);
-            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
-        }
-
-        public void GenerateCombatTestLevel()
-        {
-            GenerateEmptyLevel();
-            
-            
-            // Place the player
-            Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
-            {
-                coord.x = 10;
-                coord.y = 10;
-                translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-                            
-                hp.max = TinyRogueConstants.StartPlayerHealth;
-                hp.now = hp.max;
-            });
-            
-            // Create 'Exit'
-            var crownCoord = new int2(1, 2);
-            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
-        }
-
         protected override void OnUpdate()
         {
             switch (_state)
@@ -166,7 +104,8 @@ namespace game
                     }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
-                        GenerateLevel();
+                        var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
+                        levelGeneration.GenerateLevel(this);
                         TurnManager.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
@@ -211,7 +150,8 @@ namespace game
 
                     if (input.GetKeyDown(KeyCode.Alpha1))
                     {
-                        GenerateCombatTestLevel();
+                        var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
+                        levelGeneration.GenerateCombatTestLevel(this);
                         TurnManager.ResetTurnCount();
                         log.AddLog("This is a room to test the combat system");
                         log.AddLog("Move to the crown to exit");
