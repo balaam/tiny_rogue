@@ -12,7 +12,7 @@ namespace game
 
         public void OnUpdateManual()
         {
-            Entities.ForEach((Entity creature, ref HealthPoints hp, ref Translation pos) =>
+            Entities.ForEach((Entity creature, ref HealthPoints hp, ref ExperiencePoints xp, ref Translation pos) =>
             {
                 if (hp.now <= 0)
                 {
@@ -25,6 +25,10 @@ namespace game
                     else
                     {
                         PostUpdateCommands.DestroyEntity(creature);
+                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                        log.AddLog("Enemy killed");
+                        hp.now += 5;
+
                     }
                 }
             });
