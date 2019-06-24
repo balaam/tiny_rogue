@@ -64,6 +64,8 @@ _Add your name here to confirm you can push to this repository._
 [@danielsc](https://github.com/balaam) <br/>
 [@jimmy-jam](https://github.com/jimmy-jam) <br/>
 [@chris-addison](https://github.com/chris-addison) <br />
+[@sophiaaar](https://github.com/sophiaaar) <br />
+[@unity-cwells](https://github.com/unity-cwells) <br/>
 
 
 
