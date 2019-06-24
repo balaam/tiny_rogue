@@ -25,8 +25,8 @@ namespace game
                         {
                             var log = EntityManager.World.GetExistingSystem<LogSystem>();
                             log.AddLog("A spear trap hits you for 5 damage.");
-                            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                            gss.TurnManager.NeedToTickTurn = true;
+                            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
+                            tms.NeedToTickTurn = true;
                         }
 
                         dmg = 5;
