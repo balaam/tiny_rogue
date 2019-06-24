@@ -34,16 +34,18 @@ namespace game
 	    
 	    public void Blit(EntityManager em, int2 xy, string s)
 	    {
-//		    int writeToX = xy.x;
-//		    foreach (char c in s)
-//		    {
-//			    Blit(em, new int2(writeToX, xy.y), c);
-//			    writeToX++;
-//		    }
+		    int writeToX = xy.x;
+		    foreach (char c in s)
+		    {
+			    Blit(em, new int2(writeToX, xy.y), c);
+			    writeToX++;
+		    }
 	    }
 
 	    public void Blit(EntityManager em, int2 xy, int c)
 	    {
+			if( !GlobalGraphicsSettings.ascii )
+				return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
 		    s.sprite = SpriteSystem.IndexSprites[c];
@@ -52,8 +54,8 @@ namespace game
 
 	    public void ClearLine(EntityManager em, int line, char clearChar)
 	    {
-//		    for (int i = 0; i < Width; i++)
-//			    Blit(em, new int2(i, line), clearChar);
+		    for (int i = 0; i < Width; i++)
+			    Blit(em, new int2(i, line), clearChar);
 	    }
 
 	    /// <summary>
@@ -63,12 +65,12 @@ namespace game
 	    /// <returns>A position in world space units at the position of the view coord.</returns>
 	    public float3 ViewCoordToWorldPos(int2 coord)
 	    {
-		    var startX = -(math.floor(Width / 2) * TinyRogueConstants.TileSize);
-		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileSize;
+		    var startX = -(math.floor(Width / 2) * TinyRogueConstants.TileWidth);
+		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileHeight;
 		    
 		    var pos = new float3(
-			    startX + (coord.x * TinyRogueConstants.TileSize), 
-			    startY - (coord.y * TinyRogueConstants.TileSize), 0);
+			    startX + (coord.x * TinyRogueConstants.TileWidth), 
+			    startY - (coord.y * TinyRogueConstants.TileHeight), 0);
 		    return pos;
 	    }
 	    
@@ -80,8 +82,11 @@ namespace game
 	    public float3 PlayerViewCoordToWorldPos(int2 coord)
 	    {
 		    var pos = ViewCoordToWorldPos(coord);
-		    pos.x += TinyRogueConstants.HalfTile;
-		    pos.y -= TinyRogueConstants.HalfTile;
+		    if (!GlobalGraphicsSettings.ascii)
+		    {
+			    pos.x += TinyRogueConstants.HalfTile;
+			    pos.y -= TinyRogueConstants.HalfTile;
+		    }
 		    Debug.Log(pos.ToString());
 		    return pos;
 	    }

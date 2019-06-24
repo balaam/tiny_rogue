@@ -12,6 +12,7 @@ namespace game
         public EntityArchetype Tile { get; private set; }
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
+        public EntityArchetype  Stairway { get; private set; }
         public EntityArchetype Collectible { get; private set; }
 
         public void Init(EntityManager em)
@@ -46,7 +47,17 @@ namespace game
                 typeof(Crown)
             });
 
-            Collectible = em.CreateArchetype(new ComponentType[]
+            Stairway = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord), // should be view coord?
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),
+                typeof(Stairway)
+            });
+
+           Collectible = em.CreateArchetype(new ComponentType[]
             {
                 typeof(Parent),
                 typeof(Translation),
@@ -56,6 +67,7 @@ namespace game
                 typeof(CanBePickedUp),
                 typeof(Collectible)
             });
+
         }
 
         public Entity CreateTile(EntityManager entityManager, int2 xy, float3 pos, Entity parent)
@@ -72,15 +84,13 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
-            // TODO: need to figure out empty/none tile
-            s.sprite = SpriteSystem.IndexSprites[0];
+            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, p);
             entityManager.SetComponentData(entity, c);
-
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateSpearTrap(EntityManager entityManager, int2 xy, float3 pos)
@@ -97,16 +107,14 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
-            // TODO: need to figure out spike-trap sprite
-            s.sprite = SpriteSystem.IndexSprites[1];
+            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '^' : 1];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
-
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateCrown(EntityManager entityManager, int2 xy, float3 pos)
@@ -123,8 +131,30 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
-            // TODO: need to figure out crown tile
-            s.sprite = SpriteSystem.IndexSprites[3];
+            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 127 : 3];
+            l.order = 1;
+
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            return entity;
+        }
+        public Entity CreateStairway(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            Entity entity = entityManager.CreateEntity(Stairway);
+
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+
+            s.color = new Unity.Tiny.Core2D.Color(18/255.0f, 222/255.0f, 23.0f/255.0f);
+            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 'Z' : 3];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -132,7 +162,7 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
 
-            return entityManager.Instantiate(entity);
+            return entity;
         }
         
         public Entity CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)

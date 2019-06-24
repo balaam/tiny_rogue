@@ -1,8 +1,7 @@
-# Tiny Rogue - Graphics Edition
+# Tiny Rogue
 
-A version of Tiny Rogue using graphics.
-
-Note: The source assets here cannot be shared publically. As they're a commercial asset. But you can share a build etc.
+A simple roguelike made to explore Unity Tiny and ECS style programming.
+[Play it here](https://balaam.github.io/tiny_rogue/)
 
 ## Requirements
 
@@ -68,6 +67,7 @@ _Add your name here to confirm you can push to this repository._
 [@leonhardp](https://github.com/leonhardp)<br/>
 [@sophiaaar](https://github.com/sophiaaar) <br />
 [@unity-cwells](https://github.com/unity-cwells) <br/>
+[@vwillyams](https://github.com/vwillyams) <br/>
 
 
 
