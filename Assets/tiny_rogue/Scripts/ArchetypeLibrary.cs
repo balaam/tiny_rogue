@@ -143,7 +143,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(18, 222, 23);
+            s.color = new Unity.Tiny.Core2D.Color(18/255.0f, 222/255.0f, 23.0f/255.0f);
             s.sprite = SpriteSystem.AsciiToSprite['Z'];
             l.order = 1;
 
