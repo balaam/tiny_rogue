@@ -159,6 +159,7 @@ namespace game
             {
                 case eGameState.Startup:
                 {
+                    _scoreManager.CleanHiScores();
                     bool done = TryGenerateViewport();
                     if (done)
                        MoveToTitleScreen();
@@ -342,7 +343,7 @@ namespace game
             for(int i = 1; i < 11; i++)
             {
                 _view.Blit(EntityManager, new int2(0, 1 * i), i.ToString() + ": ");
-                _view.Blit(EntityManager, new int2(5, 1 * i), _scoreManager.HiScores[i-1]);
+                _view.Blit(EntityManager, new int2(5, 1 * i), _scoreManager.HiScores[i - 1].ToString());
             }
         }
 

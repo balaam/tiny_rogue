@@ -34,7 +34,10 @@ namespace game
             Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
             {
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
+                {
                     gss.MoveToNextLevel();
+                    gss.ScoreManager.IncreaseScore(20);
+                }
             });
         }
 

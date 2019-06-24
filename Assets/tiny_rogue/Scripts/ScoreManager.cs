@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Tiny;
 
 
 namespace game
@@ -8,7 +9,7 @@ namespace game
         public int[] HiScores = new int[10];
         private int CurrentScore;
 
-        public void Start()
+        public void CleanHiScores()
         {
             for(int i = 0; i < 10; i++)
             {
@@ -32,9 +33,10 @@ namespace game
                         HiScores[j] = HiScores[j - 1];
                     }
                     HiScores[i] = CurrentScore;
+                    CurrentScore = 0;
+                    return;
                 }
             }
-            CurrentScore = 0;
         }
     }
 }
