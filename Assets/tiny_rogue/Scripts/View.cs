@@ -2,6 +2,7 @@ using System;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace game
 {
@@ -43,10 +44,12 @@ namespace game
 
 	    public void Blit(EntityManager em, int2 xy, int c)
 	    {
+#if TINY_ASCII
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
-		    s.sprite = SpriteSystem.AsciiToSprite[c];
+		    s.sprite = SpriteSystem.IndexSprites[c];
 		    em.SetComponentData(e, s);
+#endif
 	    }
 
 	    public void ClearLine(EntityManager em, int line, char clearChar)
@@ -62,12 +65,28 @@ namespace game
 	    /// <returns>A position in world space units at the position of the view coord.</returns>
 	    public float3 ViewCoordToWorldPos(int2 coord)
 	    {
-		    var startX = -(math.floor(Width/2) * TinyRogueConstants.TileWidth);
+		    var startX = -(math.floor(Width / 2) * TinyRogueConstants.TileWidth);
 		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileHeight;
 		    
 		    var pos = new float3(
 			    startX + (coord.x * TinyRogueConstants.TileWidth), 
 			    startY - (coord.y * TinyRogueConstants.TileHeight), 0);
+		    return pos;
+	    }
+	    
+	    /// <summary>
+	    /// Given an integer coordinate in view space translate it to unity world space position
+	    /// </summary>
+	    /// <param name="coord">A coordinate in the viewport</param>
+	    /// <returns>A position in world space units at the position of the view coord.</returns>
+	    public float3 PlayerViewCoordToWorldPos(int2 coord)
+	    {
+		    var pos = ViewCoordToWorldPos(coord);
+#if !TINY_ASCII
+		    pos.x += TinyRogueConstants.HalfTile;
+		    pos.y -= TinyRogueConstants.HalfTile;
+#endif
+		    Debug.Log(pos.ToString());
 		    return pos;
 	    }
 
