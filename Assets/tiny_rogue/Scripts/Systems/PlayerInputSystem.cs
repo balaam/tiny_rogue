@@ -24,7 +24,7 @@ namespace game
         None
     }
     
-    public class InputMoveSystem : ComponentSystem
+    public class PlayerInputSystem : ComponentSystem
     {
         protected override void OnUpdate() { }
 
@@ -49,10 +49,10 @@ namespace game
         
         public void OnUpdateManual()
         {   
-            Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
+            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
                 var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                var rec = EntityManager.World.GetExistingSystem<InputMoveRecordedSystem>();
+                var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
                 var turnManager = gss.TurnManager;
 
                 var x = coord.x;
