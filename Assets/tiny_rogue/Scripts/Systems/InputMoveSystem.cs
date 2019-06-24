@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
@@ -12,19 +13,19 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
+    public enum Action
+    {
+        MoveUp,
+        MoveDown,
+        MoveLeft,
+        MoveRight,
+        Wait,
+        Interact,
+        None
+    }
+    
     public class InputMoveSystem : ComponentSystem
     {
-        enum Action
-        {
-            MoveUp,
-            MoveDown,
-            MoveLeft,
-            MoveRight,
-            Wait,
-            Interact,
-            None
-        }
-        
         protected override void OnUpdate() { }
 
         private Action GetAction()
@@ -51,6 +52,7 @@ namespace game
             Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
             {
                 var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                var rec = EntityManager.World.GetExistingSystem<InputMoveRecordedSystem>();
                 var turnManager = gss.TurnManager;
 
                 var x = coord.x;
@@ -72,41 +74,25 @@ namespace game
                         x = x - 1;
                         break;
                     case Action.Interact:
-                    {
-                        Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
-                        {
-                            if (x == stairCoord.x && y == stairCoord.y)
-                            {
-                                gss.MoveToNextLevel();
-                                return;
-                            }
-                        });
-                    } break;
+                        gss.Interact(x,y);
+                        break;
                     case Action.Wait:
-                    {
-                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                        log.AddLog("You wait a turn.");
-                        turnManager.NeedToTickTurn = true;
-                    } break;
+                        gss.Wait();
+                        break;
                     case Action.None:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Unhandled input");
                 }
                 
-                if (x == coord.x && y == coord.y)
-                    return;
+                // Save the action to the action stream
+                if( action != Action.None )
+                    rec.AddAction(action);
                 
-                Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
-                {
-                    // This location the player wants to move has nothing blocking them, so update their position.
-                    if (tileCoord.x == x && tileCoord.y == y)
-                    {
-                        EntityManager.SetComponentData(player, tileCoord);
-                        EntityManager.SetComponentData(player, tileTrans);                        
-                        turnManager.NeedToTickTurn = true;
-                    }
-                });
+                // Move if we've moved
+                if (x != coord.x || y != coord.y)
+                    gss.TryMove(player, x, y);
+
             });
         }
     }
