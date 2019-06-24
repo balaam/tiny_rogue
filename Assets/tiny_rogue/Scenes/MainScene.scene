@@ -4,8 +4,9 @@
     "SerializedVersion": 1,
     "AssetReferences": [
         { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": -3179278047793704450, "Type": 3},
-        { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": 4362628941167296021, "Type": 3},
+        { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": -2444545330071944115, "Type": 3},
         { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": -6993112174275734943, "Type": 3},
+        { "Guid": "8fb2fe760028348288ba0259a594698a", "FileId": 7568197538406641554, "Type": 3},
         { "Guid": "c35ac13d1289444da9d06da1e7b0fbfb", "FileId": 4613293699916264117, "Type": 3}],
     "Entities": [{
         "Components": [{
@@ -71,9 +72,11 @@
             "Elements": [{
                 "sprite": "fbd7d51e5a8738fc78e5a99a6e41fe23"
             }, {
-                "sprite": "d9ae3bd3a5472605a2b8a531b8e311cd"
+                "sprite": "4d6dba3455a8edfe417b8bc1a1423903"
             }, {
                 "sprite": "3fe850a2a84cb0a754a438fe22825fdf"
+            }, {
+                "sprite": "df18dfd29456b4df2a12bd561d156bef"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
