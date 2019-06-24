@@ -150,7 +150,8 @@ namespace game
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                     {
-                        GenerateLevel();
+                        var levelGeneration = EntityManager.World.GetExistingSystem<LevelGenerationSystem>();
+                        levelGeneration.GenerateLevel(this);
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
 
                         // Place the player
