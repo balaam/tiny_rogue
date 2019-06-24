@@ -23,6 +23,7 @@ namespace game
             Startup, // generate required entities etc
             Title,
             InGame,
+            Replay,
             GameOver,
             DebugLevelSelect,
         }
@@ -164,6 +165,10 @@ namespace game
                     {
                         MoveToDebugLevelSelect();
                     }
+                    else if (input.GetKeyDown(KeyCode.R))
+                    {
+                        
+                    }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
@@ -197,6 +202,10 @@ namespace game
                     
                     ds.OnUpdateManual();
                     
+                } break;
+                case eGameState.Replay:
+                {
+                    // TODO: Replay recorded input
                 } break;
                 case eGameState.GameOver:
                 {
