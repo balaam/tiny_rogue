@@ -9,7 +9,5 @@ namespace game
         public static float HalfTile = TileHeight/2;
         public static int StartPlayerHealth = 10;
         public static float3 OffViewport = new float3(-9999, -9999, 0);
-
-        public static bool ascii = true;
     }
 }

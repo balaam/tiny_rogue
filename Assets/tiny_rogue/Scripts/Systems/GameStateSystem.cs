@@ -102,12 +102,12 @@ namespace game
 
                 if(isVWall || isHWall)
                 {
-                    renderer.sprite = SpriteSystem.IndexSprites[ TinyRogueConstants.ascii ? '#' : 2 ];
+                    renderer.sprite = SpriteSystem.IndexSprites[ GlobalGraphicsSettings.ascii ? '#' : 2 ];
                     PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
                 }
                 else
                 {
-                    renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? '.' : 0];
+                    renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '.' : 0];
                 }
             });
         }
@@ -263,7 +263,7 @@ namespace game
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
-                renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0];
+                renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
             });
 
             // Destroy everything that's not a tile or the player.
@@ -285,7 +285,7 @@ namespace game
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
-                renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0 ];
+                renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0 ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
@@ -323,7 +323,7 @@ namespace game
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 // TODO: need to figure out empty/none tile
-                renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0 ];
+                renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0 ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
             _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
