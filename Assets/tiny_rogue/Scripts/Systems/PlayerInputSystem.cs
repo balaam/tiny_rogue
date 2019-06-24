@@ -43,10 +43,10 @@ namespace game
             switch (a)
             {
                 case Action.MoveUp:
-                    c.y += 1;
+                    c.y -= 1;
                     break;
                 case Action.MoveDown:
-                    c.y -= 1;
+                    c.y += 1;
                     break;
                 case Action.MoveRight:
                     c.x += 1;
