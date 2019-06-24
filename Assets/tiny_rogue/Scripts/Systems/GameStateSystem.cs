@@ -116,6 +116,9 @@ namespace game
 
             var crownCoord = new int2(13, 12);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+
+            var slime1Coord = new int2(20, 20);
+            _archetypeLibrary.CreateSlime(EntityManager, slime1Coord, _view.ViewCoordToWorldPos(slime1Coord));
         }
 
         protected override void OnUpdate()

@@ -12,6 +12,7 @@ namespace game
         public EntityArchetype Tile { get; private set; }
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
+        public EntityArchetype Slime { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -43,6 +44,16 @@ namespace game
                 typeof(Sprite2DRenderer),
                 typeof(LayerSorting),  
                 typeof(Crown)
+            });
+
+            Slime = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord), // should be view coord?
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),  
+                typeof(Slime)
             });
         }
 
@@ -109,6 +120,31 @@ namespace game
             c.y = xy.y;
             
             s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
+            s.sprite = SpriteSystem.AsciiToSprite[127];
+            l.order = 1;
+            
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            
+            return entityManager.Instantiate(entity);
+        }
+
+        public Entity CreateSlime(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            Entity entity = entityManager.CreateEntity(Slime);
+            
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+            
+            s.color = new Unity.Tiny.Core2D.Color(0, 1, 0, 1);
             s.sprite = SpriteSystem.AsciiToSprite[127];
             l.order = 1;
             

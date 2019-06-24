@@ -26,7 +26,7 @@ namespace game
                     {
                         PostUpdateCommands.DestroyEntity(creature);
                         var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                        log.AddLog("Enemy killed");
+                        log.AddLog("Enemy killed! 5XP");
                         hp.now += 5;
 
                     }
