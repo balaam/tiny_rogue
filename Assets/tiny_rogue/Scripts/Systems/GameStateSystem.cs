@@ -100,28 +100,15 @@ namespace game
                 bool isVWall = (x == 0 || x == _view.Width - 1) && y > 0 && y < _view.Height - 2;
                 bool isHWall = (y == 1 || y == _view.Height - 2);
 
-#if TINY_ASCII
                 if(isVWall || isHWall)
                 {
-                    renderer.sprite = SpriteSystem.IndexSprites['#'];
+                    renderer.sprite = SpriteSystem.IndexSprites[ TinyRogueConstants.ascii ? '#' : 2 ];
                     PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
                 }
                 else
                 {
-                    renderer.sprite = SpriteSystem.IndexSprites['.'];
+                    renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? '.' : 0];
                 }
-#else
-                if (isVWall || isHWall)
-                {
-                    // TODO: actually show wall -- add sprite
-                    renderer.sprite = SpriteSystem.IndexSprites[2];
-                    PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
-                }
-                else
-                {
-                    renderer.sprite = SpriteSystem.IndexSprites[0];
-                }
-#endif
             });
         }
 
@@ -276,12 +263,7 @@ namespace game
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
-#if TINY_ASCII
-                renderer.sprite = SpriteSystem.IndexSprites[' '];
-#else
-                // TODO: need to figure out empty/none tile
-                renderer.sprite = SpriteSystem.IndexSprites[0];
-#endif
+                renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0];
             });
 
             // Destroy everything that's not a tile or the player.
@@ -303,12 +285,7 @@ namespace game
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
-#if TINY_ASCII
-                renderer.sprite = SpriteSystem.IndexSprites[' '];
-#else
-                // TODO: need to figure out empty/none tile
-                renderer.sprite = SpriteSystem.IndexSprites[0];
-#endif
+                renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0 ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
@@ -346,12 +323,7 @@ namespace game
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 // TODO: need to figure out empty/none tile
-#if TINY_ASCII
-                renderer.sprite = SpriteSystem.IndexSprites[' '];
-#else
-                // TODO: need to figure out empty/none tile
-                renderer.sprite = SpriteSystem.IndexSprites[0];
-#endif
+                renderer.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0 ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
             _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");

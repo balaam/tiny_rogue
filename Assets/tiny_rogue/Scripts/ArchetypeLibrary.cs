@@ -71,12 +71,7 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
-#if TINY_ASCII
-            s.sprite = SpriteSystem.IndexSprites[' '];
-#else
-            // TODO: need to figure out empty/none tile
-            s.sprite = SpriteSystem.IndexSprites[0];
-#endif
+            s.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? ' ' : 0];
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
@@ -99,12 +94,7 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
-#if TINY_ASCII
-            s.sprite = SpriteSystem.IndexSprites['^'];
-#else
-            // TODO: need to figure out empty/none tile
-            s.sprite = SpriteSystem.IndexSprites[1];
-#endif
+            s.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? '^' : 1];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -128,12 +118,7 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
-#if TINY_ASCII
-            s.sprite = SpriteSystem.IndexSprites[127];
-#else
-            // TODO: need to figure out empty/none tile
-            s.sprite = SpriteSystem.IndexSprites[3];
-#endif
+            s.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? 127 : 3];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -156,12 +141,7 @@ namespace game
             c.y = xy.y;
 
             s.color = new Unity.Tiny.Core2D.Color(18/255.0f, 222/255.0f, 23.0f/255.0f);
-#if TINY_ASCII
-            s.sprite = SpriteSystem.IndexSprites['Z'];
-#else
-            // TODO: need to figure out empty/none tile
-            s.sprite = SpriteSystem.IndexSprites[3];
-#endif
+            s.sprite = SpriteSystem.IndexSprites[TinyRogueConstants.ascii ? 'Z' : 3];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
