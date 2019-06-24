@@ -25,7 +25,17 @@ namespace game
 
                 var x = coord.x;
                 var y = coord.y;
-                
+
+                var playerOnStairs = false;
+
+                Entities.WithNone<BlockMovement>().WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
+                {
+                    if (x == stairCoord.x && y == stairCoord.y)
+                    {
+                        playerOnStairs = true;
+                    }
+                });
+
                 if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                     y = y - 1;
                 if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))    
