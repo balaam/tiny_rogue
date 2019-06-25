@@ -142,7 +142,7 @@
             "Value": "c362f96b55fc4cf9af112e056572a3d3"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
-            "MoveId": 2
+            "DirectionId": 2
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
             "Index": 2
@@ -430,7 +430,11 @@
                 "StableTypeHash": 18028135465708008300
             }, {
                 "StableTypeHash": 16779655563147745607
+            }, {
+                "StableTypeHash": 7693371993889051491
             }]
+        }, {
+            "$type": "game.PlayerInput, tiny_rogue"
         }]
     }, {
         "Components": [{

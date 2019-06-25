@@ -51,6 +51,23 @@ public class PlayerAnimationSystem : ComponentSystem
 
                 if (player.Action != Action.None)
                 {
+                    if (player.Action == Action.MoveLeft)
+                    {
+                        player.Direction = Direction.West;
+                    } 
+                    else if (player.Action == Action.MoveRight)
+                    {
+                        player.Direction = Direction.East;
+                    }
+                    else if (player.Action == Action.MoveUp)
+                    {
+                        player.Direction = Direction.North;
+                    }
+                    else if (player.Action == Action.MoveDown)
+                    {
+                        player.Direction = Direction.South;
+                    }
+                    
                     player.AnimationTrigger = true;
                     player.AnimationTime = 1f;
                     sequencePlayer.speed = 1f;
@@ -66,9 +83,10 @@ public class PlayerAnimationSystem : ComponentSystem
 
     public void SetAnimation(ref Player player, ref Sprite2DSequencePlayer sequencePlayer)
     {
-        Debug.Log("Try set animation");
+        
         var direction = (int)player.Direction;
         var action = (int)player.Action;
+        Debug.Log("Try set animation: " + direction);
 
         Entity animation = Entity.Null;
         Entities.WithAll<AnimationSequence>().ForEach((Entity entity, ref AnimationSequence animationSequence) =>
@@ -76,6 +94,7 @@ public class PlayerAnimationSystem : ComponentSystem
             if (animationSequence.MoveId == action && animationSequence.DirectionId == direction && animationSequence.PlayerId == 0)
             {
                 animation = entity;
+                Debug.Log("Found animation");
             }
         });
         Debug.Log("Setting animation");
