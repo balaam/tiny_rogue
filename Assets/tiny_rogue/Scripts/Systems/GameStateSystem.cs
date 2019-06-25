@@ -88,19 +88,19 @@ namespace game
             _dungeon.GenerateDungeon(_view);
 
             // Hard code a couple of spear traps, so the player can die.
-            var trap1Coord = new int2(12, 12);
-            var trap2Coord = new int2(13, 11);
+            var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
+            var trap2Coord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
 
-            var stairwayCoord = new int2(22, 15);
+            var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
 
-            var crownCoord = new int2(13, 12);
+            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
 
             //TODO: random positions for gold
-            var goldCoord = new int2(50, 15);
+            var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
         }
 
@@ -108,25 +108,11 @@ namespace game
         {
             _dungeon.GenerateDungeon(_view);
 
-            // Place the player
-            Entities.WithAll<PlayerInput>().ForEach(
-                (Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
-            {
-                coord.x = 10;
-                coord.y = 10;
-                translation.Value = View.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
-               
-                hp.max = TinyRogueConstants.StartPlayerHealth;
-                hp.now = hp.max;
-
-                renderer.color = TinyRogueConstants.DefaultColor;
-            });
-
-            int2 dummyCoord = new int2(20, 10);
+            int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
             
             // Create 'Exit'
-            var crownCoord = new int2(1, 2);
+            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
         }
 
@@ -204,14 +190,6 @@ namespace game
                     {
                         GenerateLevel();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
-
-                        // Place the player
-                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
-                        {
-                            coord.x = 10;
-                            coord.y = 10;
-                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-                        });
                         _state = eGameState.InGame;
                     }
                     } break;

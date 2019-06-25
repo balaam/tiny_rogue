@@ -117,14 +117,18 @@ namespace game
         private void PlacePlayer()
         {
             // Place the player
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
             {
-                coord.x = 10;
-                coord.y = 10;
+                int2 randomStartPosition = GetPlayerStartPosition();
+
+                coord.x = randomStartPosition.x;
+                coord.y = randomStartPosition.y;
                 translation.Value = _view.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
 
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
+
+                renderer.color = TinyRogueConstants.DefaultColor;
             });
         }
 
