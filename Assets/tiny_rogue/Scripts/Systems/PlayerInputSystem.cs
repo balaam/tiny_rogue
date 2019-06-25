@@ -13,16 +13,24 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
-
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
         public bool Replaying = false;
         public float StartTime;
         
+        private bool alternateAction = false;
+
         private Action GetActionFromInput()
+
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
+
+            if (input.GetKey(KeyCode.LeftControl))
+                alternateAction = true;
+            else
+                alternateAction = false;    
+
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
             if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))  
@@ -35,6 +43,8 @@ namespace game
                 return Action.Interact;
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
+
+            
 
             return Action.None;
         }
@@ -96,7 +106,7 @@ namespace game
                         case Action.MoveRight:
                         case Action.MoveLeft:
                             var move = GetMove(action);
-                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y });
+                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
                             break;
                         case Action.Interact:
                             pas.Interact(coord);
