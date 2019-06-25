@@ -56,14 +56,14 @@ namespace game
                 LogEntry topLog =  _newLogs[0];
                 _newLogs.RemoveAt(0);
                 _oldLogs.Add(topLog);
-                view.ClearLine(EntityManager, 0, ' ');
-                view.Blit(EntityManager, new int2(0,0), topLog.text);
+                view.ClearLine(PostUpdateCommands, 0, ' ');
+                view.Blit(PostUpdateCommands, new int2(0,0), topLog.text);
 
                 if (HasQueuedLogs())
                 {
                     string pageMsg = "(cont)";
                     var pageXY = new int2(view.Width - pageMsg.Length, 0);
-                    view.Blit(EntityManager, pageXY, pageMsg, new Color(1,1,1,1));
+                    view.Blit(PostUpdateCommands, pageXY, pageMsg, new Color(1,1,1,1));
                     gss.MoveToReadQueuedLog();
                 }
 
@@ -72,7 +72,7 @@ namespace game
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
             else if(gss.IsInGame)
-                view.ClearLine(EntityManager, 0, ' ');
+                view.ClearLine(PostUpdateCommands, 0, ' ');
         }
         
         protected override void OnUpdate()
