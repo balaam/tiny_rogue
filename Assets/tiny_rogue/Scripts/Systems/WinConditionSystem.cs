@@ -27,7 +27,7 @@ namespace game
                         gc.count += 100;
                     });
                     var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                    gss.MoveToGameWin(PostUpdateCommands);    
+                    gss.MoveToGameWin(PostUpdateCommands);
                 }
             });
         }
