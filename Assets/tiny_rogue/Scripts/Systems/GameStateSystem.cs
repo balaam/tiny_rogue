@@ -255,7 +255,7 @@ namespace game
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
             
             // TODO: Set this properly (make it random the first time, but ditto for the replay case)
-            RandomRogue.Init(929374892); 
+            RandomRogue.Init(1); 
             
             if( replay )
                 pis.StartReplaying();

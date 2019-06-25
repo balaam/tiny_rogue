@@ -33,8 +33,6 @@ public class RandomRogue
     public static void Init(uint i)
     {
         random = new Random(i);
-        random.InitState();
-
         initialized = true;
     }
 }
