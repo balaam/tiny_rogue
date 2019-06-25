@@ -18,7 +18,7 @@ namespace game
             public int distanceFromStart;
             public int distanceToDestination; // this is an estimated value
             public Path Parent;
-            
+
             // Based on a fully populated A* search path, this identifies which tile to move into from the current location
             public Path stepFrom(int2 currentLocation)
             {
@@ -32,7 +32,7 @@ namespace game
                 return result;
             }
         }
-        
+
         // The main method you should use to identify where a given monster will step next
         public static int2 getNextStep(int2 start, int2 end)
         {
@@ -89,7 +89,7 @@ namespace game
 
             return current;
         }
-        
+
         private static bool isEqual(Path loc, int2 simple)
         {
             if (loc == null)
@@ -139,10 +139,10 @@ namespace game
             //TODO proper implementation, currently all monsters are either ghosts or idiots since Walkability is not considered
             return new List<int2>()
             {
-                new int2 {x = start.x + 1, y = start.y},
-                new int2 {x = start.x - 1, y = start.y},
-                new int2 {x = start.x, y = start.y + 1},
-                new int2 {x = start.x, y = start.y - 1}
+                new int2(start.x + 1, start.y),
+                new int2(start.x - 1, start.y),
+                new int2(start.x, start.y + 1),
+                new int2(start.x, start.y - 1)
             };
         }
     }

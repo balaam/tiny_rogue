@@ -97,7 +97,7 @@ namespace game
                         log.AddLog("You opened a door.");
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
-                        renderer.sprite = SpriteSystem.IndexSprites['\\'];
+                        renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')];
                         tms.NeedToTickTurn = true;
                     }
                 }
