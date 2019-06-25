@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace game
 {
@@ -15,6 +16,11 @@ namespace game
         public Direction Direction;
         public Action Action;
         public bool AnimationTrigger;
-        public double AnimationTime;
+        public float AnimationTime;
+
+        public float3 Initial;
+        public float3 Destination;
+        public bool Moving;
+        public float MoveTime;
     }
 }
