@@ -25,6 +25,7 @@ namespace game
                 if (playerPos.x == crownPos.x && playerPos.y == crownPos.y)
                 {
                     var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                    gss.ScoreManager.IncreaseScore(100);
                     gss.MoveToGameWin();    
                 }
             });

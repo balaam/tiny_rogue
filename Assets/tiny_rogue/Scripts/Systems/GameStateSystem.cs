@@ -23,16 +23,22 @@ namespace game
             Startup, // generate required entities etc
             Title,
             InGame,
+            Replay,
             GameOver,
+            NextLevel,
+            DebugLevelSelect,
+            HiScoreScreen,
         }
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
         TurnManager _turnManager = new TurnManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        ScoreManager _scoreManager = new ScoreManager();
 
         public View View => _view;
         public TurnManager TurnManager => _turnManager;
+        public ScoreManager ScoreManager => _scoreManager;
         public bool IsInGame => (_state == eGameState.InGame);
 
         private bool TryGenerateViewport()
@@ -81,12 +87,12 @@ namespace game
             return true;
         }
 
-        public void GenerateLevel()
+        private void GenerateEmptyLevel()
         {
             // Removing blocking tags from all tiles
             Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
             {
-                EntityManager.RemoveComponent(entity, typeof(BlockMovement)); 
+                PostUpdateCommands.RemoveComponent(entity, typeof(BlockMovement)); 
             });
 
             Entities.WithAll<Tile>().ForEach((Entity e, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer) =>
@@ -107,6 +113,11 @@ namespace game
                     renderer.sprite = SpriteSystem.AsciiToSprite['.'];
                 }
             });
+        }
+
+        public void GenerateLevel()
+        {
+            GenerateEmptyLevel();
             
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = new int2(12, 12);
@@ -114,7 +125,31 @@ namespace game
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
 
+            var stairwayCoord = new int2(22, 15);
+            _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
+
             var crownCoord = new int2(13, 12);
+            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+        }
+
+        public void GenerateCombatTestLevel()
+        {
+            GenerateEmptyLevel();
+            
+            
+            // Place the player
+            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            {
+                coord.x = 10;
+                coord.y = 10;
+                translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                            
+                hp.max = TinyRogueConstants.StartPlayerHealth;
+                hp.now = hp.max;
+            });
+            
+            // Create 'Exit'
+            var crownCoord = new int2(1, 2);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
         }
 
@@ -124,6 +159,7 @@ namespace game
             {
                 case eGameState.Startup:
                 {
+                    _scoreManager.CleanHiScores();
                     bool done = TryGenerateViewport();
                     if (done)
                        MoveToTitleScreen();
@@ -133,20 +169,32 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
+                    if (input.GetKeyDown(KeyCode.D))
+                    {
+                        MoveToDebugLevelSelect();
+                    }
+                    else if (input.GetKeyDown(KeyCode.H))
+                    {
+                        MoveToHiScores();
+                    }
+                    else if (input.GetKeyDown(KeyCode.R))
+                    {
+
+                    }
+                    else if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
                         TurnManager.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
-                        
+
                         // Place the player
-                        Entities.WithAll<MoveWithInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
                         {
                             coord.x = 10;
                             coord.y = 10;
                             translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-                            
+
                             hp.max = TinyRogueConstants.StartPlayerHealth;
                             hp.now = hp.max;
 
@@ -156,7 +204,7 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    var input = World.GetExistingSystem<InputMoveSystem>();
+                    var input = World.GetExistingSystem<PlayerInputSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     var ds = World.GetExistingSystem<DeathSystem>();
                     var lvl = World.GetExistingSystem<LevelSystem>();
@@ -171,11 +219,62 @@ namespace game
                     ds.OnUpdateManual();
                     
                 } break;
+                case eGameState.Replay:
+                {
+                    // TODO: Replay recorded input
+                } break;
                 case eGameState.GameOver:
                 {
+                    _scoreManager.SetHiScores();
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();                    
+                } break;
+                case eGameState.NextLevel:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                    if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        GenerateLevel();
+                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+
+                        // Place the player
+                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        {
+                            coord.x = 10;
+                            coord.y = 10;
+                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
+                        });
+                        _state = eGameState.InGame;
+                    }
+                } break;
+                case eGameState.DebugLevelSelect:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+
+                    if (input.GetKeyDown(KeyCode.Alpha1))
+                    {
+                        GenerateCombatTestLevel();
+                        TurnManager.ResetTurnCount();
+                        log.AddLog("This is a room to test the combat system");
+                        log.AddLog("Move to the crown to exit");
+                        _state = eGameState.InGame;
+                    }
+                    else if (input.GetKeyDown(KeyCode.Space))
+                    {
+                        MoveToTitleScreen();
+                    }
+                } break;
+                case eGameState.HiScoreScreen:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                    if(input.GetKeyDown(KeyCode.Space))
+                    {
+                        MoveToTitleScreen();
+                    }
                 } break;
             }
         }
@@ -212,6 +311,7 @@ namespace game
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
 
@@ -220,6 +320,7 @@ namespace game
             CleanUpGameWorld();
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _scoreManager.SetHiScores();
             _state = eGameState.GameOver;
         }
         
@@ -229,6 +330,38 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
             _state = eGameState.GameOver;
+        }
+
+        public void MoveToNextLevel()
+        {
+            CleanUpGameWorld();
+            _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
+            _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
+            _state = eGameState.NextLevel;
+        }
+
+        public void MoveToHiScores()
+        {
+            CleanUpGameWorld();
+            _view.Blit(EntityManager, new int2(40, 7), "HiScores");
+            for(int i = 1; i < 11; i++)
+            {
+                _view.Blit(EntityManager, new int2(40, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(45, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+            }
+        }
+
+        private void MoveToDebugLevelSelect()
+        {
+            // Clear the screen.
+            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
+            {
+                renderer.sprite = SpriteSystem.AsciiToSprite[' '];
+            });
+            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
+            _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
+            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
+            _state = eGameState.DebugLevelSelect;
         }
     }
 }
