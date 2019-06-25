@@ -1,10 +1,7 @@
-using Unity.Entities;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Collections;
 using Unity.Mathematics;
-using UnityEngine;
+using Unity.Tiny.Core2D;
 
 namespace game
 {
@@ -66,7 +63,8 @@ namespace game
                 if (HasQueuedLogs())
                 {
                     string pageMsg = "(cont)";
-                    view.Blit(EntityManager, new int2(view.Width - pageMsg.Length, 0), pageMsg);
+                    var pageXY = new int2(view.Width - pageMsg.Length, 0);
+                    view.Blit(EntityManager, pageXY, pageMsg, new Color(1,1,1,1));
                 }
 
 

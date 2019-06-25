@@ -15,14 +15,6 @@ namespace game
         public EntityArchetype Crown { get; private set; }
         public EntityArchetype  Stairway { get; private set; }
 
-        public Color Default
-        {
-            get
-            {
-                return new Color(168.0f/255.0f, 168.0f/255.0f,168.0f/255.0f);
-            }
-        }
-
         public void Init(EntityManager em)
         {
             Tile = em.CreateArchetype(new ComponentType[]
@@ -79,7 +71,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = Default;
+            s.color = TinyRogueConstants.DefaultColor;
             s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
 
             entityManager.SetComponentData(entity, s);
@@ -102,7 +94,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = Default;
+            s.color = TinyRogueConstants.DefaultColor;
             s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '^' : 1];
             l.order = 1;
 
