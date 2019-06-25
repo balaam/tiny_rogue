@@ -45,35 +45,14 @@ namespace game
         List<Room> _rooms = new List<Room>();
         Entity _dungeonViewEntity;
         View _view;
+        
+        protected override void OnUpdate() {}
 
-        bool updateTileComponents = false;
-
-        protected override void OnUpdate()
-        {
-            if (updateTileComponents)
-            {
-                Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
-                    {
-                        if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')])
-                        {
-                            PostUpdateCommands.AddComponent<Door>(e, new Door() {Opened = false});
-                            PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
-                        }
-
-                        if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')])
-                            PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
-                    });
-
-                updateTileComponents = false;
-            }
-        }
-
-        public void GenerateDungeon(View view)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view)
         {
             if (!SpriteSystem.Loaded)
                 return;
 
-            updateTileComponents = false;
             _view = view;
 
             int maxRoom = 0;
@@ -102,7 +81,7 @@ namespace game
                     _rooms.Add(newRoom);
             }
 
-            ClearCurrentLevel();
+            ClearCurrentLevel(cb);
             CreateRooms();
             CreateHallways();
 
@@ -110,8 +89,19 @@ namespace game
             //Add monsters
 
             PlacePlayer();
+            
+            // Update the tiles
+            Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            {
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')])
+                {
+                    cb.AddComponent<Door>(e, new Door() {Opened = false});
+                    cb.AddComponent<BlockMovement>(e, new BlockMovement());
+                }
 
-            updateTileComponents = true;
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')])
+                    cb.AddComponent<BlockMovement>(e, new BlockMovement());
+            });
         }
 
         private void PlacePlayer()
@@ -123,7 +113,7 @@ namespace game
 
                 coord.x = randomStartPosition.x;
                 coord.y = randomStartPosition.y;
-                translation.Value = _view.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
+                translation.Value = _view.ViewCoordToWorldPos(new int2(coord.x, coord.y));
 
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
@@ -300,7 +290,7 @@ namespace game
             return false;
         }
 
-        private void ClearCurrentLevel()
+        private void ClearCurrentLevel(EntityCommandBuffer cb)
         {
             //Clear the map
             Entities.WithAll<Tile>().ForEach((Entity entity, ref Sprite2DRenderer renderer) =>
@@ -311,7 +301,7 @@ namespace game
             //Clear all walls
             Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
             {
-                EntityManager.RemoveComponent(entity, typeof(BlockMovement));
+                cb.RemoveComponent(entity, typeof(BlockMovement));
             });
         }
 

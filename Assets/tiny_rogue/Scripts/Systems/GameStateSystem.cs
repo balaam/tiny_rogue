@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
+using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
@@ -24,19 +25,25 @@ namespace game
             Title,
             InGame,
             ReadQueuedLog,
-            Replay,
             GameOver,
             NextLevel,
             DebugLevelSelect,
+            HiScores,
         }
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
+        ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
         DungeonSystem _dungeon;
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+        }
 
         private bool TryGenerateViewport()
         {
@@ -86,7 +93,7 @@ namespace game
 
         public void GenerateLevel()
         {
-            _dungeon.GenerateDungeon(_view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
@@ -126,7 +133,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(_view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
@@ -154,23 +161,17 @@ namespace game
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (input.GetKeyDown(KeyCode.D))
                     {
                         MoveToDebugLevelSelect();
                     }
-                    else if (input.GetKeyDown(KeyCode.R))
+                    else if(input.GetKeyDown(KeyCode.H))
                     {
-                        
+                        MoveToHiScores(PostUpdateCommands);
                     }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
-                        var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-                        GenerateLevel();
-                        tms.ResetTurnCount();
-                        log.AddLog("You are in a vast cavern.    Press Space for next log");
-                        log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
-                        _state = eGameState.InGame;
+                        MoveToInGame(PostUpdateCommands, false);
                     }
                 } break;
                 case eGameState.InGame:
@@ -192,15 +193,13 @@ namespace game
                         _state = eGameState.InGame;
                     }
                 } break;
-                case eGameState.Replay:
-                {
-                    // TODO: Replay recorded input
-                } break;
                 case eGameState.GameOver:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
+                    if (input.GetKeyUp(KeyCode.Space))
                         MoveToTitleScreen();
+                    else if (input.GetKeyUp(KeyCode.R))
+                        MoveToInGame(PostUpdateCommands, true);
                 } break;
                 case eGameState.NextLevel:
                 {
@@ -227,10 +226,16 @@ namespace game
                         log.AddLog("Move to the crown to exit");
                         _state = eGameState.InGame;
                     }
-                    else if (input.GetKeyDown(KeyCode.Space))
+                    else if (input.GetKeyUp(KeyCode.Space))
                     {
                         MoveToTitleScreen();
                     }
+                } break;
+                case eGameState.HiScores:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyUp(KeyCode.Space))
+                        MoveToTitleScreen();
                 } break;
             }
         }
@@ -261,14 +266,44 @@ namespace game
         public void MoveToTitleScreen()
         {
             // Clear the screen.
+            Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
+            {
+                _scoreManager.SetHiScores(gc.count + (level.level - 1) * 10);
+                level.level = 1;
+                gc.count = 0;
+            });
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ' ) ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _view.Blit(EntityManager, new int2(30, 21), "PRESS H FOR HISCORES");
             _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
+        }
+
+        public void MoveToInGame( EntityCommandBuffer cb, bool replay )
+        {                  
+            CleanUpGameWorld(cb);
+            
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();      
+            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
+            
+            // TODO: Set this properly (make it random the first time, but ditto for the replay case)
+            RandomRogue.Init(1); 
+            
+            if( replay )
+                pis.StartReplaying();
+            else
+                pis.StartRecording();
+            
+            GenerateLevel();
+            tms.ResetTurnCount();
+            log.AddLog("You are in a vast cavern.    Press Space for next log");
+            log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
+            _state = eGameState.InGame;
         }
 
         public void MoveToGameOver(EntityCommandBuffer cb)
@@ -276,6 +311,7 @@ namespace game
             CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
         
@@ -284,6 +320,7 @@ namespace game
             CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
 
@@ -293,6 +330,19 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
+        }
+
+        public void MoveToHiScores(EntityCommandBuffer cb)
+        {
+            CleanUpGameWorld(cb);
+            _view.Blit(EntityManager, new int2(30, 7), "HiScores");
+            _view.Blit(EntityManager, new int2(25, 20), "Press Space to Continue");
+            for (int i = 1; i < 11; i++)
+            {
+                _view.Blit(EntityManager, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+            }
+            _state = eGameState.HiScores;
         }
 
         private void MoveToDebugLevelSelect()
