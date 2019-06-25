@@ -41,6 +41,7 @@ namespace game
                 var length = 0;
                 while (step.Parent != null)
                 {
+                    step = step.Parent;
                     length++;
                     step = step.Parent;
                 }
