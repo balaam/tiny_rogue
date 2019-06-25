@@ -936,6 +936,9 @@
             "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
             "order": 2
         }, {
+            "$type": "game.ActionStream, tiny_rogue",
+            "Elements": []
+        }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
                 "c": "P"
@@ -988,6 +991,8 @@
                 "StableTypeHash": 10723762297176986422
             }, {
                 "StableTypeHash": 5457566240645269000
+            }, {
+                "StableTypeHash": 433502474443295276
             }]
         }, {
             "$type": "game.BlockMovement, tiny_rogue"
