@@ -284,12 +284,12 @@
             "x": 10,
             "y": 10
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 1
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 2071728990668212250,
             "b": 10475440672856501702
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
@@ -373,11 +373,11 @@
                 "y": 0.16
             }
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 8051099259630602310,
             "b": 10002985072811770970
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
         }, {
             "$type": "Unity.Tiny.Core2D.Camera2D, Unity.Tiny.Core2D",
             "halfVerticalSize": 2,
@@ -459,12 +459,12 @@
             "width": 75,
             "height": 25
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 3
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 8148486317012566851,
             "b": 13112770288677281661
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 3
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -522,12 +522,12 @@
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 2
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 16366403220060588716,
             "b": 10860639635617840541
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
         }, {
             "$type": "Unity.Tiny.Core2D.SpriteAtlas, Unity.Tiny.Sprite2D",
             "Elements": [{
