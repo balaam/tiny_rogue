@@ -85,7 +85,7 @@ namespace game
             return loc.location.x == simple.x && loc.location.y == simple.y;
         }
 
-        private static LocationRef listFind(IEnumerable<LocationRef> list, int2 search)
+        private static LocationRef listFind(LinkedList<LocationRef> list, int2 search)
         {
             foreach (var square in list)
             {
@@ -95,6 +95,15 @@ namespace game
             return null;
         }
 
+        private static LocationRef listFind(List<LocationRef> list, int2 search)
+        {
+            foreach (var square in list)
+            {
+                if (isEqual(square, search)) return square;
+            }
+
+            return null;
+        }
 
         private static int EstimateDistanceToDestination(int2 start, int2 destination)
         {
