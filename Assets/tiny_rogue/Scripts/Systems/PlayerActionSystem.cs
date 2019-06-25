@@ -12,7 +12,8 @@ namespace game
         MoveLeft = 3,
         MoveRight = 4,
         Wait = 5,
-        Interact = 6
+        Interact = 6,
+        Attack = 7
     }
 
     public class PlayerActionSystem : ComponentSystem
@@ -38,6 +39,9 @@ namespace game
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
                     gss.MoveToNextLevel(PostUpdateCommands);
             });
+
+            var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+            inventorySystem.CollectItemsAt(c);
         }
 
         public void Wait()
@@ -85,7 +89,9 @@ namespace game
                     }
 
                     tms.NeedToTickTurn = true;
-                }
+                    var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+                    inventorySystem.LogItemsAt(c);
+               }
             });
         }
     }

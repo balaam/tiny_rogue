@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using UnityEngine;
 using Unity.Mathematics;
+using Unity.Tiny.Core;
 using Color = Unity.Tiny.Core2D.Color;
 
 namespace game
@@ -14,6 +15,7 @@ namespace game
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
         public EntityArchetype  Stairway { get; private set; }
+        public EntityArchetype Collectible { get; private set; }
         public EntityArchetype Creature { get; private set; }
         public EntityArchetype  Gold { get; private set; }
 
@@ -58,6 +60,18 @@ namespace game
                 typeof(LayerSorting),
                 typeof(Stairway)
             });
+
+           Collectible = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord),
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),
+                typeof(CanBePickedUp),
+                typeof(Collectible)
+            });
+
             
             Creature = em.CreateArchetype(new ComponentType[]
             {
@@ -177,10 +191,43 @@ namespace game
 
             return entity;
         }
+        
+        public Entity CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            Entity entity = entityManager.CreateEntity(Collectible);
+
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            CanBePickedUp p = new CanBePickedUp();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+
+            s.color = new Unity.Tiny.Core2D.Color(1, 1, 1);
+            // TODO: need to figure out collectible tile
+            s.sprite = SpriteSystem.IndexSprites[4];
+            l.order = 1;
+
+            p.appearance.sprite = s.sprite;
+            p.appearance.color = s.color;
+            
+            p.name = new NativeString64("sword");
+            p.description = new NativeString64("Sword of Damocles");
+
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            entityManager.SetComponentData(entity, p);
+
+            return entity;
+        }
 
         public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
         {
-            // TODO: randomly spawn across level
             Entity entity = entityManager.CreateEntity(Gold);
             
             Sprite2DRenderer s = new Sprite2DRenderer();
