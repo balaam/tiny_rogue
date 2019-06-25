@@ -228,7 +228,6 @@ namespace game
 
         public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
         {
-            // TODO: randomly spawn across level
             Entity entity = entityManager.CreateEntity(Gold);
             
             Sprite2DRenderer s = new Sprite2DRenderer();
