@@ -111,7 +111,7 @@ namespace game
        {
             Random random = new Random((uint)UnityEngine.Time.time);//seed
             int goldPiles = (int)math.floor(random.NextFloat() * 10);
-            for (int i = 0; i < goldPiles; i++) //hard code number of piles for now
+            for (int i = 0; i < 5; i++) //hard code number of piles for now
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
 
