@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using UnityEngine;
 using Unity.Mathematics;
+using Unity.Tiny.Core;
 
 namespace game
 {
@@ -186,7 +187,7 @@ namespace game
 
             p.appearance.sprite = s.sprite;
             p.appearance.color = s.color;
-
+            
             p.name = new NativeString64("sword");
             p.description = new NativeString64("Sword of Damocles");
 
@@ -194,6 +195,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
+            entityManager.SetComponentData(entity, p);
 
             return entityManager.Instantiate(entity);
         }

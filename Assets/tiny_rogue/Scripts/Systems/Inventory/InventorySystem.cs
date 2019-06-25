@@ -10,28 +10,27 @@ namespace game
 
     public class InventorySystem : ComponentSystem
     {
-        Entity inv;
-        DynamicBuffer<InventoryItem> Items;
+        Entity inventoryEntity;
+
         protected override void OnCreate()
         {
-            inv = EntityManager.CreateEntity();
-            Items = EntityManager.AddBuffer<InventoryItem>(inv);
+            inventoryEntity = EntityManager.CreateEntity();
+            EntityManager.AddBuffer<InventoryItem>(inventoryEntity);
         }
 
         protected override void OnDestroy()
         {
-            
-            EntityManager.DestroyEntity(inv);
+            EntityManager.DestroyEntity(inventoryEntity);
         }
 
         protected override void OnUpdate()
         {
             
-            Entities.ForEach((Entity creature, ref WorldCoord coord, ref InventoryComponent ic) =>
+            Entities.WithAll<InventoryComponent>().ForEach((Entity creature, ref WorldCoord coord) =>
             {
                 int2 creaturePos = new int2(coord.x, coord.y);
 
-                Entities.ForEach((Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
+                Entities.WithAll<Collectible>().ForEach((Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
                 {
                     if (creaturePos.x == itemCoord.x && creaturePos.y == itemCoord.y)
                     {
@@ -42,7 +41,7 @@ namespace game
                             
                             var input = EntityManager.World.GetExistingSystem<InputSystem>();
 
-                            if (input.GetKeyDown(KeyCode.Comma))
+                            if (input.GetKeyDown(KeyCode.Z))
                             {
                                 //Add item you're on into the inventory
                                 AddItem(pickable.name, pickable.description, pickable.appearance);
@@ -58,6 +57,7 @@ namespace game
 
         public void AddItem(NativeString64 inName, NativeString64 inDesc, Sprite2DRenderer spr)
         {
+            var Items = EntityManager.GetBuffer<InventoryItem>(inventoryEntity);
             Items.Add(new InventoryItem(){name = inName, description = inDesc, appearance = spr});
         }
     }

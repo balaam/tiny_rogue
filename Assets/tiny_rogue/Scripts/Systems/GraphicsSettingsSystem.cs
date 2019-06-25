@@ -15,6 +15,6 @@ namespace game
 {
     public static class GlobalGraphicsSettings
     {
-        public static bool ascii = true;
+        public static bool ascii = false;
     }
 }
