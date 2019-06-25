@@ -61,16 +61,16 @@ namespace game
                 return false;
 
             _archetypeLibrary.Init(EntityManager);
-            var startX = -(math.floor(width / 2) * TinyRogueConstants.TileWidth);
-            var startY = math.floor(height / 2) * TinyRogueConstants.TileHeight;
+            var startX = -(math.floor(width / 2) * GlobalGraphicsSettings.TileSize.x);
+            var startY = math.floor(height / 2) * GlobalGraphicsSettings.TileSize.y;
 
             _view.ViewTiles = new Entity[width * height];
             for (int i = 0; i < width * height; i++)
             {
                 int2 xy = View.IndexToXY(i, width);
                 float3 pos =  new float3(
-                    startX + (xy.x * TinyRogueConstants.TileWidth),
-                    startY - (xy.y * TinyRogueConstants.TileHeight), 0);
+                    startX + (xy.x * GlobalGraphicsSettings.TileSize.x),
+                    startY - (xy.y * GlobalGraphicsSettings.TileSize.y), 0);
 
                 Entity instance = _archetypeLibrary.CreateTile(
                     EntityManager, xy, pos, mapEntity);
@@ -102,7 +102,11 @@ namespace game
             //TODO: random positions for gold
             var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
-        }
+           
+            var collectibleCoord = new int2(15,12);
+            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+  
+       }
 
         public void GenerateCombatTestLevel()
         {

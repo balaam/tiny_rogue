@@ -16,10 +16,12 @@ namespace game
     public static class GlobalGraphicsSettings
     {
         public static bool ascii;
+        public static float2 TileSize;
     }
 
     public struct GraphicsSettings : IComponentData
     {
         public bool ascii;
+        public float2 TileSize;
     }
 }
