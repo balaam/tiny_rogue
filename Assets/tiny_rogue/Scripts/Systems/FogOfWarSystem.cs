@@ -8,7 +8,7 @@ namespace game
 {
     public class FogOfWarSystem : ComponentSystem
     {
-        private List<Entity> _tilesInSight = new List<Entity>();
+        private List<Entity> _revealedTiles = new List<Entity>();
 
         protected override void OnUpdate()
         {
@@ -33,7 +33,7 @@ namespace game
 
         private void ResetTilesInSight()
         {
-            foreach (Entity e in _tilesInSight)
+            foreach (Entity e in _revealedTiles)
             {
                 Tile tile = EntityManager.GetComponentData<Tile>(e);
                 tile.IsSeen = false;
@@ -54,42 +54,42 @@ namespace game
         {
             ResetTilesInSight();
 
-            //this is dumb, be a little smarter about how you calculate the tiles to check.
-            for (float x = -1f; x < 1f; x += 0.25f)
+            for (int x = math.max(0, startPosition.x - sightDepth); x < math.min(view.Width, startPosition.x + sightDepth); x++)
             {
-                for (float y = -1f; y < 1f; y += 0.25f)
+                for (int y = math.max(0, startPosition.y - sightDepth);  y < math.min(view.Height, startPosition.y + sightDepth); y++)
                 {
-                    CheckDirection(startPosition, sightDepth, view, i => { return i + x; }, i => { return i + y; });
+                    int2 endPos = new int2(x, y);
+                    int2 currentPos = startPosition;
+
+                    while (currentPos.x != endPos.x && currentPos.y != endPos.y)
+                    {
+                        currentPos = AStarPathfinding.getPath(currentPos, endPos);
+                        Console.WriteLine(currentPos.x.ToString() + " " + currentPos.y.ToString());
+                        int index = View.XYToIndex(currentPos, view.Width);
+                        Console.WriteLine("Index: " + index);
+                        if (index > 0 && index < view.ViewTiles.Length)
+                        {
+                            Entity tileEntity = view.ViewTiles[index];
+                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                            tile.IsSeen = true;
+                            tile.HasBeenRevealed = true;
+
+                            _revealedTiles.Add(tileEntity);
+
+                            EntityManager.SetComponentData(tileEntity, tile);
+
+                            if (EntityManager.HasComponent(tileEntity, typeof(BlockMovement)))
+                                continue;
+                        }
+                    }
                 }
             }
         }
 
-        private void CheckDirection(int2 position, int checkDepth, View view, Func<float, float> xOp, Func<float, float> yOp)
-        {
-            float xFloatStore = position.x;
-            float yFloatStore = position.y;
+        //private void CheckDirection(int2 position, int checkDepth, View view, Func<float, float> xOp, Func<float, float> yOp)
+        //{
 
-            for (int i = 0; i < checkDepth; i++)
-            {
-                //get entity
-                int tileIndex = View.XYToIndex(new int2((int)xFloatStore, (int)yFloatStore), view.Width);
-                Entity tileEntity = view.ViewTiles[tileIndex];
-                Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                tile.HasBeenRevealed = true;
-                tile.IsSeen = true;
-
-                _tilesInSight.Add(tileEntity);
-
-                EntityManager.SetComponentData(tileEntity, tile);
-
-                //return if blocks movement
-                if (EntityManager.HasComponent(tileEntity, typeof(BlockMovement)))
-                    continue;
-
-                xFloatStore = xOp(xFloatStore);
-                yFloatStore = yOp(yFloatStore);
-            }
-        }
+        //}
     }
 }
