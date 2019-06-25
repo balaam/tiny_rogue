@@ -278,6 +278,7 @@ namespace game
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _view.Blit(EntityManager, new int2(30, 21), "PRESS H FOR HISCORES");
             _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
