@@ -133,8 +133,7 @@ namespace game
                     if (action == Action.None)
                         return;
 
-                    anim.StartAnimation(action);
-                    tms.AddActionRequest(action, player, coord);
+                    tms.AddActionRequest(action, playerEntity, coord);
                     
                     bool moved = false;
                     if (!GlobalGraphicsSettings.ascii)
