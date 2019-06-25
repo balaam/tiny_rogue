@@ -27,11 +27,11 @@ If you open the project and press play you should get a player in a big room.
 Character size:
  - 9 x 16 pixels
  - 0.09 x 0.16 world space units
- 
+
 Resolution:
  - 80 x 25 characters
  - 720 x 400 pixels
- 
+
 Camera half vertical height:
  - 2 world units
 
@@ -64,6 +64,10 @@ _Add your name here to confirm you can push to this repository._
 [@danielsc](https://github.com/balaam) <br/>
 [@jimmy-jam](https://github.com/jimmy-jam) <br/>
 [@chris-addison](https://github.com/chris-addison) <br />
+[@leonhardp](https://github.com/leonhardp)<br/>
+[@sophiaaar](https://github.com/sophiaaar) <br />
+[@unity-cwells](https://github.com/unity-cwells) <br/>
+[@vwillyams](https://github.com/vwillyams) <br/>
 
 
 
