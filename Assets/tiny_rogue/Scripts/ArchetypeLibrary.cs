@@ -82,7 +82,8 @@ namespace game
                 typeof(LayerSorting),  
                 typeof(HealthPoints),
                 typeof(BlockMovement),
-                typeof(Creature)
+                typeof(tag_Creature),
+                typeof(tag_Hostile)
             });
 
             Gold = em.CreateArchetype(new ComponentType[] //trying

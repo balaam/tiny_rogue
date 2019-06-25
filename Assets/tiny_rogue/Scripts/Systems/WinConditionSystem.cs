@@ -23,7 +23,7 @@ namespace game
                 if (playerPos.x == crownPos.x && playerPos.y == crownPos.y)
                 {
                     var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                    gss.MoveToGameWin(PostUpdateCommands);    
+                    gss.MoveToGameWin(PostUpdateCommands);
                 }
             });
         }

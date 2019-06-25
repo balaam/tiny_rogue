@@ -123,9 +123,11 @@ namespace game
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
+            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
 
             var time = Time.time;
-
+            tms.CleanActionQueue();
             if (gss.IsInGame)
             {
                 Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
@@ -135,32 +137,10 @@ namespace game
                     if (action == Action.None)
                         return;
 
-                    var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                    var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
 
                     anim.StartAnimation(action);
-
-                    switch (action)
-                    {
-                        case Action.MoveUp:
-                        case Action.MoveDown:
-                        case Action.MoveRight:
-                        case Action.MoveLeft:
-                            var move = GetMove(action);
-                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
-                            break;
-                        case Action.Interact:
-                            pas.Interact(coord);
-                            break;
-                        case Action.Wait:
-                            Debug.Log("Wait is happening.");
-                            pas.Wait();
-                            break;
-                        case Action.None:
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException("Unhandled input");
-                    }
+                    tms.AddActionRequest(action, player, coord);
+                    
 
                     // Save the action to the action stream if the player has it
                     if (!Replaying && EntityManager.HasComponent<ActionStream>(player))
