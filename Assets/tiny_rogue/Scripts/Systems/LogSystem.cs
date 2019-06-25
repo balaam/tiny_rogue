@@ -71,7 +71,7 @@ namespace game
                 if(_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
-            else
+            else if(gss.IsInGame)
                 view.ClearLine(EntityManager, 0, ' ');
         }
         
