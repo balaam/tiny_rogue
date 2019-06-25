@@ -13,7 +13,8 @@ namespace game
         MoveRight = 4,
         Wait = 5,
         Interact = 6,
-        Attack = 7
+        Attack = 7,
+        Move = 8
     }
 
     public class PlayerActionSystem : ComponentSystem
@@ -51,8 +52,9 @@ namespace game
             tms.NeedToTickTurn = true;
         }
 
-        public void TryMove(Entity e, WorldCoord c, bool alternateMoveAction, EntityCommandBuffer commandBuffer)
+        public bool TryMove(Entity e, WorldCoord c, bool alternateMoveAction, EntityCommandBuffer commandBuffer)
         {
+            bool moved = false;
             if (!alternateMoveAction)
             {
                 Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach(
@@ -62,8 +64,20 @@ namespace game
                         if (tileCoord.x == c.x && tileCoord.y == c.y)
                         {
                             EntityManager.SetComponentData(e, tileCoord);
-                            EntityManager.SetComponentData(e, tileTrans);
+                            // Graphical will animate the sprite to the new position.
+                            if (GlobalGraphicsSettings.ascii)
+                            {
+                                EntityManager.SetComponentData(e, tileTrans);
+                            }
+                            else
+                            {
+                                var player = EntityManager.GetComponentData<Player>(e);
+                                player.Initial = EntityManager.GetComponentData<Translation>(e).Value;
+                                player.Destination = tileTrans.Value;
+                                EntityManager.SetComponentData(e, player);
+                            }
                             tms.NeedToTickTurn = true;
+                            moved = true;
                         }
                     });
             }
@@ -91,8 +105,10 @@ namespace game
                     tms.NeedToTickTurn = true;
                     var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
                     inventorySystem.LogItemsAt(c);
-               }
+                }
             });
+            
+            return moved;
         }
     }
 }
