@@ -63,7 +63,7 @@ namespace game
                 case 'd':
                     result = (char) SpriteEnum.CombatDummy;
                     break;
-                case '\\':
+                case '/':
                     result = (char) SpriteEnum.OpenDoor;
                     break;
                 case '|':
