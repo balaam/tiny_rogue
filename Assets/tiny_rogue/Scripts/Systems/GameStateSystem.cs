@@ -3,7 +3,9 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
+using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
+using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
 using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 #else
@@ -23,7 +25,6 @@ namespace game
             Title,
             InGame,
             ReadQueuedLog,
-            Replay,
             GameOver,
             NextLevel,
             DebugLevelSelect,
@@ -37,6 +38,11 @@ namespace game
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
+
+        protected override void OnCreate()
+        {
+            base.OnCreate();
+        }
 
         private bool TryGenerateViewport()
         {
@@ -99,14 +105,29 @@ namespace game
 
             var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
-
-            //TODO: random positions for gold
-            var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
            
+            GenerateGold();
+
             var collectibleCoord = new int2(15,12);
             _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
   
+       }
+
+       void GenerateGold()
+       {
+            Random random = new Random((uint)UnityEngine.Time.time);//seed
+            int goldPiles = (int)math.floor(random.NextFloat() * 10);
+            for (int i = 0; i < 5; i++) //hard code number of piles for now
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+
+                //int randX = (int)math.floor(random.NextFloat()  * (View.Width - 2)); // -2 to avoid borders
+                //int randY = (int)math.floor(random.NextFloat()  * (View.Height - 2));
+                //var goldCoord = new int2(randX+3, randY+3); // +3 to avoid borders
+
+                var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+            }
        }
 
         public void GenerateCombatTestLevel()
@@ -139,14 +160,9 @@ namespace game
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (input.GetKeyDown(KeyCode.D))
                     {
                         MoveToDebugLevelSelect();
-                    }
-                    else if (input.GetKeyDown(KeyCode.R))
-                    {
-                        
                     }
                     else if(input.GetKeyDown(KeyCode.H))
                     {
@@ -154,12 +170,7 @@ namespace game
                     }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
-                        var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-                        GenerateLevel();
-                        tms.ResetTurnCount();
-                        log.AddLog("You are in a vast cavern.    Press Space for next log");
-                        log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
-                        _state = eGameState.InGame;
+                        MoveToInGame(false);
                     }
                 } break;
                 case eGameState.InGame:
@@ -181,15 +192,13 @@ namespace game
                         _state = eGameState.InGame;
                     }
                 } break;
-                case eGameState.Replay:
-                {
-                    // TODO: Replay recorded input
-                } break;
                 case eGameState.GameOver:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();
+                    else if (input.GetKeyDown(KeyCode.R))
+                        MoveToInGame(true);
                 } break;
                 case eGameState.NextLevel:
                 {
@@ -264,6 +273,27 @@ namespace game
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
             _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
+        }
+
+        public void MoveToInGame( bool replay )
+        {                  
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();      
+            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
+            
+            // TODO: Set this properly (make it random the first time, but ditto for the replay case)
+            RandomRogue.Init(1); 
+            
+            if( replay )
+                pis.StartReplaying();
+            else
+                pis.StartRecording();
+            
+            GenerateLevel();
+            tms.ResetTurnCount();
+            log.AddLog("You are in a vast cavern.    Press Space for next log");
+            log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
+            _state = eGameState.InGame;
         }
 
         public void MoveToGameOver(EntityCommandBuffer cb)
