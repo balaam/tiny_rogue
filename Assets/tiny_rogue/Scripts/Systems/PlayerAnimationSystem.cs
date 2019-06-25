@@ -107,7 +107,7 @@ public class PlayerAnimationSystem : ComponentSystem
                 {
                     player.AnimationTrigger = true;
                     player.AnimationTime = 0.5f;
-                    sequencePlayer.speed = 0.5f;
+                    sequencePlayer.speed = player.Action == Action.Move ? 0.75f : 0.5f;
                     SetAnimation(ref player, ref sequencePlayer);
                 }
                 else

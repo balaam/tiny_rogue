@@ -53,9 +53,7 @@ namespace game
 	    }
 	    public void Blit(EntityCommandBuffer ecb, int2 xy, int c, Color color)
 	    {
-			if( !GlobalGraphicsSettings.ascii )
-				return;
-			
+			if (!GlobalGraphicsSettings.ascii) return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    
 		    ecb.SetComponent(e, new Sprite2DRenderer

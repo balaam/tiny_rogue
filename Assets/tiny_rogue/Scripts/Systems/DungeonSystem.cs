@@ -127,6 +127,9 @@ namespace game
 
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
+
+                if (GlobalGraphicsSettings.ascii)
+                    renderer.color = TinyRogueConstants.DefaultColor;
             });
         }
 
@@ -236,7 +239,6 @@ namespace game
             var from = Math.Min(_from, _to);
             var to = Math.Max(_from, _to);
             int currentY = from;
-
             while (currentY < to)
             {
                 var xy = new int2(x, currentY);
