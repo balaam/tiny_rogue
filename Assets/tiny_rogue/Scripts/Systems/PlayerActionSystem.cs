@@ -6,13 +6,13 @@ namespace game
 {
     public enum Action
     {
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        Wait,
-        Interact,
-        None
+        None = 0,
+        MoveUp = 1,
+        MoveDown = 2,
+        MoveLeft = 3,
+        MoveRight = 4,
+        Wait = 5,
+        Interact = 6
     }
 
     public class PlayerActionSystem : ComponentSystem

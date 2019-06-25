@@ -69,6 +69,7 @@ namespace game
                 {
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                     var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
+                    var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
 
                     var action = GetAction();
                     
@@ -94,8 +95,10 @@ namespace game
                             throw new ArgumentOutOfRangeException("Unhandled input");
                     }
                     
+                    anim.StartAnimation(action);
+                    
                     // Save the action to the action stream
-                    if( action != Action.None )
+                    if (action != Action.None)
                         rec.AddAction(action);
                     
                 });
