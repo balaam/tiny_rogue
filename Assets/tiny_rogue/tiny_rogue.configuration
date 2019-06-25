@@ -21,12 +21,16 @@
                 "SceneReference": {
                     "SceneGuid": "47b2702d9bcf406ab824394185184228"
                 }
+            }, {
+                "SceneReference": {
+                    "SceneGuid": "47b2702d9bcf406ab824394185184229"
+                }
             }]
         }, {
             "$type": "Unity.Tiny.Scenes.StartupScenes, Unity.Tiny.Scenes",
             "Elements": [{
                 "SceneReference": {
-                    "SceneGuid": "47b2702d9bcf406ab824394185184228"
+                    "SceneGuid": "47b2702d9bcf406ab824394185184229"
                 }
             }]
         }, {

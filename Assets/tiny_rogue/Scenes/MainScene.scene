@@ -1006,7 +1006,11 @@
                 "StableTypeHash": 7693371993889051491
             }, {
                 "StableTypeHash": 10723762297176986422
+            }, {
+                "StableTypeHash": 13843021685803350563
             }]
+        }, {
+            "$type": "InventoryComponent, tiny_rogue"
         }, {
             "$type": "game.BlockMovement, tiny_rogue"
         }, {
@@ -1019,7 +1023,11 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "game.GraphicsSettings, tiny_rogue",
-            "ascii": true
+            "ascii": true,
+            "TileSize": {
+                "x": 0.09,
+                "y": 0.16
+            }
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
         }, {
@@ -1090,6 +1098,8 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 5494849717997478739
+            }, {
+                "StableTypeHash": 16491660523966577299
             }]
         }]
     }]

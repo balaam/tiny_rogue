@@ -38,6 +38,9 @@ namespace game
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
                     gss.MoveToNextLevel(PostUpdateCommands);
             });
+
+            var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+            inventorySystem.CollectItemsAt(c);
         }
 
         public void Wait()
@@ -85,7 +88,9 @@ namespace game
                     }
 
                     tms.NeedToTickTurn = true;
-                }
+                    var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+                    inventorySystem.LogItemsAt(c);
+               }
             });
         }
     }

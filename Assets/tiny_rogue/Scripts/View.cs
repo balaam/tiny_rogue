@@ -79,12 +79,12 @@ namespace game
 	    /// <returns>A position in world space units at the position of the view coord.</returns>
 	    public float3 ViewCoordToWorldPos(int2 coord)
 	    {
-		    var startX = -(math.floor(Width / 2) * TinyRogueConstants.TileWidth);
-		    var startY = math.floor(Height / 2) * TinyRogueConstants.TileHeight;
+		    var startX = -(math.floor(Width / 2) * GlobalGraphicsSettings.TileSize.x);
+		    var startY = math.floor(Height / 2) * GlobalGraphicsSettings.TileSize.y;
 		    
 		    var pos = new float3(
-			    startX + (coord.x * TinyRogueConstants.TileWidth), 
-			    startY - (coord.y * TinyRogueConstants.TileHeight), 0);
+			    startX + (coord.x * GlobalGraphicsSettings.TileSize.x), 
+			    startY - (coord.y * GlobalGraphicsSettings.TileSize.y), 0);
 		    return pos;
 	    }
 	    
@@ -98,8 +98,8 @@ namespace game
 		    var pos = ViewCoordToWorldPos(coord);
 		    if (!GlobalGraphicsSettings.ascii)
 		    {
-			    pos.x += TinyRogueConstants.HalfTile;
-			    pos.y -= TinyRogueConstants.HalfTile;
+			    pos.x += GlobalGraphicsSettings.TileSize.x/2;
+			    pos.y -= GlobalGraphicsSettings.TileSize.y/2;
 		    }
 		    Debug.Log(pos.ToString());
 		    return pos;
