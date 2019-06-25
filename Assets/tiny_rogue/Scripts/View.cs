@@ -53,8 +53,7 @@ namespace game
 	    }
 	    public void Blit(EntityManager em, int2 xy, int c, Color color)
 	    {
-			if( !GlobalGraphicsSettings.ascii )
-				return;
+			if (!GlobalGraphicsSettings.ascii) return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
 		    s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char)c)];
@@ -69,7 +68,9 @@ namespace game
 	    public void ClearLine(EntityManager em, int line, char clearChar, Color color)
 	    {
 		    for (int i = 0; i < Width; i++)
+			{
 			    Blit(em, new int2(i, line), clearChar, color);
+			}
 	    }
 
 	    /// <summary>

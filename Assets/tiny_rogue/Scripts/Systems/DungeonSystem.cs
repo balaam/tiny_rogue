@@ -45,7 +45,7 @@ namespace game
         List<Room> _rooms = new List<Room>();
         Entity _dungeonViewEntity;
         View _view;
-        
+
         protected override void OnUpdate() {}
 
         public void GenerateDungeon(EntityCommandBuffer cb, View view)
@@ -89,7 +89,7 @@ namespace game
             //Add monsters
 
             PlacePlayer();
-            
+
             // Update the tiles
             Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
             {
@@ -118,7 +118,10 @@ namespace game
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
 
-                renderer.color = TinyRogueConstants.DefaultColor;
+                if (GlobalGraphicsSettings.ascii)
+                {
+                    renderer.color = TinyRogueConstants.DefaultColor;
+                }
             });
         }
 
@@ -231,9 +234,9 @@ namespace game
                     int2 xy = new int2(x, currentY);
                     CreateHallwayTile(xy, HallDirection.Vertical);
                     CreateWallsIfEmpty(
-                        new int2(x + 1, currentY), 
-                        new int2(x - 1, currentY), 
-                        new int2(x + 1, currentY + 1), 
+                        new int2(x + 1, currentY),
+                        new int2(x - 1, currentY),
+                        new int2(x + 1, currentY + 1),
                         new int2(x - 1, currentY - 1),
                         new int2(x + 1, currentY - 1),
                         new int2(x - 1, currentY + 1));
@@ -264,7 +267,7 @@ namespace game
             {
                 int tileIndex = View.XYToIndex(pos, _view.Width);
                 Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-                
+
                 //only add if the space is blank
                 if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')])
                 {
