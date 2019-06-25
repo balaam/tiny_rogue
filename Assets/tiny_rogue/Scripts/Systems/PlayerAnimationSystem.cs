@@ -51,6 +51,11 @@ public class PlayerAnimationSystem : ComponentSystem
         }
     }
 
+    /// <summary>
+    /// Start an animation for a given action.
+    /// </summary>
+    /// <param name="action">Action to map to animation. Avoid sending None.</param>
+    /// <param name="moved">Whether or not the character can move.</param>
     public void StartAnimation(Action action, bool moved)
     {
         // Keep this exclusively for the graphical version
@@ -58,13 +63,6 @@ public class PlayerAnimationSystem : ComponentSystem
         {
             Entities.WithAll<Player>().ForEach((ref Player player, ref Sprite2DSequencePlayer sequencePlayer) =>
             {
-                // If already doing an action, don't switch
-                // TODO: throw an error here
-                if (player.Action != Action.None) {
-                    Debug.Log($"Already doing action! {(int) player.Action}");
-                    return;
-                }
-
                 player.Action = action;
                 
                 // Map directional move to move and direction
@@ -123,7 +121,6 @@ public class PlayerAnimationSystem : ComponentSystem
 
     public void SetAnimation(ref Player player, ref Sprite2DSequencePlayer sequencePlayer)
     {
-
         var direction = (int)player.Direction;
         var action = (int)player.Action;
         Debug.Log($"Try set animation: {direction} {action}");

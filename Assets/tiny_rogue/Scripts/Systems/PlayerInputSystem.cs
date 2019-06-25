@@ -133,6 +133,7 @@ namespace game
 
                     if (action == Action.None)
                         return;
+                        
 
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                     var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
@@ -162,6 +163,7 @@ namespace game
 
                     if (!GlobalGraphicsSettings.ascii)
                     {
+                        Debug.Log($"Animate {(int)action} {moved}");
                         anim.StartAnimation(action, moved);
                     }
 
