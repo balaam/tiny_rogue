@@ -85,6 +85,7 @@ namespace game
                             pas.Interact(coord);
                             break;
                         case Action.Wait:
+                            Debug.Log("Wait is happening.");
                             pas.Wait();
                             break;
                         case Action.None:

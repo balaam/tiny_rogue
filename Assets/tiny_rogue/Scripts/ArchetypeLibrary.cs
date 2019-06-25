@@ -4,6 +4,7 @@ using Unity.Tiny.Core2D;
 using UnityEngine;
 using Unity.Mathematics;
 using Unity.Tiny.Core;
+using Color = Unity.Tiny.Core2D.Color;
 
 namespace game
 {
@@ -108,7 +109,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
+            s.color = TinyRogueConstants.DefaultColor;
             s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
 
             entityManager.SetComponentData(entity, s);
@@ -131,7 +132,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
+            s.color = TinyRogueConstants.DefaultColor;
             s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '^' : 1];
             l.order = 1;
 
