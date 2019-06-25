@@ -13,7 +13,8 @@ namespace game
         MoveRight = 4,
         Wait = 5,
         Interact = 6,
-        Attack = 7
+        Attack = 7,
+        Move = 8
     }
 
     public class PlayerActionSystem : ComponentSystem
@@ -32,12 +33,12 @@ namespace game
             base.OnCreate();
         }
 
-        public void Interact(WorldCoord c)
+        public void Interact(WorldCoord c, EntityCommandBuffer commandBuffer)
         {
             Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
             {
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
-                    gss.MoveToNextLevel(PostUpdateCommands);
+                    gss.MoveToNextLevel(commandBuffer);
             });
 
             var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
@@ -51,23 +52,41 @@ namespace game
             tms.NeedToTickTurn = true;
         }
 
-        public void TryMove(Entity e, WorldCoord c, bool alternateMoveAction, EntityCommandBuffer commandBuffer)
+        public bool TryMove(Entity e, WorldCoord c, EntityCommandBuffer commandBuffer)
         {
-            if (!alternateMoveAction)
+            // Try and move the player first
+            bool moved = false;
+            Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
             {
-                Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach(
-                    (ref WorldCoord tileCoord, ref Translation tileTrans) =>
+                // This location the player wants to move has nothing blocking them, so update their position.
+                if (tileCoord.x == c.x && tileCoord.y == c.y)
+                {
+                    EntityManager.SetComponentData(e, tileCoord);
+                    // Graphical will animate the sprite to the new position.
+                    if (GlobalGraphicsSettings.ascii)
                     {
-                        // This location the player wants to move has nothing blocking them, so update their position.
-                        if (tileCoord.x == c.x && tileCoord.y == c.y)
-                        {
-                            EntityManager.SetComponentData(e, tileCoord);
-                            EntityManager.SetComponentData(e, tileTrans);
-                            tms.NeedToTickTurn = true;
-                        }
-                    });
-            }
+                        EntityManager.SetComponentData(e, tileTrans);
+                    }
+                    else
+                    {
+                        var player = EntityManager.GetComponentData<Player>(e);
+                        player.Initial = EntityManager.GetComponentData<Translation>(e).Value;
+                        player.Destination = tileTrans.Value;
+                        EntityManager.SetComponentData(e, player);
+                    }
+                    tms.NeedToTickTurn = true;
+                    moved = true;
+                }
+            });
 
+            // Update the inventory when we move
+            if (moved)
+            {
+                var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+                inventorySystem.LogItemsAt(c);
+            }
+            
+            // Try and open doors in front of you
             Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer, ref Door door) =>
             {
                 if (tileCoord.x == c.x && tileCoord.y == c.y)
@@ -78,21 +97,13 @@ namespace game
                         log.AddLog("You opened a door.");
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
-                        renderer.sprite = SpriteSystem.IndexSprites['\\'];
+                        renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')];
+                        tms.NeedToTickTurn = true;
                     }
-                    else if (alternateMoveAction)
-                    {
-                        log.AddLog("You closed a door.");
-                        door.Opened = false;
-                        commandBuffer.AddComponent(doorEntity, new BlockMovement());
-                        renderer.sprite = SpriteSystem.IndexSprites['|'];
-                    }
-
-                    tms.NeedToTickTurn = true;
-                    var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
-                    inventorySystem.LogItemsAt(c);
-               }
+                }
             });
+            
+            return moved;
         }
     }
 }

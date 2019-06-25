@@ -4,6 +4,21 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
+    public enum SpriteEnum
+    {
+        EmptyTile = 0,
+        Spikes,
+        Crown,
+        Stairway,
+        Collectible,
+        Gold,
+        CombatDummy,
+        OpenDoor,
+        ClosedDoor,
+        Wall,
+        Floor
+
+    }
     /// <summary>
     /// Reads in the ASCII sprites and stores then in an array indexable by the chars decimal value. i.e. A is 65
     /// </summary>
@@ -17,13 +32,64 @@ namespace game
             get { return _loaded; }
         }
 
+        public static char ConvertToGraphics(char c)
+        {
+            char result = c;
+
+            if (GlobalGraphicsSettings.ascii)
+                return result;
+
+            switch (c)
+            {
+                case ' ':
+                    // TODO: need to figure out empty/none tile
+                    result = (char) SpriteEnum.EmptyTile;
+                    break;
+                case '^':
+                    result = (char) SpriteEnum.Spikes;
+                    break;
+                case (char)127:
+                    result = (char) SpriteEnum.Crown;
+                    break;
+                case 'Z':
+                    result = (char) SpriteEnum.Stairway;
+                    break;
+                case 'S':
+                    result = (char) SpriteEnum.Collectible;
+                    break;
+                case (char)236:
+                    result = (char) SpriteEnum.Gold;
+                    break;
+                case 'd':
+                    result = (char) SpriteEnum.CombatDummy;
+                    break;
+                case '\\':
+                    result = (char) SpriteEnum.OpenDoor;
+                    break;
+                case '|':
+                    result = (char) SpriteEnum.ClosedDoor;
+                    break;
+                case '#':
+                    result = (char) SpriteEnum.Wall;
+                    break;
+                case '.':
+                    result = (char) SpriteEnum.Floor;
+                    break;
+
+
+            }
+
+            return result;
+        }
+
         protected override void OnUpdate()
         {
             if (SpriteSystem._loaded)
                 return;
-            
+
             // Get the graphics settings
-            Entities.ForEach((ref GraphicsSettings gs) => { GlobalGraphicsSettings.ascii = gs.ascii;
+            Entities.ForEach((ref GraphicsSettings gs) => {
+                GlobalGraphicsSettings.ascii = gs.ascii;
                 GlobalGraphicsSettings.TileSize = gs.TileSize;
             });
 

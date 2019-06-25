@@ -1,8 +1,11 @@
+using System;
 using game;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Tiny.Core;
 using Unity.Tiny.Core2D;
 using UnityEngine;
+using Action = game.Action;
 
 public class PlayerAnimationSystem : ComponentSystem
 {
@@ -13,22 +16,33 @@ public class PlayerAnimationSystem : ComponentSystem
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
-            Entities.WithAll<Player>().ForEach((ref Player player, ref Sprite2DSequencePlayer sequencePlayer) =>
+            Entities.ForEach((ref Player player, ref Sprite2DSequencePlayer sequencePlayer, ref Translation translation) =>
             {
+                if (player.Moving)
+                {
+                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
+                    // Double frame time, so the move takes 0.5 of a second
+                    player.MoveTime += frameTime * 2;
+                    translation.Value = math.lerp(player.Initial, player.Destination, player.MoveTime);
+                    // Ensure player is left in correct position
+                    if (player.MoveTime > 1f)
+                    {
+                        player.Moving = false;
+                        translation.Value = player.Destination;
+                    }
+                }
+                
                 if (player.AnimationTrigger)
                 {
-                    Debug.Log("Count down animation");
                     // Count down one-off animation/action
                     var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
                     player.AnimationTime -= frameTime;
-                    Debug.Log("Frame time" + frameTime);
 
                     if (player.AnimationTime <= 0f)
                     {
                         player.AnimationTrigger = false;
                         player.AnimationTime = 0f;
                         player.Action = Action.None;
-                        //sequencePlayer.sequence =
                         SetAnimation(ref player, ref sequencePlayer);
                         Debug.Log("Switch animation");
                     }
@@ -37,42 +51,60 @@ public class PlayerAnimationSystem : ComponentSystem
         }
     }
 
-    public void StartAnimation(Action action)
+    /// <summary>
+    /// Start an animation for a given action.
+    /// </summary>
+    /// <param name="action">Action to map to animation. Avoid sending None.</param>
+    /// <param name="moved">Whether or not the character can move.</param>
+    public void StartAnimation(Action action, bool moved)
     {
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
             Entities.WithAll<Player>().ForEach((ref Player player, ref Sprite2DSequencePlayer sequencePlayer) =>
             {
-                // If already doing an action, don't switch
-                // TODO: throw an error here
-                if (player.Action != Action.None) {
-                    Debug.Log($"Already doing action! {(int) player.Action}");
-                    return;
+                player.Action = action;
+                
+                // Map directional move to move and direction
+                if (player.Action == Action.MoveLeft)
+                {
+                    player.Direction = Direction.West;
+                    player.Action = Action.Move;
+                }
+                else if (player.Action == Action.MoveRight)
+                {
+                    player.Direction = Direction.East;
+                    player.Action = Action.Move;
+                }
+                else if (player.Action == Action.MoveUp)
+                {
+                    player.Direction = Direction.North;
+                    player.Action = Action.Move;
+                }
+                else if (player.Action == Action.MoveDown)
+                {
+                    player.Direction = Direction.South;
+                    player.Action = Action.Move;
                 }
 
-                player.Action = action;
+                // Don't show walking animation if character is moving towards wall
+                if (player.Action == Action.Move)
+                {
+                    if (!moved)
+                    {
+                        player.Action = Action.None;
+                    }
+                    else
+                    {
+                        player.Moving = true;
+                        player.MoveTime = 0f;
+                    }
+                }
+                
                 Debug.Log($"Setting Action as {(int)player.Action}");
 
                 if (player.Action != Action.None)
                 {
-                    if (player.Action == Action.MoveLeft)
-                    {
-                        player.Direction = Direction.West;
-                    }
-                    else if (player.Action == Action.MoveRight)
-                    {
-                        player.Direction = Direction.East;
-                    }
-                    else if (player.Action == Action.MoveUp)
-                    {
-                        player.Direction = Direction.North;
-                    }
-                    else if (player.Action == Action.MoveDown)
-                    {
-                        player.Direction = Direction.South;
-                    }
-
                     player.AnimationTrigger = true;
                     player.AnimationTime = 0.5f;
                     sequencePlayer.speed = 0.5f;
@@ -89,7 +121,6 @@ public class PlayerAnimationSystem : ComponentSystem
 
     public void SetAnimation(ref Player player, ref Sprite2DSequencePlayer sequencePlayer)
     {
-
         var direction = (int)player.Direction;
         var action = (int)player.Action;
         Debug.Log($"Try set animation: {direction} {action}");

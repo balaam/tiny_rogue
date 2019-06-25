@@ -13,25 +13,25 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
+    struct TimedAction
+    {
+        public Action action;
+        public float time;
+    }
+
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
         private bool Replaying = false;
         private float StartTime;
 
-        private bool alternateAction = false;
+        private List<TimedAction> ActionStream = new List<TimedAction>();
 
         public void StartRecording()
         {
             Replaying = false;
             StartTime = Time.time;
-
-            // Reset all ActionStream buffers
-            Entities.WithAll<ActionStream>().ForEach(e =>
-            {
-                var stream = EntityManager.GetBuffer<ActionStream>(e);
-                stream.Clear();
-            });
+            ActionStream.Clear();
         }
 
         public void StartReplaying()
@@ -44,11 +44,6 @@ namespace game
 
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
-
-            if (input.GetKey(KeyCode.LeftControl))
-                alternateAction = true;
-            else
-                alternateAction = false;
 
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
@@ -70,25 +65,18 @@ namespace game
 
         private Action GetActionFromActionStream(Entity e, float time)
         {
-            // Don't run if we don't have an action stream
-            if (!EntityManager.HasComponent<ActionStream>(e))
+            if (ActionStream.Count == 0)
                 return Action.None;
-
-            // Get the action buffer
-            var stream = EntityManager.GetBuffer<ActionStream>(e);
-            if (stream.Length <= 0)
-                return Action.None;
-
-            var action = stream[0];
+            
+            var action = ActionStream[0];
 
             // Don't run if we've not reached the right time yet
             if (time < action.time)
                 return Action.None;
 
             // Remove and run the action
-            stream.RemoveAt(0);
+            ActionStream.RemoveAt(0);
             return action.action;
-
         }
 
         private WorldCoord GetMove(Action a)
@@ -124,22 +112,29 @@ namespace game
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
 
-            var time = Time.time;
+            var time = Time.time - StartTime;
 
             if (gss.IsInGame)
             {
-                Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
+                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Player player, ref WorldCoord coord) =>
                 {
-                    var action = GetAction(player, time);
+                    // In Graphical, you have to wait for the animation of the action to complete first.
+                    if (!GlobalGraphicsSettings.ascii)
+                    {
+                        var currentAction = EntityManager.GetComponentData<Player>(playerEntity).Action;
+                        if (currentAction != Action.None) return;
+                    }
+
+                    var action = GetAction(playerEntity, time);
 
                     if (action == Action.None)
                         return;
+                        
 
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                     var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
 
-                    anim.StartAnimation(action);
-
+                    bool moved = false;
                     switch (action)
                     {
                         case Action.MoveUp:
@@ -147,10 +142,10 @@ namespace game
                         case Action.MoveRight:
                         case Action.MoveLeft:
                             var move = GetMove(action);
-                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
+                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, PostUpdateCommands);
                             break;
                         case Action.Interact:
-                            pas.Interact(coord);
+                            pas.Interact(coord, PostUpdateCommands);
                             break;
                         case Action.Wait:
                             Debug.Log("Wait is happening.");
@@ -162,14 +157,19 @@ namespace game
                             throw new ArgumentOutOfRangeException("Unhandled input");
                     }
 
-                    // Save the action to the action stream if the player has it
-                    if (!Replaying && EntityManager.HasComponent<ActionStream>(player))
+                    if (!GlobalGraphicsSettings.ascii)
                     {
-                        var stream = EntityManager.GetBuffer<ActionStream>(player);
-                        stream.Add(new ActionStream
+                        Debug.Log($"Animate {(int)action} {moved}");
+                        anim.StartAnimation(action, moved);
+                    }
+
+                    // Save the action to the action stream if the player has it
+                    if (!Replaying)
+                    {
+                        ActionStream.Add(new TimedAction()
                         {
                             action = action,
-                            time = Time.time - StartTime
+                            time = time
                         });
                     }
                 });
