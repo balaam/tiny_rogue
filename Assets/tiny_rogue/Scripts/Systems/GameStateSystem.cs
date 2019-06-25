@@ -149,6 +149,7 @@ namespace game
                             
                             hp.max = TinyRogueConstants.StartPlayerHealth;
                             hp.now = hp.max;
+
                         });
                         _state = eGameState.InGame;
                     }
@@ -158,6 +159,9 @@ namespace game
                     var input = World.GetExistingSystem<InputMoveSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     var ds = World.GetExistingSystem<DeathSystem>();
+                    var lvl = World.GetExistingSystem<LevelSystem>();
+
+                    lvl.OnUpdateManual();
                     sbs.OnUpdateManual();  
                     input.OnUpdateManual();  
                     

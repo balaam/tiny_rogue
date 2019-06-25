@@ -13,7 +13,7 @@ namespace game
         protected override void OnUpdate()
         {
             // Did anything with health step on a trap
-            Entities.ForEach((Entity creature, ref WorldCoord coord, ref HealthPoints hp) =>
+            Entities.ForEach((Entity creature, ref WorldCoord coord, ref HealthPoints hp, ref ExperiencePoints xp) =>
             {
                 int2 creaturePos = new int2(coord.x, coord.y);
                 int dmg = 0;
