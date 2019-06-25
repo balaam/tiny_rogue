@@ -113,7 +113,6 @@ namespace game
             if (GlobalGraphicsSettings.ascii)
             {
                 s.color = TinyRogueConstants.DefaultColor;
-                s.color.a = 0;
             }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];

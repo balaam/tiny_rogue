@@ -12,6 +12,9 @@ namespace game
 
         protected override void OnUpdate()
         {
+            if (!EntityManager.World.GetExistingSystem<GameStateSystem>().IsInGame)
+                return;
+
             Entities.WithAll<Sprite2DRenderer>().ForEach((Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
             {
                 View view = EntityManager.World.GetExistingSystem<GameStateSystem>().View;
@@ -63,7 +66,7 @@ namespace game
 
                     while (currentPos.x != endPos.x && currentPos.y != endPos.y)
                     {
-                        currentPos = AStarPathfinding.getPath(currentPos, endPos);
+                        currentPos = AStarPathfinding.getNextStep(currentPos, endPos);
                         Console.WriteLine(currentPos.x.ToString() + " " + currentPos.y.ToString());
                         int index = View.XYToIndex(currentPos, view.Width);
                         Console.WriteLine("Index: " + index);
