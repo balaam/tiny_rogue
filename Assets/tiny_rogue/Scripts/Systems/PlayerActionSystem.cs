@@ -54,6 +54,7 @@ namespace game
 
         public bool TryMove(Entity e, WorldCoord c, EntityCommandBuffer commandBuffer)
         {
+            // Try and move the player first
             bool moved = false;
             Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
             {
@@ -77,7 +78,15 @@ namespace game
                     moved = true;
                 }
             });
+
+            // Update the inventory when we move
+            if (moved)
+            {
+                var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+                inventorySystem.LogItemsAt(c);
+            }
             
+            // Try and open doors in front of you
             Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer, ref Door door) =>
             {
                 if (tileCoord.x == c.x && tileCoord.y == c.y)
@@ -89,11 +98,8 @@ namespace game
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
                         renderer.sprite = SpriteSystem.IndexSprites['\\'];
+                        tms.NeedToTickTurn = true;
                     }
-
-                    tms.NeedToTickTurn = true;
-                    var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
-                    inventorySystem.LogItemsAt(c);
                 }
             });
             
