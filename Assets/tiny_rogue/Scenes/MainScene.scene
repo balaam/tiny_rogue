@@ -259,60 +259,8 @@
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
-            "$type": "game.Viewport, tiny_rogue",
-            "width": 80,
-            "height": 25
-        }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
-        }, {
-            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
-            "a": 5504126710941958152,
-            "b": 9473191152053819405
-        }, {
-            "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
-            "Value": {}
-        }, {
-            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
-            "Elements": [{
-                "c": "V"
-            }, {
-                "c": "i"
-            }, {
-                "c": "e"
-            }, {
-                "c": "w"
-            }]
-        }, {
-            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
-            "Elements": [{
-                "StableTypeHash": 7960064150805274675
-            }, {
-                "StableTypeHash": 12662904853204722592
-            }, {
-                "StableTypeHash": 874803706151837934
-            }, {
-                "StableTypeHash": 8237341010163496558
-            }, {
-                "StableTypeHash": 5507798086671754375
-            }, {
-                "StableTypeHash": 12944729952285467423
-            }, {
-                "StableTypeHash": 793987765392955020
-            }, {
-                "StableTypeHash": 266869500686333426
-            }, {
-                "StableTypeHash": 3206380062223837345
-            }, {
-                "StableTypeHash": 17743220034302784721
-            }]
-        }]
-    }, {
-        "Components": [{
-            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 3
+            "Index": 2
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 5544385172088507114,
@@ -895,6 +843,78 @@
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
+            "$type": "game.DungeonGenerator, tiny_rogue",
+            "MaxNumberOfRooms": 11,
+            "MinRoomSize": 6,
+            "MaxRoomSize": 10
+        }, {
+            "$type": "game.Viewport, tiny_rogue",
+            "width": 75,
+            "height": 25
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 3
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 6108766586587791819,
+            "b": 10777934410134167074
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "D"
+            }, {
+                "c": "u"
+            }, {
+                "c": "n"
+            }, {
+                "c": "g"
+            }, {
+                "c": "e"
+            }, {
+                "c": "o"
+            }, {
+                "c": "n"
+            }, {
+                "c": "G"
+            }, {
+                "c": "e"
+            }, {
+                "c": "n"
+            }, {
+                "c": "e"
+            }, {
+                "c": "r"
+            }, {
+                "c": "a"
+            }, {
+                "c": "t"
+            }, {
+                "c": "o"
+            }, {
+                "c": "r"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 14074595269790830574
+            }, {
+                "StableTypeHash": 17743220034302784721
+            }, {
+                "StableTypeHash": 10804810000010434563
+            }]
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
+        }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DRenderer, Unity.Tiny.Sprite2D",
             "sprite": "f7e01a39abd9a5e5f03157746d0948c8",
             "color": {
@@ -921,7 +941,7 @@
             "y": 10
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
+            "Index": 1
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 14079089624513006841,

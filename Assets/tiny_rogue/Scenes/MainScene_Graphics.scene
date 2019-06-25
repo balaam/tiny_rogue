@@ -128,6 +128,76 @@
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
+            "$type": "game.DungeonGenerator, tiny_rogue",
+            "MaxNumberOfRooms": 11,
+            "MinRoomSize": 6,
+            "MaxRoomSize": 10
+        }, {
+            "$type": "game.Viewport, tiny_rogue",
+            "width": 25,
+            "height": 25
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 3
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 10680426296835195622,
+            "b": 12022989197783759545
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "D"
+            }, {
+                "c": "u"
+            }, {
+                "c": "n"
+            }, {
+                "c": "g"
+            }, {
+                "c": "e"
+            }, {
+                "c": "o"
+            }, {
+                "c": "n"
+            }, {
+                "c": "G"
+            }, {
+                "c": "e"
+            }, {
+                "c": "n"
+            }, {
+                "c": "e"
+            }, {
+                "c": "r"
+            }, {
+                "c": "a"
+            }, {
+                "c": "t"
+            }, {
+                "c": "o"
+            }, {
+                "c": "r"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 17743220034302784721
+            }, {
+                "StableTypeHash": 10804810000010434563
+            }]
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
+        }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DRenderer, Unity.Tiny.Sprite2D",
             "sprite": "61f9d8efa25b73d93944f5894ed0ece3",
             "color": {

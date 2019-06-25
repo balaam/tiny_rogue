@@ -73,3 +73,5 @@ crashlytics-build.properties
 # Extra
 .DS_Store
 /[Ll]ibrary/
+Assets/TextMesh Pro.meta
+Assets/Plugins.meta
