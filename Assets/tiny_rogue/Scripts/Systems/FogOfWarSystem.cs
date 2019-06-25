@@ -64,15 +64,15 @@ namespace game
         {
             ResetTilesInSight();
 
-            for (int x = math.max(0, startPosition.x - sightDepth); x < math.min(view.Width, startPosition.x + sightDepth); x++)
+            for (int x = startPosition.x - sightDepth; x < startPosition.x + sightDepth; x++)
             {
-                for (int y = math.max(0, startPosition.y - sightDepth);  y < math.min(view.Height, startPosition.y + sightDepth); y++)
+                for (int y = startPosition.y - sightDepth;  y < startPosition.y + sightDepth; y++)
                 {
                     int2 endPos = new int2(x, y);
                     int2 currentPos = startPosition;
 
-                    //while (currentPos.x != endPos.x && currentPos.y != endPos.y)
-                    //{
+                    while (currentPos.x != endPos.x && currentPos.y != endPos.y)
+                    {
                         currentPos = AStarPathfinding.getNextStep(currentPos, endPos);
                         Console.WriteLine(currentPos.x.ToString() + " " + currentPos.y.ToString());
                         int index = View.XYToIndex(currentPos, view.Width);
@@ -90,18 +90,11 @@ namespace game
                             EntityManager.SetComponentData(tileEntity, tile);
 
                             if (EntityManager.HasComponent(tileEntity, typeof(BlockMovement)))
-                                continue;
+                                break;
                         }
-                        //else
-                        //    continue;
-                    //}
+                    }
                 }
             }
         }
-
-        //private void CheckDirection(int2 position, int checkDepth, View view, Func<float, float> xOp, Func<float, float> yOp)
-        //{
-
-        //}
     }
 }
