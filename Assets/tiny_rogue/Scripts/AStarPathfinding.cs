@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
 
@@ -31,6 +32,36 @@ namespace game
 
                 return result;
             }
+
+            // Convert a fully-defined Path into a struct Path which is easily usable by DOTS code
+            public SavedPath toSavedPath()
+            {
+                var result = new SavedPath();
+                var step = this;
+                var length = 0;
+                while (step?.Parent?.Parent != null)
+                {
+                    length++;
+                }
+                var steps = new NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
+                step = this;
+                for(var i = length; i >= 0; i--)
+                {
+                    steps[i] = step.location;
+                    step = step.Parent;
+                }
+                result.pathSteps = steps;
+                result.currentIdx = length - 1;
+                return result;
+            }
+        }
+        
+        public int2 stepAlong(SavedPath path, int2 currentLocation)
+        {
+            if (path.currentIdx >= 0) return currentLocation;
+            var result = path.pathSteps[path.currentIdx];
+            path.currentIdx--;
+            return result;
         }
 
         // The main method you should use to identify where a given monster will step next
@@ -47,7 +78,7 @@ namespace game
             var startLoc = new Path {location = start};
             var closedList = new List<Path>();
             var openList = new List<Path>();
-            var g = 0;
+            var travelDistance = 0;
 
             openList.Add(startLoc);
             while (openList.Count > 0)
@@ -66,7 +97,7 @@ namespace game
                     // If we haven't seen this square before then create the LocationRef
                     if (loc == null)
                     {
-                        loc = new Path {location = adjacentSquare, distanceFromStart = g};
+                        loc = new Path {location = adjacentSquare, distanceFromStart = travelDistance};
                         loc.distanceToDestination = EstimateDistanceToDestination(loc.location, end);
                         loc.totalPath = loc.distanceFromStart + loc.distanceToDestination;
                         loc.Parent = current;
@@ -77,9 +108,9 @@ namespace game
                     {
                         // If we have seen this square before but haven't searched it
                         // then check whether we found a faster path to reach the square
-                        if (g + loc.distanceToDestination < loc.totalPath)
+                        if (travelDistance + loc.distanceToDestination < loc.totalPath)
                         {
-                            loc.distanceFromStart = g;
+                            loc.distanceFromStart = travelDistance;
                             loc.totalPath = loc.distanceFromStart + loc.distanceToDestination;
                             loc.Parent = current;
                         }
