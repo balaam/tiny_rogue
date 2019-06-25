@@ -40,6 +40,8 @@ namespace game
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
 
+        private int dungeonLevel;
+
         protected override void OnCreate()
         {
             base.OnCreate();
@@ -100,13 +102,17 @@ namespace game
             var trap2Coord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
+            if (dungeonLevel < 3)
+            {
+                var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
+            }
+            else
+            {
+                var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            }
 
-            var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
-
-            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
-           
             GenerateGold();
 
             var collectibleCoord = new int2(15,12);
@@ -290,7 +296,9 @@ namespace game
             var log = EntityManager.World.GetExistingSystem<LogSystem>();      
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
-            
+
+            dungeonLevel = 1;
+
             // TODO: Set this properly (make it random the first time, but ditto for the replay case)
             RandomRogue.Init(1); 
             
@@ -327,6 +335,7 @@ namespace game
         public void MoveToNextLevel(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
+            dungeonLevel++;
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
