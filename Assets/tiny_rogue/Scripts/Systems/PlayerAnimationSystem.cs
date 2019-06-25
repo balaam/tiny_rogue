@@ -13,11 +13,11 @@ public class PlayerAnimationSystem : ComponentSystem
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
-            Debug.Log("Animation Update");
             Entities.WithAll<Player>().ForEach((ref Player player, ref Sprite2DSequencePlayer sequencePlayer) =>
             {
                 if (player.AnimationTrigger)
                 {
+                    Debug.Log("Count down animation");
                     // Count down one-off animation/action
                     var frameTime = World.TinyEnvironment().frameTime;
                     player.AnimationTime -= frameTime;
@@ -29,6 +29,7 @@ public class PlayerAnimationSystem : ComponentSystem
                         player.Action = Action.None;
                         //sequencePlayer.sequence = 
                         SetAnimation(ref player, ref sequencePlayer);
+                        Debug.Log("Switch animation");
                     }
                 }
             });
@@ -57,6 +58,7 @@ public class PlayerAnimationSystem : ComponentSystem
                 else
                 {
                     sequencePlayer.speed = 0.5f;
+                    SetAnimation(ref player, ref sequencePlayer);
                 }
             });
         }
@@ -64,6 +66,7 @@ public class PlayerAnimationSystem : ComponentSystem
 
     public void SetAnimation(ref Player player, ref Sprite2DSequencePlayer sequencePlayer)
     {
+        Debug.Log("Try set animation");
         var direction = (int)player.Direction;
         var action = (int)player.Action;
 
