@@ -93,7 +93,7 @@ namespace game
                             throw new ArgumentOutOfRangeException("Unhandled input");
                     }
                     
-                    // Save the action to the action streamIf the player has an action stream, add the action to it
+                    // Save the action to the action stream if the player has it
                     if (EntityManager.HasComponent<ActionStream>(player))
                     {
                         var stream = EntityManager.GetBuffer<ActionStream>(player);
