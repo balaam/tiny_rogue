@@ -17,13 +17,9 @@ namespace game
             }
         }
 
-        public void IncreaseScore(int scoreAdded)
+        public void SetHiScores(int remGold)
         {
-            CurrentScore += scoreAdded;
-        }
-
-        public void SetHiScores()
-        {
+            CurrentScore += remGold;
             for(int i = 0; i < HiScores.Length; i++)
             {
                 if(CurrentScore > HiScores[i])

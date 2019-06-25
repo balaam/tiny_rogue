@@ -38,7 +38,6 @@ namespace game
 
         public View View => _view;
         public TurnManager TurnManager => _turnManager;
-        public ScoreManager ScoreManager => _scoreManager;
         public bool IsInGame => (_state == eGameState.InGame);
 
         private bool TryGenerateViewport()
@@ -221,7 +220,6 @@ namespace game
                 } break;
                 case eGameState.GameOver:
                 {
-                    _scoreManager.SetHiScores();
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();                    
@@ -236,10 +234,11 @@ namespace game
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
 
                         // Place the player
-                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Level level) =>
                         {
                             coord.x = 10;
                             coord.y = 10;
+                            level.level += 1;
                             translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
                         });
                         _state = eGameState.InGame;
@@ -305,6 +304,12 @@ namespace game
             {
                 renderer.sprite = SpriteSystem.AsciiToSprite[' '];
             });
+            Entities.WithAll<Player>().ForEach((ref Gold gp, ref Level level) =>
+            {
+                _scoreManager.SetHiScores(gp.count + (level.level * 10));
+                level.level = 0;
+                gp.count = 0;
+            });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
             _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
@@ -316,7 +321,6 @@ namespace game
             CleanUpGameWorld();
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
-            _scoreManager.SetHiScores();
             _state = eGameState.GameOver;
         }
         

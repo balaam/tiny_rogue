@@ -36,7 +36,6 @@ namespace game
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
                 {
                     gss.MoveToNextLevel();
-                    gss.ScoreManager.IncreaseScore(20);
                 }
             });
         }
