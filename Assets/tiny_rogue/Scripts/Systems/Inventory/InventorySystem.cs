@@ -11,6 +11,7 @@ namespace game
     public class InventorySystem : ComponentSystem
     {
         Entity inventoryEntity;
+        int2 lastPosition;            
 
         protected override void OnCreate()
         {
@@ -26,33 +27,40 @@ namespace game
         protected override void OnUpdate()
         {
             
-            Entities.WithAll<InventoryComponent>().ForEach((Entity creature, ref WorldCoord coord) =>
-            {
-                int2 creaturePos = new int2(coord.x, coord.y);
+        }
 
-                Entities.WithAll<Collectible>().ForEach((Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
+        public void LogItemsAt(WorldCoord playerCoord)
+        {
+            int2 playerPos = new int2(playerCoord.x, playerCoord.y);
+
+            Entities.WithAll<Collectible>().ForEach(
+                (Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
                 {
-                    if (creaturePos.x == itemCoord.x && creaturePos.y == itemCoord.y)
+                    if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        if(EntityManager.HasComponent(creature, typeof(Player)))
-                        {
-                            var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                            log.AddLog("You found a " + pickable.name);
-                            
-                            var input = EntityManager.World.GetExistingSystem<InputSystem>();
-
-                            if (input.GetKeyDown(KeyCode.Z))
-                            {
-                                //Add item you're on into the inventory
-                                AddItem(pickable.name, pickable.description, pickable.appearance);
-                                PostUpdateCommands.DestroyEntity(item);
-                            }
-                        }
+                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                        log.AddLog("You found a " + pickable.name);
                     }
                 });
-            });
+        }
 
+        public void CollectItemsAt(WorldCoord playerCoord)
+        {
+            int2 playerPos = new int2(playerCoord.x, playerCoord.y);
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
 
+            Entities.WithAll<Collectible>().ForEach(
+                (Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
+                {
+                    if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
+                    {
+                        log.AddLog("You picked up a " + pickable.name);
+                        AddItem(pickable.name, pickable.description, pickable.appearance);
+                        
+                        gss.PostUpdateCommands.DestroyEntity(item);
+                    }
+                });
         }
 
         public void AddItem(NativeString64 inName, NativeString64 inDesc, Sprite2DRenderer spr)
