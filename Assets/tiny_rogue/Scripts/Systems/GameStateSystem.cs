@@ -98,7 +98,7 @@ namespace game
                         var log = EntityManager.World.GetExistingSystem<LogSystem>();
                         if (input.GetKeyDown(KeyCode.Space))
                         {
-                            var dungeon = EntityManager.World.GetExistingSystem<DungeonGenerationSystem>();
+                            var dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             dungeon.GenerateDungeon(View);
                             TurnManager.ResetTurnCount();
                             log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");

@@ -6,7 +6,7 @@ using Unity.Tiny.Core2D;
 namespace game
 {
     [AlwaysUpdateSystem]
-    public class DungeonGenerationSystem : ComponentSystem
+    public class DungeonSystem : ComponentSystem
     {
         private enum HallDirection
         {
@@ -32,6 +32,12 @@ namespace game
             public int2 GetCenterTile()
             {
                 int2 pos = new int2((startX + width / 2), (startY + height / 2));
+                return pos;
+            }
+
+            public int2 GetRandomTile()
+            {
+                int2 pos = new int2(RandomRogue.Next(startX + 1, startX + width - 1), RandomRogue.Next(startY + 1, startY + height - 1));
                 return pos;
             }
         }
@@ -100,6 +106,9 @@ namespace game
             CreateRooms();
             CreateHallways();
 
+            //Add loot
+            //Add monsters
+
             updateTileComponents = true;
         }
 
@@ -140,7 +149,7 @@ namespace game
         public int2 GetPlayerStartPosition()
         {
             Room startRoom = _rooms[RandomRogue.Next(0, _rooms.Count)];
-            return startRoom.GetCenterTile();
+            return startRoom.GetRandomTile();
         }
 
         private void CreateHallways()
@@ -286,6 +295,12 @@ namespace game
             {
                 EntityManager.RemoveComponent(entity, typeof(BlockMovement));
             });
+        }
+
+        public int2 GetRandomPositionInRandomRoom()
+        {
+            Room room = _rooms[RandomRogue.Next(0, _rooms.Count)];
+            return room.GetRandomTile();
         }
 
         private void SetTileToChar(int2 pos, char c)
