@@ -117,7 +117,7 @@ namespace game
         private void PlacePlayer()
         {
             // Place the player
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
             {
                 int2 randomStartPosition = GetPlayerStartPosition();
 
