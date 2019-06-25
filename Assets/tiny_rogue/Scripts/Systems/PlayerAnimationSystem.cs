@@ -19,15 +19,16 @@ public class PlayerAnimationSystem : ComponentSystem
                 {
                     Debug.Log("Count down animation");
                     // Count down one-off animation/action
-                    var frameTime = World.TinyEnvironment().frameTime;
+                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
                     player.AnimationTime -= frameTime;
+                    Debug.Log("Frame time" + frameTime);
 
                     if (player.AnimationTime <= 0f)
                     {
                         player.AnimationTrigger = false;
                         player.AnimationTime = 0f;
                         player.Action = Action.None;
-                        //sequencePlayer.sequence = 
+                        //sequencePlayer.sequence =
                         SetAnimation(ref player, ref sequencePlayer);
                         Debug.Log("Switch animation");
                     }
@@ -45,16 +46,20 @@ public class PlayerAnimationSystem : ComponentSystem
             {
                 // If already doing an action, don't switch
                 // TODO: throw an error here
-                if (player.Action != Action.None) return;
+                if (player.Action != Action.None) {
+                    Debug.Log($"Already doing action! {(int) player.Action}");
+                    return;
+                }
 
                 player.Action = action;
+                Debug.Log($"Setting Action as {(int)player.Action}");
 
                 if (player.Action != Action.None)
                 {
                     if (player.Action == Action.MoveLeft)
                     {
                         player.Direction = Direction.West;
-                    } 
+                    }
                     else if (player.Action == Action.MoveRight)
                     {
                         player.Direction = Direction.East;
@@ -67,10 +72,11 @@ public class PlayerAnimationSystem : ComponentSystem
                     {
                         player.Direction = Direction.South;
                     }
-                    
+
                     player.AnimationTrigger = true;
-                    player.AnimationTime = 1f;
-                    sequencePlayer.speed = 1f;
+                    player.AnimationTime = 0.5f;
+                    sequencePlayer.speed = 0.5f;
+                    SetAnimation(ref player, ref sequencePlayer);
                 }
                 else
                 {
@@ -83,10 +89,10 @@ public class PlayerAnimationSystem : ComponentSystem
 
     public void SetAnimation(ref Player player, ref Sprite2DSequencePlayer sequencePlayer)
     {
-        
+
         var direction = (int)player.Direction;
         var action = (int)player.Action;
-        Debug.Log("Try set animation: " + direction);
+        Debug.Log($"Try set animation: {direction} {action}");
 
         Entity animation = Entity.Null;
         Entities.WithAll<AnimationSequence>().ForEach((Entity entity, ref AnimationSequence animationSequence) =>
@@ -98,6 +104,7 @@ public class PlayerAnimationSystem : ComponentSystem
             }
         });
         Debug.Log("Setting animation");
+        sequencePlayer.time = 0f;
         sequencePlayer.sequence = animation;
     }
 }
