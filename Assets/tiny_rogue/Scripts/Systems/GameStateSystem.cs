@@ -190,9 +190,9 @@ namespace game
                 case eGameState.GameOver:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
+                    if (input.GetKeyUp(KeyCode.Space))
                         MoveToTitleScreen();
-                    else if (input.GetKeyDown(KeyCode.R))
+                    else if (input.GetKeyUp(KeyCode.R))
                         MoveToInGame(PostUpdateCommands, true);
                 } break;
                 case eGameState.NextLevel:
