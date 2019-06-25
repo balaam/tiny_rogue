@@ -289,7 +289,7 @@ namespace game
             {
                 log.AddLog("You opened a door.");
                 Sprite2DRenderer s = EntityManager.GetComponentData<Sprite2DRenderer>(pd.DoorEnt);
-                s.sprite = SpriteSystem.IndexSprites['\\'];
+                s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
                 EntityManager.RemoveComponent(pd.DoorEnt, typeof(BlockMovement));
                 EntityManager.SetComponentData(pd.DoorEnt, new Door {Locked = false});
                 EntityManager.SetComponentData(pd.DoorEnt, s);
