@@ -2,7 +2,6 @@ using System;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
-using UnityEngine;
 using Unity.Tiny.Input;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 #if !UNITY_WEBGL
@@ -135,7 +134,8 @@ namespace game
             GenerateEmptyLevel();
             
             // Place the player
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            Entities.WithAll<PlayerInput>().ForEach(
+                (Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
             {
                 coord.x = 10;
                 coord.y = 10;
@@ -143,6 +143,8 @@ namespace game
                
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
+
+                renderer.color = TinyRogueConstants.DefaultColor;
             });
 
             // Create 'Exit'
@@ -195,9 +197,6 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    
-
-                    
                     var input = World.GetExistingSystem<PlayerInputSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     var ds = World.GetExistingSystem<DeathSystem>();
@@ -307,7 +306,6 @@ namespace game
 
         public void MoveToTitleScreen()
         {
-            Debug.Log("Move to title screen");
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
