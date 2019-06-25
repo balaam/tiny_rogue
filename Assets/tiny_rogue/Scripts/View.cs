@@ -33,44 +33,44 @@ namespace game
 		    return (xy.y * width) + xy.x;
 	    }
 
-	    public void Blit(EntityManager em, int2 xy, string s)
+	    public void Blit(EntityCommandBuffer ecb, int2 xy, string s)
 	    {
-		    Blit(em, xy, s, TinyRogueConstants.DefaultColor);
+		    Blit(ecb, xy, s, TinyRogueConstants.DefaultColor);
 	    }
-	    public void Blit(EntityManager em, int2 xy, string s, Color color)
+	    public void Blit(EntityCommandBuffer ecb, int2 xy, string s, Color color)
 	    {
 		    int writeToX = xy.x;
 		    foreach (char c in s)
 		    {
-			    Blit(em, new int2(writeToX, xy.y), c, color);
+			    Blit(ecb, new int2(writeToX, xy.y), c, color);
 			    writeToX++;
 		    }
 	    }
 
-	    public void Blit(EntityManager em, int2 xy, int c)
+	    public void Blit(EntityCommandBuffer ecb, int2 xy, int c)
 	    {
-		    Blit(em, xy, c, TinyRogueConstants.DefaultColor);
+		    Blit(ecb, xy, c, TinyRogueConstants.DefaultColor);
 	    }
-	    public void Blit(EntityManager em, int2 xy, int c, Color color)
+	    public void Blit(EntityCommandBuffer ecb, int2 xy, int c, Color color)
 	    {
 			if (!GlobalGraphicsSettings.ascii) return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
-		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
-		    s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char)c)];
-		    s.color = color;
-		    em.SetComponentData(e, s);
+		    
+		    ecb.SetComponent(e, new Sprite2DRenderer
+		    {
+			    sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char)c)],
+			    color = color
+		    });
 	    }
 
-	    public void ClearLine(EntityManager em, int line, char clearChar)
+	    public void ClearLine(EntityCommandBuffer ecb, int line, char clearChar)
 	    {
-		    ClearLine(em, line, clearChar, TinyRogueConstants.DefaultColor);
+		    ClearLine(ecb, line, clearChar, TinyRogueConstants.DefaultColor);
 	    }
-	    public void ClearLine(EntityManager em, int line, char clearChar, Color color)
+	    public void ClearLine(EntityCommandBuffer ecb, int line, char clearChar, Color color)
 	    {
 		    for (int i = 0; i < Width; i++)
-			{
-			    Blit(em, new int2(i, line), clearChar, color);
-			}
+			    Blit(ecb, new int2(i, line), clearChar, color);
 	    }
 
 	    /// <summary>

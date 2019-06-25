@@ -87,7 +87,7 @@ namespace game
             }
             
             // Try and open doors in front of you
-            Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer, ref Door door) =>
+            Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Door door) =>
             {
                 if (tileCoord.x == c.x && tileCoord.y == c.y)
                 {
@@ -97,7 +97,9 @@ namespace game
                         log.AddLog("You opened a door.");
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
-                        renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')];
+                        
+                        // TODO: This also set the door renderer to '\\'
+                        
                         tms.NeedToTickTurn = true;
                     }
                 }
