@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using UnityEngine;
+using Color = Unity.Tiny.Core2D.Color;
 
 namespace game
 {
@@ -31,31 +32,44 @@ namespace game
 	    {
 		    return (xy.y * width) + xy.x;
 	    }
-	    
+
 	    public void Blit(EntityManager em, int2 xy, string s)
+	    {
+		    Blit(em, xy, s, TinyRogueConstants.DefaultColor);
+	    }
+	    public void Blit(EntityManager em, int2 xy, string s, Color color)
 	    {
 		    int writeToX = xy.x;
 		    foreach (char c in s)
 		    {
-			    Blit(em, new int2(writeToX, xy.y), c);
+			    Blit(em, new int2(writeToX, xy.y), c, color);
 			    writeToX++;
 		    }
 	    }
 
 	    public void Blit(EntityManager em, int2 xy, int c)
 	    {
+		    Blit(em, xy, c, TinyRogueConstants.DefaultColor);
+	    }
+	    public void Blit(EntityManager em, int2 xy, int c, Color color)
+	    {
 			if( !GlobalGraphicsSettings.ascii )
 				return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
 		    s.sprite = SpriteSystem.IndexSprites[c];
+		    s.color = color;
 		    em.SetComponentData(e, s);
 	    }
 
 	    public void ClearLine(EntityManager em, int line, char clearChar)
 	    {
+		    ClearLine(em, line, clearChar, TinyRogueConstants.DefaultColor);
+	    }
+	    public void ClearLine(EntityManager em, int line, char clearChar, Color color)
+	    {
 		    for (int i = 0; i < Width; i++)
-			    Blit(em, new int2(i, line), clearChar);
+			    Blit(em, new int2(i, line), clearChar, color);
 	    }
 
 	    /// <summary>

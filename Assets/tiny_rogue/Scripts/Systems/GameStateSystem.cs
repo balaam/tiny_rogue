@@ -2,7 +2,6 @@ using System;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
-using UnityEngine;
 using Unity.Tiny.Input;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 #if !UNITY_WEBGL
@@ -23,6 +22,7 @@ namespace game
             Startup, // generate required entities etc
             Title,
             InGame,
+            ReadQueuedLog,
             Replay,
             GameOver,
             NextLevel,
@@ -136,7 +136,8 @@ namespace game
             GenerateEmptyLevel();
             
             // Place the player
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
+            Entities.WithAll<PlayerInput>().ForEach(
+                (Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
             {
                 coord.x = 10;
                 coord.y = 10;
@@ -144,6 +145,8 @@ namespace game
                
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
+
+                renderer.color = TinyRogueConstants.DefaultColor;
             });
 
             int2 dummyCoord = new int2(20, 10);
@@ -177,13 +180,13 @@ namespace game
                     {
                         
                     }
-                    else if (input.GetKeyDown(KeyCode.Space))
+                    else if (input.GetKeyUp(KeyCode.Space))
                     {
                         var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
                         GenerateLevel();
                         tms.ResetTurnCount();
-                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
-                        log.AddLog("HAPPY HACKWEEK!");
+                        log.AddLog("You are in a vast cavern.    Press Space for next log");
+                        log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
 
                         // Place the player
                         Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
@@ -200,7 +203,22 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    // Nothing to do here
+
+                } break;
+                case eGameState.ReadQueuedLog:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+
+                    if (log.HasQueuedLogs())
+                    {
+                        if (input.GetKeyDown(KeyCode.Space))
+                            log.ShowNextLog();
+                    }
+                    else
+                    {
+                        _state = eGameState.InGame;
+                    }
                 } break;
                 case eGameState.Replay:
                 {
@@ -278,7 +296,6 @@ namespace game
 
         public void MoveToTitleScreen()
         {
-            Debug.Log("Move to title screen");
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
@@ -326,6 +343,11 @@ namespace game
             _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
             _state = eGameState.DebugLevelSelect;
+        }
+
+        public void MoveToReadQueuedLog()
+        {
+            _state = eGameState.ReadQueuedLog;
         }
     }
 }
