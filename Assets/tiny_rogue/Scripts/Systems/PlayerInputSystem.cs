@@ -72,6 +72,9 @@ namespace game
 
         private Action GetActionFromActionStream(Entity e, float time)
         {
+            if (ActionStream.Count > 0)
+                return Action.None;
+            
             var action = ActionStream[0];
 
             // Don't run if we've not reached the right time yet
