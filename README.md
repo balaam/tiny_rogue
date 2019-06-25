@@ -27,11 +27,11 @@ If you open the project and press play you should get a player in a big room.
 Character size:
  - 9 x 16 pixels
  - 0.09 x 0.16 world space units
- 
+
 Resolution:
  - 80 x 25 characters
  - 720 x 400 pixels
- 
+
 Camera half vertical height:
  - 2 world units
 

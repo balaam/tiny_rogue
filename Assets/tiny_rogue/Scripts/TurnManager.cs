@@ -24,15 +24,5 @@ namespace game
 #endif
             _turnSystems.Add(system);   
         }
-
-        public void OnTurn()
-        {
-            for (int i = 0; i < _turnSystems.Count; i++)
-            {
-                TurnManager._turnSystems[i].OnTurn(_turnCount);
-            }
-            _turnCount++;
-            NeedToTickTurn = false;
-        }
     }
 }

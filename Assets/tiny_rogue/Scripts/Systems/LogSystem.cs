@@ -1,10 +1,7 @@
-using Unity.Entities;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Collections;
 using Unity.Mathematics;
-using UnityEngine;
+using Unity.Tiny.Core2D;
 
 namespace game
 {
@@ -25,7 +22,6 @@ namespace game
         List<LogEntry> _newLogs = new List<LogEntry>();
         List<LogEntry> _oldLogs = new List<LogEntry>();
         
-        protected override void OnUpdate() { }
 
         /// <summary>
         /// Add a log to be written on the top line
@@ -43,8 +39,13 @@ namespace game
             _newLogs.Clear();
             _oldLogs.Clear();
         }
-        
-        public override void OnTurn(uint turnNumber)
+
+        public bool HasQueuedLogs()
+        {
+            return _newLogs.Count > 0;
+        }
+
+        public void ShowNextLog()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             View view = gss.View;
@@ -57,12 +58,26 @@ namespace game
                 _oldLogs.Add(topLog);
                 view.ClearLine(EntityManager, 0, ' ');
                 view.Blit(EntityManager, new int2(0,0), topLog.text);
-                
+
+                if (HasQueuedLogs())
+                {
+                    string pageMsg = "(cont)";
+                    var pageXY = new int2(view.Width - pageMsg.Length, 0);
+                    view.Blit(EntityManager, pageXY, pageMsg, new Color(1,1,1,1));
+                    gss.MoveToReadQueuedLog();
+                }
+
+
                 if(_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
-            else
+            else if(gss.IsInGame)
                 view.ClearLine(EntityManager, 0, ' ');
+        }
+        
+        protected override void OnUpdate()
+        {
+            ShowNextLog();
         }
     }
 }

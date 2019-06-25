@@ -13,14 +13,24 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
-
+    [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
-        protected override void OnUpdate() { }
+        public bool Replaying = false;
+        public float StartTime;
+        
+        private bool alternateAction = false;
 
-        private Action GetAction()
+        private Action GetActionFromInput()
+
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
+
+            if (input.GetKey(KeyCode.LeftControl))
+                alternateAction = true;
+            else
+                alternateAction = false;    
+
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
             if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))  
@@ -34,6 +44,13 @@ namespace game
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
 
+            
+
+            return Action.None;
+        }
+
+        private Action GetActionFromActionStream(Entity e, float time)
+        {
             return Action.None;
         }
 
@@ -60,42 +77,62 @@ namespace game
 
             return c;
         }
-        
-        public void OnUpdateManual()
-        {   
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
-            {
-                var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
 
-                var action = GetAction();
-                
-                switch (action)
+        private Action GetAction(Entity e, float time)
+        {
+            return Replaying ? GetActionFromActionStream(e,time) : GetActionFromInput();
+        }
+        
+        protected override void OnUpdate() 
+        { 
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+
+            var time = Time.time;
+            
+            if (gss.IsInGame)
+            {
+                Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
                 {
-                    case Action.MoveUp:
-                    case Action.MoveDown:
-                    case Action.MoveRight:
-                    case Action.MoveLeft:
-                        var move = GetMove(action);
-                        pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y });
-                        break;
-                    case Action.Interact:
-                        pas.Interact(coord);
-                        break;
-                    case Action.Wait:
-                        pas.Wait();
-                        break;
-                    case Action.None:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException("Unhandled input");
-                }
-                
-                // Save the action to the action stream
-                if( action != Action.None )
-                    rec.AddAction(action);
-                
-            });
+                    var action = GetAction(player, time);
+                    if (action == Action.None)
+                        return;
+                    
+                    var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
+                    
+                    switch (action)
+                    {
+                        case Action.MoveUp:
+                        case Action.MoveDown:
+                        case Action.MoveRight:
+                        case Action.MoveLeft:
+                            var move = GetMove(action);
+                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
+                            break;
+                        case Action.Interact:
+                            pas.Interact(coord);
+                            break;
+                        case Action.Wait:
+                            Debug.Log("Wait is happening.");
+                            pas.Wait();
+                            break;
+                        case Action.None:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("Unhandled input");
+                    }
+                    
+                    // Save the action to the action stream if the player has it
+                    if (!Replaying && EntityManager.HasComponent<ActionStream>(player))
+                    {
+                        var stream = EntityManager.GetBuffer<ActionStream>(player);
+                        stream.Add(new ActionStream
+                        {
+                            action = action,
+                            time = Time.time - StartTime
+                        });
+                    }
+                });
+            }
         }
     }
 }

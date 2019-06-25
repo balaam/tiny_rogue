@@ -29,6 +29,7 @@
 .idea/
 Assets/Samples.meta
 Assets/Samples/
+Assets/EntityCache*
 
 # Visual Studio cache directory
 .vs/
@@ -72,3 +73,5 @@ crashlytics-build.properties
 # Extra
 .DS_Store
 /[Ll]ibrary/
+Assets/TextMesh Pro.meta
+Assets/Plugins.meta
