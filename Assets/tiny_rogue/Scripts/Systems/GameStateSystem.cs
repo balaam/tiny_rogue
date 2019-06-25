@@ -28,6 +28,7 @@ namespace game
             GameOver,
             NextLevel,
             DebugLevelSelect,
+            HiScores,
         }
 
         eGameState _state = eGameState.Startup;
@@ -225,10 +226,16 @@ namespace game
                         log.AddLog("Move to the crown to exit");
                         _state = eGameState.InGame;
                     }
-                    else if (input.GetKeyDown(KeyCode.Space))
+                    else if (input.GetKeyUp(KeyCode.Space))
                     {
                         MoveToTitleScreen();
                     }
+                } break;
+                case eGameState.HiScores:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyUp(KeyCode.Space))
+                        MoveToTitleScreen();
                 } break;
             }
         }
@@ -327,12 +334,14 @@ namespace game
         public void MoveToHiScores(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(EntityManager, new int2(40, 7), "HiScores");
+            _view.Blit(EntityManager, new int2(30, 7), "HiScores");
+            _view.Blit(EntityManager, new int2(25, 20), "Press Space to Continue");
             for (int i = 1; i < 11; i++)
             {
-                _view.Blit(EntityManager, new int2(40, 7 + (1 * i)), i.ToString() + ": ");
-                _view.Blit(EntityManager, new int2(45, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+                _view.Blit(EntityManager, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
             }
+            _state = eGameState.HiScores;
         }
 
         private void MoveToDebugLevelSelect()
