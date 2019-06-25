@@ -165,7 +165,7 @@ namespace game
                     }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
-                        MoveToInGame(false);
+                        MoveToInGame(PostUpdateCommands, false);
                     }
                 } break;
                 case eGameState.InGame:
@@ -193,7 +193,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen();
                     else if (input.GetKeyDown(KeyCode.R))
-                        MoveToInGame(true);
+                        MoveToInGame(PostUpdateCommands, true);
                 } break;
                 case eGameState.NextLevel:
                 {
@@ -264,8 +264,10 @@ namespace game
             _state = eGameState.Title;
         }
 
-        public void MoveToInGame( bool replay )
+        public void MoveToInGame( EntityCommandBuffer cb, bool replay )
         {                  
+            CleanUpGameWorld(cb);
+            
             var log = EntityManager.World.GetExistingSystem<LogSystem>();      
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
