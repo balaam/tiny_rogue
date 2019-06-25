@@ -33,10 +33,9 @@ namespace game
         {
             Replaying = false;
             StartTime = Time.time;
-            
             ActionStream.Clear();
         }
-        
+
         public void StartReplaying()
         {
             Replaying = true;
@@ -51,11 +50,11 @@ namespace game
             if (input.GetKey(KeyCode.LeftControl))
                 alternateAction = true;
             else
-                alternateAction = false;    
+                alternateAction = false;
 
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
-            if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))  
+            if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))
                 return Action.MoveDown;
             if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
                 return Action.MoveRight;
@@ -66,7 +65,7 @@ namespace game
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
 
-            
+
 
             return Action.None;
         }
@@ -78,7 +77,7 @@ namespace game
             // Don't run if we've not reached the right time yet
             if (time < action.time)
                 return Action.None;
-                
+
             // Remove and run the action
             ActionStream.RemoveAt(0);
             return action.action;
@@ -112,24 +111,27 @@ namespace game
         {
             return Replaying ? GetActionFromActionStream(e,time) : GetActionFromInput();
         }
-        
-        protected override void OnUpdate() 
-        { 
+
+        protected override void OnUpdate()
+        {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
 
             var time = Time.time;
-            
+
             if (gss.IsInGame)
             {
                 Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
                 {
                     var action = GetAction(player, time);
-                    
+
                     if (action == Action.None)
                         return;
-                    
+
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                    
+                    var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
+
+                    anim.StartAnimation(action);
+
                     switch (action)
                     {
                         case Action.MoveUp:
@@ -151,7 +153,7 @@ namespace game
                         default:
                             throw new ArgumentOutOfRangeException("Unhandled input");
                     }
-                    
+
                     // Save the action to the action stream if the player has it
                     if (!Replaying)
                     {

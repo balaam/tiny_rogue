@@ -113,7 +113,7 @@ namespace game
 
                 coord.x = randomStartPosition.x;
                 coord.y = randomStartPosition.y;
-                translation.Value = _view.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
+                translation.Value = _view.ViewCoordToWorldPos(new int2(coord.x, coord.y));
 
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
