@@ -28,6 +28,7 @@ namespace game
             NextLevel,
             DebugLevelSelect,
             HiScores,
+            Inventory,
         }
 
         eGameState _state = eGameState.Startup;
@@ -223,7 +224,21 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.I))
+                    {
+                        MoveToInventoryScreen(PostUpdateCommands);
+                    }
+
+                } break;
+                case eGameState.Inventory:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.I))
+                    {
+                        MoveBackToGame(PostUpdateCommands);
+                    }
+
                 } break;
                 case eGameState.ReadQueuedLog:
                 {
@@ -287,6 +302,7 @@ namespace game
             }
         }
 
+
         private void CleanUpGameWorld(EntityCommandBuffer cb)
         {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
@@ -348,6 +364,18 @@ namespace game
             log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
             _state = eGameState.InGame;
         }
+        
+        void MoveToInventoryScreen(EntityCommandBuffer cb)
+        {
+            
+        }
+
+        void MoveBackToGame(EntityCommandBuffer cb)
+        {
+            
+        }
+
+
 
         public void MoveToGameOver(EntityCommandBuffer cb)
         { 
