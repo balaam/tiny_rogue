@@ -10,22 +10,43 @@ namespace game
     // TODO currently this roguelike is 4-directional only, this algorithm will need minor rewrites if we switch to 8-directional
     public class AStarPathfinding
     {
-        private class Location
+        public class Path
         {
             // Tile coordinates
             public int2 location;
             public int totalPath;
             public int distanceFromStart;
             public int distanceToDestination; // this is an estimated value
-            public Location Parent;
+            public Path Parent;
+            
+            // Based on a fully populated A* search path, this identifies which tile to move into from the current location
+            public Path stepFrom(int2 currentLocation)
+            {
+                var result = this;
+                // Trace back to the first step, so you know where to move towards
+                while (result?.Parent != null && !isEqual(result.Parent, currentLocation))
+                {
+                    result = result.Parent;
+                }
+
+                return result;
+            }
+        }
+        
+        // The main method you should use to identify where a given monster will step next
+        public static int2 getNextStep(int2 start, int2 end)
+        {
+            return getPath(start, end).stepFrom(start).location;
         }
 
-        public static int2 getPath(int2 start, int2 end)
+        // The A* algorithm returning the entire Path from Start to End. Usually getNextStep will be better
+        // though but this is exposed for caching purposes e.g. with patrolling monsters.
+        public static Path getPath(int2 start, int2 end)
         {
-            Location current = null;
-            var startLoc = new Location {location = start};
-            var closedList = new List<Location>();
-            var openList = new List<Location>();
+            Path current = null;
+            var startLoc = new Path {location = start};
+            var closedList = new List<Path>();
+            var openList = new List<Path>();
             var g = 0;
 
             openList.Add(startLoc);
@@ -41,11 +62,11 @@ namespace game
                 {
                     // If we've already thoroughly searched this square then do nothing
                     if (listFind(closedList, adjacentSquare) != null) continue;
-                    Location loc = listFind(openList, adjacentSquare);
+                    Path loc = listFind(openList, adjacentSquare);
                     // If we haven't seen this square before then create the LocationRef
                     if (loc == null)
                     {
-                        loc = new Location {location = adjacentSquare, distanceFromStart = g};
+                        loc = new Path {location = adjacentSquare, distanceFromStart = g};
                         loc.distanceToDestination = EstimateDistanceToDestination(loc.location, end);
                         loc.totalPath = loc.distanceFromStart + loc.distanceToDestination;
                         loc.Parent = current;
@@ -66,25 +87,10 @@ namespace game
                 }
             }
 
-            return getNextStep(start, current).location;
+            return current;
         }
-
-        // Based on a fully populated A* search path, this identifies which tile to move into from the current location
-        private static Location getNextStep(int2 currentLocation, Location path)
-        {
-            var result = path;
-            // Trace back to the first step, so you know where to move towards
-            // Since we just produced a huge map of distances and values and shit there's a lot of
-            // optimization and caching we could do before returning, but instead we're just throwing it all away
-            while (result?.Parent != null && !isEqual(result.Parent, currentLocation))
-            {
-                result = result.Parent;
-            }
-
-            return result;
-        }
-
-        private static bool isEqual(Location loc, int2 simple)
+        
+        private static bool isEqual(Path loc, int2 simple)
         {
             if (loc == null)
             {
@@ -94,7 +100,7 @@ namespace game
             return loc.location.x == simple.x && loc.location.y == simple.y;
         }
 
-        private static Location listFind(List<Location> list, int2 search)
+        private static Path listFind(List<Path> list, int2 search)
         {
             foreach (var square in list)
             {
@@ -109,15 +115,15 @@ namespace game
             return math.abs(start.x - destination.x) + math.abs(start.y - destination.y);
         }
 
-        private static Location minList(List<Location> list)
+        private static Path minList(List<Path> list)
         {
-            Location found = null;
+            Path found = null;
             int lowest = Int32.MaxValue;
 
             // Reverse order iteration - most recently inserted items are the most likely candidates
             for (var i = list.Count - 1; i >= 0; i--)
             {
-                Location item = list[i];
+                Path item = list[i];
                 if (item.totalPath < lowest)
                 {
                     lowest = item.totalPath;
