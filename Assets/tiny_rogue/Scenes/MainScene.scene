@@ -986,6 +986,8 @@
                 "StableTypeHash": 7693371993889051491
             }, {
                 "StableTypeHash": 10723762297176986422
+            }, {
+                "StableTypeHash": 5457566240645269000
             }]
         }, {
             "$type": "game.BlockMovement, tiny_rogue"

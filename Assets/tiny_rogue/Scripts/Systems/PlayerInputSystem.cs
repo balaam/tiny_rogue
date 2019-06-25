@@ -68,7 +68,6 @@ namespace game
                 Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
                 {
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                    var rec = EntityManager.World.GetExistingSystem<PlayerInputRecordSystem>();
 
                     var action = GetAction();
                     
@@ -94,10 +93,12 @@ namespace game
                             throw new ArgumentOutOfRangeException("Unhandled input");
                     }
                     
-                    // Save the action to the action stream
-                    if( action != Action.None )
-                        rec.AddAction(action);
-                    
+                    // Save the action to the action streamIf the player has an action stream, add the action to it
+                    if (EntityManager.HasComponent<ActionStream>(player))
+                    {
+                        var stream = EntityManager.GetBuffer<ActionStream>(player);
+                        stream.Add(new ActionStream {action = action, time = Time.time});
+                    }
                 });
             }
         }
