@@ -111,8 +111,11 @@ namespace game
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
+            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
 
             var time = Time.time - StartTime;
+            tms.CleanActionQueue();
 
             if (gss.IsInGame)
             {
@@ -129,34 +132,10 @@ namespace game
 
                     if (action == Action.None)
                         return;
-                        
 
-                    var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                    var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
-
+                    tms.AddActionRequest(action, playerEntity, coord);
+                    
                     bool moved = false;
-                    switch (action)
-                    {
-                        case Action.MoveUp:
-                        case Action.MoveDown:
-                        case Action.MoveRight:
-                        case Action.MoveLeft:
-                            var move = GetMove(action);
-                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, PostUpdateCommands);
-                            break;
-                        case Action.Interact:
-                            pas.Interact(coord, PostUpdateCommands);
-                            break;
-                        case Action.Wait:
-                            Debug.Log("Wait is happening.");
-                            pas.Wait();
-                            break;
-                        case Action.None:
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException("Unhandled input");
-                    }
-
                     if (!GlobalGraphicsSettings.ascii)
                     {
                         Debug.Log($"Animate {(int)action} {moved}");
