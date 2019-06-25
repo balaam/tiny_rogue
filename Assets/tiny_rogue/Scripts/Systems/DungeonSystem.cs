@@ -130,6 +130,8 @@ namespace game
 
                 renderer.color = TinyRogueConstants.DefaultColor;
             });
+
+            EntityManager.World.GetExistingSystem<FogOfWarSystem>().CalculateFov(_view);
         }
 
         private void CreateRooms()

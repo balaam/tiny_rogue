@@ -92,6 +92,9 @@ namespace game
                     inventorySystem.LogItemsAt(c);
                }
             });
+
+            FogOfWarSystem fow = EntityManager.World.GetExistingSystem<FogOfWarSystem>();
+            fow.CalculateFov((EntityManager.World.GetExistingSystem<GameStateSystem>().View));
         }
     }
 }
