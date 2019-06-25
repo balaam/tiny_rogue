@@ -78,7 +78,7 @@ namespace game
             entityManager.SetComponentData(entity, p);
             entityManager.SetComponentData(entity, c);
             
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateSpearTrap(EntityManager entityManager, int2 xy, float3 pos)
@@ -103,7 +103,7 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
             
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateCrown(EntityManager entityManager, int2 xy, float3 pos)
@@ -128,7 +128,7 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
             
-            return entityManager.Instantiate(entity);
+            return entity;
         }
         public Entity CreateStairway(EntityManager entityManager, int2 xy, float3 pos)
         {
@@ -152,7 +152,7 @@ namespace game
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
 
-            return entityManager.Instantiate(entity);
+            return entity;
         }
     }
 }
