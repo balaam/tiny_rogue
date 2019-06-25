@@ -4,6 +4,7 @@ using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
 using KeyCode = Unity.Tiny.Input.KeyCode;
+using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
 using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 #else
@@ -126,9 +127,17 @@ namespace game
             var crownCoord = new int2(13, 12);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
 
-            //TODO: random positions for gold
-            var goldCoord = new int2(50, 15);
-            _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+            Random random = new Random(42);
+            random.InitState(3839587);
+            int goldPiles = (int)math.floor(random.NextFloat() * 10);
+            for (int i = 0; i < 5; i++)
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+                int randX = (int)math.floor(random.NextFloat()  * 80);
+                int randY = (int)math.floor(random.NextFloat()  * 25);
+                var goldCoord = new int2(randX, randY);
+                _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+            }
         }
 
         public void GenerateCombatTestLevel()
