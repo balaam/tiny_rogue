@@ -75,8 +75,6 @@ namespace game
                 case '.':
                     result = (char) SpriteEnum.Floor;
                     break;
-
-
             }
 
             return result;

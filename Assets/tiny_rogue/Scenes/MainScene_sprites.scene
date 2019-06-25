@@ -14,6 +14,18 @@
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": -4545966818087984541, "Type": 3},
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 9192807146851360899, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -6397690473321333150, "Type": 3},
+        { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": 1337337633081462466, "Type": 3},
+        { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -5332357784958868068, "Type": 3},
+        { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": 5859721346388500530, "Type": 3},
+        { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -8242079236125156025, "Type": 3},
+        { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -2326089145535536525, "Type": 3},
+        { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -7959244921154816734, "Type": 3},
+        { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -734421948117538538, "Type": 3},
+        { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -7444602644379781646, "Type": 3},
+        { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -8577064763936714601, "Type": 3},
+        { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": 8862705642088948780, "Type": 3},
+        { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": 3940253472677573253, "Type": 3},
+        { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -5266393102166459594, "Type": 3},
         { "Guid": "9ab98b479aa13b24eab885045ccee0d7", "FileId": -1732836454376435756, "Type": 3},
         { "Guid": "9ab98b479aa13b24eab885045ccee0d7", "FileId": -7965897856167901780, "Type": 3},
         { "Guid": "9ab98b479aa13b24eab885045ccee0d7", "FileId": -6001801462861719930, "Type": 3},
@@ -358,6 +370,21 @@
             "a": 5591254203376550710,
             "b": 10663570157011160825
         }, {
+            "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
+            "Elements": [{
+                "e": "abfe314fd624360e9a4a9f87ea3294c7"
+            }, {
+                "e": "f7d994a909792e1c3dc3f1b9d12ecbe6"
+            }, {
+                "e": "d89bad33af3a473b40b239e8422aba4b"
+            }, {
+                "e": "681cb5eed7d2e1b9751c485a7fb2bf20"
+            }, {
+                "e": "12bd61032e39f529357491e9a047c7a7"
+            }, {
+                "e": "a952cab18f8f98323b84b7bf00a4af48"
+            }]
+        }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
                 "c": "W"
@@ -390,6 +417,8 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 10860951414169075601
+            }, {
+                "StableTypeHash": 16033114912968864438
             }]
         }]
     }, {
@@ -492,6 +521,21 @@
             "a": 7890689448752334355,
             "b": 9597388488981487569
         }, {
+            "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
+            "Elements": [{
+                "e": "b6e8b4d16e84ecac761a0de1f6d4d44d"
+            }, {
+                "e": "87e63d54aa469871bfb336d2b3cac72a"
+            }, {
+                "e": "605a2a8b9bb7dcaa3ea6bb424903c768"
+            }, {
+                "e": "792c5bf1947f5d9183fc96003d1909d8"
+            }, {
+                "e": "f5702fe5f0a3b546392c1b42438853c7"
+            }, {
+                "e": "519e0a0f3c4517517ec7ea7730fb66ae"
+            }]
+        }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
                 "c": "W"
@@ -522,6 +566,8 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 10860951414169075601
+            }, {
+                "StableTypeHash": 16033114912968864438
             }]
         }]
     }, {
