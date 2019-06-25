@@ -32,6 +32,7 @@ namespace game
         eGameState _state = eGameState.Startup;
         View _view = new View();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        DungeonSystem _dungeon;
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
@@ -82,37 +83,9 @@ namespace game
             return true;
         }
 
-        private void GenerateEmptyLevel()
-        {
-            switch (_state)
-            {
-                PostUpdateCommands.RemoveComponent(entity, typeof(BlockMovement)); 
-            });
-
-            // Destroy everything that's not a tile or the player.
-            Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
-            {
-                var x = tileCoord.x;
-                var y = tileCoord.y;
-
-                bool isVWall = (x == 0 || x == _view.Width - 1) && y > 0 && y < _view.Height - 2;
-                bool isHWall = (y == 1 || y == _view.Height - 2);
-
-                if(isVWall || isHWall)
-                {
-                    renderer.sprite = SpriteSystem.IndexSprites[ GlobalGraphicsSettings.ascii ? '#' : 2 ];
-                    PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
-                }
-                else
-                {
-                    renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '.' : 0];
-                }
-            });
-        }
-
         public void GenerateLevel()
         {
-            GenerateEmptyLevel();
+            _dungeon.GenerateDungeon(_view);
 
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = new int2(12, 12);
@@ -133,8 +106,8 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            GenerateEmptyLevel();
-            
+            _dungeon.GenerateDungeon(_view);
+
             // Place the player
             Entities.WithAll<PlayerInput>().ForEach(
                 (Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
@@ -162,12 +135,16 @@ namespace game
             switch (_state)
             {
                 case eGameState.Startup:
-                {
-                    bool done = TryGenerateViewport();
-                    if (done)
-                       MoveToTitleScreen();
+                    {
+                        bool done = TryGenerateViewport();
+                        if (done)
+                        {
+                            _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                            MoveToTitleScreen();
+                        }
 
-                } break;
+                    }
+                    break;
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -187,17 +164,6 @@ namespace game
                         tms.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Press Space for next log");
                         log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
-
-                        // Place the player
-                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
-                        {
-                            coord.x = 10;
-                            coord.y = 10;
-                            translation.Value = View.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
-
-                            hp.max = TinyRogueConstants.StartPlayerHealth;
-                            hp.now = hp.max;
-                        });
                         _state = eGameState.InGame;
                     }
                 } break;
