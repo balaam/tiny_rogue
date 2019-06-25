@@ -41,6 +41,7 @@ namespace game
                 var length = 0;
                 while (step?.Parent?.Parent != null)
                 {
+                    step = step.Parent;
                     length++;
                 }
                 var steps = new NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
