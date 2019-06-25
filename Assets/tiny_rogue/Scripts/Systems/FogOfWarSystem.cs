@@ -21,16 +21,23 @@ namespace game
                 if (view == null || view.ViewTiles == null)
                     return;
 
-                int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), view.Width);
-                Entity tileEntity = view.ViewTiles[tileIndex];
-                Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                if (tile.IsSeen)
+                if (EntityManager.HasComponent(e, typeof(Player)))
+                {
                     renderer.color.a = TinyRogueConstants.DefaultColor.a;
-                else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
-                    renderer.color.a = TinyRogueConstants.DefaultColor.a / 2;
+                }
                 else
-                    renderer.color.a = 0;
+                {
+                    int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), view.Width);
+                    Entity tileEntity = view.ViewTiles[tileIndex];
+                    Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                    if (tile.IsSeen)
+                        renderer.color.a = TinyRogueConstants.DefaultColor.a;
+                    else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
+                        renderer.color.a = TinyRogueConstants.DefaultColor.a / 2;
+                    else
+                        renderer.color.a = 0;
+                }
             });
         }
 
@@ -64,8 +71,8 @@ namespace game
                     int2 endPos = new int2(x, y);
                     int2 currentPos = startPosition;
 
-                    while (currentPos.x != endPos.x && currentPos.y != endPos.y)
-                    {
+                    //while (currentPos.x != endPos.x && currentPos.y != endPos.y)
+                    //{
                         currentPos = AStarPathfinding.getNextStep(currentPos, endPos);
                         Console.WriteLine(currentPos.x.ToString() + " " + currentPos.y.ToString());
                         int index = View.XYToIndex(currentPos, view.Width);
@@ -85,7 +92,9 @@ namespace game
                             if (EntityManager.HasComponent(tileEntity, typeof(BlockMovement)))
                                 continue;
                         }
-                    }
+                        //else
+                        //    continue;
+                    //}
                 }
             }
         }

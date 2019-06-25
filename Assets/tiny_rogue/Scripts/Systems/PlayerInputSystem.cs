@@ -143,6 +143,8 @@ namespace game
                         case Action.MoveLeft:
                             var move = GetMove(action);
                             moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, PostUpdateCommands);
+                            if(moved)
+                                EntityManager.World.GetExistingSystem<FogOfWarSystem>().CalculateFov(gss.View);
                             break;
                         case Action.Interact:
                             pas.Interact(coord, PostUpdateCommands);

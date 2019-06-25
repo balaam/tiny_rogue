@@ -248,6 +248,7 @@ namespace game
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics( ' ' )];
+                renderer.color.a = 0;
             });
 
             // Destroy everything that's not a tile or the player.
