@@ -156,6 +156,34 @@ namespace game
             {
                 ecb.SetComponent(e, sprite);
             });
+
+            Entities.WithAll<Sprite2DRenderer>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
+                {
+                    if (IsInGame)
+                    {
+                        Sprite2DRenderer spriteRenderer = renderer;
+
+                        if (EntityManager.HasComponent(e, typeof(Player)))
+                            renderer.color.a = TinyRogueConstants.DefaultColor.a;
+                        else
+                        {
+                            //Check the tile, regardless of what entity we're looking at
+                            int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                            Entity tileEntity = _view.ViewTiles[tileIndex];
+                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                            if (tile.IsSeen)
+                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
+                            else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
+                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a / 2;
+                            else
+                                spriteRenderer.color.a = 0;
+                        }
+
+                        ecb.SetComponent(e, spriteRenderer);
+                    }
+                });
         }
 
        void GenerateGold()

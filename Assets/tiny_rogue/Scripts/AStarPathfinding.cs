@@ -39,13 +39,15 @@ namespace game
                 var result = new SavedPath();
                 var step = this;
                 var length = 0;
-                while (step?.Parent?.Parent != null)
+                while (step.Parent != null)
                 {
                     length++;
+                    step = step.Parent;
                 }
-                var steps = new NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
+
+                var steps = new int2[length]; //NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
                 step = this;
-                for(var i = length; i >= 0; i--)
+                for(var i = length - 1; i >= 0; i--)
                 {
                     steps[i] = step.location;
                     step = step.Parent;

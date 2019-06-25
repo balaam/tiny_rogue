@@ -5,7 +5,8 @@ namespace game
 {
     public struct SavedPath
     {
-        public NativeArray<int2> pathSteps;
+        public int2[] pathSteps;
+        //public NativeArray<int2> pathSteps;
         public int currentIdx;
 
     }
