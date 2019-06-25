@@ -25,8 +25,6 @@ namespace game
         private bool Replaying = false;
         private float StartTime;
 
-        private bool alternateAction = false;
-
         private List<TimedAction> ActionStream = new List<TimedAction>();
 
         public void StartRecording()
@@ -46,11 +44,6 @@ namespace game
 
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
-
-            if (input.GetKey(KeyCode.LeftControl))
-                alternateAction = true;
-            else
-                alternateAction = false;
 
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
@@ -72,6 +65,9 @@ namespace game
 
         private Action GetActionFromActionStream(Entity e, float time)
         {
+            if (ActionStream.Count == 0)
+                return Action.None;
+            
             var action = ActionStream[0];
 
             // Don't run if we've not reached the right time yet
@@ -116,7 +112,7 @@ namespace game
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
 
-            var time = Time.time;
+            var time = Time.time - StartTime;
 
             if (gss.IsInGame)
             {
@@ -146,7 +142,7 @@ namespace game
                         case Action.MoveRight:
                         case Action.MoveLeft:
                             var move = GetMove(action);
-                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
+                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, PostUpdateCommands);
                             break;
                         case Action.Interact:
                             pas.Interact(coord, PostUpdateCommands);
@@ -173,7 +169,7 @@ namespace game
                         ActionStream.Add(new TimedAction()
                         {
                             action = action,
-                            time = Time.time - StartTime
+                            time = time
                         });
                     }
                 });
