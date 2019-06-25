@@ -179,8 +179,8 @@ namespace game
                     {
                         GenerateLevel();
                         TurnManager.ResetTurnCount();
-                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
-                        log.AddLog("HAPPY HACKWEEK!");
+                        log.AddLog("You are in a vast cavern.    Press Space for next log");
+                        log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
 
                         // Place the player
                         Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
