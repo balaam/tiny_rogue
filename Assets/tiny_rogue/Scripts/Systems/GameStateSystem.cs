@@ -91,7 +91,7 @@ namespace game
 
         public void GenerateLevel()
         {
-            _dungeon.GenerateDungeon(_view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
@@ -131,7 +131,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(_view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
@@ -165,7 +165,7 @@ namespace game
                     }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
-                        MoveToInGame(false);
+                        MoveToInGame(PostUpdateCommands, false);
                     }
                 } break;
                 case eGameState.InGame:
@@ -190,10 +190,10 @@ namespace game
                 case eGameState.GameOver:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
+                    if (input.GetKeyUp(KeyCode.Space))
                         MoveToTitleScreen();
-                    else if (input.GetKeyDown(KeyCode.R))
-                        MoveToInGame(true);
+                    else if (input.GetKeyUp(KeyCode.R))
+                        MoveToInGame(PostUpdateCommands, true);
                 } break;
                 case eGameState.NextLevel:
                 {
@@ -264,8 +264,10 @@ namespace game
             _state = eGameState.Title;
         }
 
-        public void MoveToInGame( bool replay )
+        public void MoveToInGame( EntityCommandBuffer cb, bool replay )
         {                  
+            CleanUpGameWorld(cb);
+            
             var log = EntityManager.World.GetExistingSystem<LogSystem>();      
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
@@ -290,6 +292,7 @@ namespace game
             CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
         
@@ -298,6 +301,7 @@ namespace game
             CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
 
