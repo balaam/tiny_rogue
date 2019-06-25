@@ -25,8 +25,6 @@ namespace game
         private bool Replaying = false;
         private float StartTime;
 
-        private bool alternateAction = false;
-
         private List<TimedAction> ActionStream = new List<TimedAction>();
 
         public void StartRecording()
@@ -46,11 +44,6 @@ namespace game
 
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
-
-            if (input.GetKey(KeyCode.LeftControl))
-                alternateAction = true;
-            else
-                alternateAction = false;
 
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
@@ -149,7 +142,7 @@ namespace game
                         case Action.MoveRight:
                         case Action.MoveLeft:
                             var move = GetMove(action);
-                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
+                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, PostUpdateCommands);
                             break;
                         case Action.Interact:
                             pas.Interact(coord, PostUpdateCommands);
