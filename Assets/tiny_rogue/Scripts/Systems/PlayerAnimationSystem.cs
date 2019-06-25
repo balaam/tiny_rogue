@@ -78,12 +78,12 @@ public class PlayerAnimationSystem : ComponentSystem
                 }
                 else if (player.Action == Action.MoveUp)
                 {
-                    player.Direction = Direction.North;
+                    player.Direction = Direction.East;
                     player.Action = Action.Move;
                 }
                 else if (player.Action == Action.MoveDown)
                 {
-                    player.Direction = Direction.South;
+                    player.Direction = Direction.West;
                     player.Action = Action.Move;
                 }
 

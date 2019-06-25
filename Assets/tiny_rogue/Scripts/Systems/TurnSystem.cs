@@ -3,7 +3,6 @@ using Unity.Entities;
 namespace game
 {
 
-    [UpdateAfter(typeof(TurnManagementSystem))]
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public abstract class TurnSystem : ComponentSystem
     {
@@ -14,11 +13,5 @@ namespace game
             tms.RegisterTurnSystem(this);
         }
 
-        protected override void OnDestroy()
-        {
-            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-            tms.UnregisterTurnSystem(this);
-            base.OnDestroy();
-        }
     }
 }
