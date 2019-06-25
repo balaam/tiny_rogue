@@ -223,7 +223,7 @@ namespace game
             entityManager.SetComponentData(entity, l);
             entityManager.SetComponentData(entity, p);
 
-            return entityManager.Instantiate(entity);
+            return entity;
         }
 
         public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
