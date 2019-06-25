@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f9139e3e9db0c8a49920a5247b6287cf
+guid: 45b7a07aa10f9af4c9186593afab1049
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,11 +8,10 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Pixel Operator 8
+  fontName: Pixel Operator Mono 8
   fontNames:
-  - Pixel Operator 8
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: cf6dc81acd6b48346863b72a52a9e86e, type: 3}
+  - Pixel Operator Mono 8
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1

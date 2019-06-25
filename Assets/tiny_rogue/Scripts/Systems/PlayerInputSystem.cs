@@ -16,10 +16,29 @@ namespace game
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
-        public bool Replaying = false;
-        public float StartTime;
-        
+        private bool Replaying = false;
+        private float StartTime;
+
         private bool alternateAction = false;
+
+        public void StartRecording()
+        {
+            Replaying = false;
+            StartTime = Time.time;
+
+            // Reset all ActionStream buffers
+            Entities.WithAll<ActionStream>().ForEach(e =>
+            {
+                var stream = EntityManager.GetBuffer<ActionStream>(e);
+                stream.Clear();
+            });
+        }
+
+        public void StartReplaying()
+        {
+            Replaying = true;
+            StartTime = Time.time;
+        }
 
         private Action GetActionFromInput()
 
@@ -29,11 +48,11 @@ namespace game
             if (input.GetKey(KeyCode.LeftControl))
                 alternateAction = true;
             else
-                alternateAction = false;    
+                alternateAction = false;
 
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
                 return Action.MoveUp;
-            if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))  
+            if(input.GetKeyDown(KeyCode.S) || input.GetKeyDown(KeyCode.DownArrow))
                 return Action.MoveDown;
             if(input.GetKeyDown(KeyCode.D) || input.GetKeyDown(KeyCode.RightArrow))
                 return Action.MoveRight;
@@ -44,14 +63,32 @@ namespace game
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
 
-            
+
 
             return Action.None;
         }
 
         private Action GetActionFromActionStream(Entity e, float time)
         {
-            return Action.None;
+            // Don't run if we don't have an action stream
+            if (!EntityManager.HasComponent<ActionStream>(e))
+                return Action.None;
+
+            // Get the action buffer
+            var stream = EntityManager.GetBuffer<ActionStream>(e);
+            if (stream.Length <= 0)
+                return Action.None;
+
+            var action = stream[0];
+
+            // Don't run if we've not reached the right time yet
+            if (time < action.time)
+                return Action.None;
+
+            // Remove and run the action
+            stream.RemoveAt(0);
+            return action.action;
+
         }
 
         private WorldCoord GetMove(Action a)
@@ -82,23 +119,27 @@ namespace game
         {
             return Replaying ? GetActionFromActionStream(e,time) : GetActionFromInput();
         }
-        
-        protected override void OnUpdate() 
-        { 
+
+        protected override void OnUpdate()
+        {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
 
             var time = Time.time;
-            
+
             if (gss.IsInGame)
             {
                 Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
                 {
                     var action = GetAction(player, time);
+
                     if (action == Action.None)
                         return;
-                    
+
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-                    
+                    var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
+
+                    anim.StartAnimation(action);
+
                     switch (action)
                     {
                         case Action.MoveUp:
@@ -120,7 +161,7 @@ namespace game
                         default:
                             throw new ArgumentOutOfRangeException("Unhandled input");
                     }
-                    
+
                     // Save the action to the action stream if the player has it
                     if (!Replaying && EntityManager.HasComponent<ActionStream>(player))
                     {
