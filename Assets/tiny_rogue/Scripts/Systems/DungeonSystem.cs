@@ -93,13 +93,13 @@ namespace game
             // Update the tiles
             Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
             {
-                if (renderer.sprite == SpriteSystem.IndexSprites['|'])
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')])
                 {
                     cb.AddComponent<Door>(e, new Door() {Opened = false});
                     cb.AddComponent<BlockMovement>(e, new BlockMovement());
                 }
 
-                if (renderer.sprite == SpriteSystem.IndexSprites['#'])
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')])
                     cb.AddComponent<BlockMovement>(e, new BlockMovement());
             });
         }
@@ -141,11 +141,11 @@ namespace game
 
                         if (isWall)
                         {
-                            renderer.sprite = SpriteSystem.IndexSprites['#'];
+                            renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
                         }
                         else
                         {
-                            renderer.sprite = SpriteSystem.IndexSprites['.'];
+                            renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
                         }
 
                         EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
@@ -266,9 +266,9 @@ namespace game
                 Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
                 
                 //only add if the space is blank
-                if (renderer.sprite == SpriteSystem.IndexSprites[' '])
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')])
                 {
-                    renderer.sprite = SpriteSystem.IndexSprites['#'];
+                    renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
                     EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
                 }
             }
@@ -295,7 +295,7 @@ namespace game
             //Clear the map
             Entities.WithAll<Tile>().ForEach((Entity entity, ref Sprite2DRenderer renderer) =>
             {
-                renderer.sprite = SpriteSystem.IndexSprites[' '];
+                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
             });
 
             //Clear all walls
@@ -315,9 +315,10 @@ namespace game
         {
             int tileIndex = View.XYToIndex(pos, _view.Width);
             Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-            renderer.sprite = SpriteSystem.IndexSprites[c];
+            renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(c)];
             EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
         }
+
 
         private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
@@ -340,9 +341,9 @@ namespace game
             var neighborEntityOne = _view.ViewTiles[View.XYToIndex(neighbor1, _view.Width)];
             var neighborEntityTwo = _view.ViewTiles[View.XYToIndex(neighbor2, _view.Width)];
 
-            bool tileIsWall = EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.IndexSprites['#'];
-            bool neighbor1IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityOne).sprite == SpriteSystem.IndexSprites['#'];
-            bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.IndexSprites['#'];
+            bool tileIsWall = EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
+            bool neighbor1IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityOne).sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
+            bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
 
             if(tileIsWall && neighbor1IsWall && neighbor2IsWall)
                 SetTileToChar(xy, '|');
