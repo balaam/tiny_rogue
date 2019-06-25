@@ -23,6 +23,7 @@ namespace game
             Startup, // generate required entities etc
             Title,
             InGame,
+            ReadQueuedLog,
             Replay,
             GameOver,
             NextLevel,
@@ -194,17 +195,42 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
+                    
+
+                    
                     var input = World.GetExistingSystem<PlayerInputSystem>();
                     var sbs = World.GetOrCreateSystem<StatusBarSystem>();
                     var ds = World.GetExistingSystem<DeathSystem>();
                     sbs.OnUpdateManual();
                     input.OnUpdateManual();
 
-                    if(TurnManager.NeedToTickTurn || TurnManager.TurnCount == 0)
+                    if (TurnManager.NeedToTickTurn || TurnManager.TurnCount == 0)
+                    {
                         TurnManager.OnTurn();
+                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                        if (log.HasQueuedLogs())
+                        {
+                            _state = eGameState.ReadQueuedLog;
+                        }
+                    }
 
                     ds.OnUpdateManual();
+                } break;
+                case eGameState.ReadQueuedLog:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
 
+                    if (log.HasQueuedLogs())
+                    {
+                        if (input.GetKeyDown(KeyCode.Space))
+                            log.ShowNextLog();
+                    }
+                    else
+                    {
+                        _state = eGameState.InGame;
+                    }
+                    
                 } break;
                 case eGameState.Replay:
                 {

@@ -43,8 +43,13 @@ namespace game
             _newLogs.Clear();
             _oldLogs.Clear();
         }
-        
-        public override void OnTurn(uint turnNumber)
+
+        public bool HasQueuedLogs()
+        {
+            return _newLogs.Count > 0;
+        }
+
+        public void ShowNextLog()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             View view = gss.View;
@@ -63,6 +68,11 @@ namespace game
             }
             else
                 view.ClearLine(EntityManager, 0, ' ');
+        }
+        
+        public override void OnTurn(uint turnNumber)
+        {
+            ShowNextLog();
         }
     }
 }
