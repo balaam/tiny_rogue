@@ -3,7 +3,6 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
-using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
@@ -204,7 +203,6 @@ namespace game
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
                         }
-
                     }
                     break;
                 case eGameState.Title:
