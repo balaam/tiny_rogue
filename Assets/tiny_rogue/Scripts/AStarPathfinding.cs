@@ -5,24 +5,28 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
+    
+    // 4-directional A* Algorithm
+    // TODO optimize with RSR or JPS
+    // TODO currently this roguelike is 4-directional only, this algorithm will need minor rewrites if we switch to 8-directional
     public class AStarPathfinding
     {
-        private class LocationRef
+        private class Location
         {
             // Tile coordinates
             public int2 location;
             public int totalPath;
             public int distanceFromStart;
             public int distanceToDestination; // this is an estimated value
-            public LocationRef Parent;
+            public Location Parent;
         }
 
         public static int2 getPath(int2 start, int2 end)
         {
-            LocationRef current = null;
-            var startLoc = new LocationRef {location = start};
-            var closedList = new List<LocationRef>();
-            var openList = new List<LocationRef>();
+            Location current = null;
+            var startLoc = new Location {location = start};
+            var closedList = new List<Location>();
+            var openList = new List<Location>();
             var g = 0;
 
             openList.Add(startLoc);
@@ -38,11 +42,11 @@ namespace game
                 {
                     // If we've already thoroughly searched this square then do nothing
                     if (listFind(closedList, adjacentSquare) != null) continue;
-                    LocationRef loc = listFind(openList, adjacentSquare);
+                    Location loc = listFind(openList, adjacentSquare);
                     // If we haven't seen this square before then create the LocationRef
                     if (loc == null)
                     {
-                        loc = new LocationRef {location = adjacentSquare, distanceFromStart = g};
+                        loc = new Location {location = adjacentSquare, distanceFromStart = g};
                         loc.distanceToDestination = EstimateDistanceToDestination(loc.location, end);
                         loc.totalPath = loc.distanceFromStart + loc.distanceToDestination;
                         loc.Parent = current;
@@ -75,7 +79,7 @@ namespace game
             return result.location;
         }
 
-        private static bool isEqual(LocationRef loc, int2 simple)
+        private static bool isEqual(Location loc, int2 simple)
         {
             if (loc == null)
             {
@@ -85,7 +89,7 @@ namespace game
             return loc.location.x == simple.x && loc.location.y == simple.y;
         }
         
-        private static LocationRef listFind(List<LocationRef> list, int2 search)
+        private static Location listFind(List<Location> list, int2 search)
         {
             foreach (var square in list)
             {
@@ -100,15 +104,15 @@ namespace game
             return math.abs(start.x - destination.x) + math.abs(start.y - destination.y);
         }
 
-        private static LocationRef minList(List<LocationRef> list)
+        private static Location minList(List<Location> list)
         {
-            LocationRef found = null;
+            Location found = null;
             int lowest = Int32.MaxValue;
 
             // Reverse order iteration - most recently inserted items are the most likely candidates
             for (var i = list.Count -1; i >= 0; i--)
             {
-                LocationRef item = list[i];
+                Location item = list[i];
                 if (item.totalPath < lowest)
                 {
                     lowest = item.totalPath;
