@@ -67,16 +67,22 @@ namespace game
                 }
             }
 
-            var result = current;
+            return getNextStep(start, current).location;
+        }
+
+        // Based on a fully populated A* search path, this identifies which tile to move into from the current location
+        private static Location getNextStep(int2 currentLocation, Location path)
+        {
+            var result = path;
             // Trace back to the first step, so you know where to move towards
             // Since we just produced a huge map of distances and values and shit there's a lot of
             // optimization and caching we could do before returning, but instead we're just throwing it all away
-            while (result?.Parent != null && !isEqual(result.Parent, start))
+            while (result?.Parent != null && !isEqual(result.Parent, currentLocation))
             {
                 result = result.Parent;
             }
 
-            return result.location;
+            return result;
         }
 
         private static bool isEqual(Location loc, int2 simple)
