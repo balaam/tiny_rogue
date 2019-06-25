@@ -57,7 +57,7 @@ namespace game
 				return;
 		    Entity e = ViewTiles[XYToIndex(xy, Width)];
 		    Sprite2DRenderer s = em.GetComponentData<Sprite2DRenderer>(e);
-		    s.sprite = SpriteSystem.IndexSprites[c];
+		    s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char)c)];
 		    s.color = color;
 		    em.SetComponentData(e, s);
 	    }

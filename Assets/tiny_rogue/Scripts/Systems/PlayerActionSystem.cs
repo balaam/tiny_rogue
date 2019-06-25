@@ -77,14 +77,14 @@ namespace game
                         log.AddLog("You opened a door.");
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
-                        renderer.sprite = SpriteSystem.IndexSprites['\\'];
+                        renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')];
                     }
                     else if (alternateMoveAction)
                     {
                         log.AddLog("You closed a door.");
                         door.Opened = false;
                         commandBuffer.AddComponent(doorEntity, new BlockMovement());
-                        renderer.sprite = SpriteSystem.IndexSprites['|'];
+                        renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
                     }
 
                     tms.NeedToTickTurn = true;
