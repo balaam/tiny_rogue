@@ -33,6 +33,7 @@ namespace game
         eGameState _state = eGameState.Startup;
         View _view = new View();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        DungeonSystem _dungeon;
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
@@ -41,7 +42,7 @@ namespace game
         {
             if (!SpriteSystem.Loaded) // can't make the viewport without sprites.
                 return false;
-            
+
             Entity mapEntity = Entity.Null;
 
             int width = -1;
@@ -61,16 +62,16 @@ namespace game
                 return false;
 
             _archetypeLibrary.Init(EntityManager);
-            var startX = -(math.floor(width / 2) * TinyRogueConstants.TileWidth);
-            var startY = math.floor(height / 2) * TinyRogueConstants.TileHeight;
+            var startX = -(math.floor(width / 2) * GlobalGraphicsSettings.TileSize.x);
+            var startY = math.floor(height / 2) * GlobalGraphicsSettings.TileSize.y;
 
             _view.ViewTiles = new Entity[width * height];
             for (int i = 0; i < width * height; i++)
             {
                 int2 xy = View.IndexToXY(i, width);
                 float3 pos =  new float3(
-                    startX + (xy.x * TinyRogueConstants.TileWidth),
-                    startY - (xy.y * TinyRogueConstants.TileHeight), 0);
+                    startX + (xy.x * GlobalGraphicsSettings.TileSize.x),
+                    startY - (xy.y * GlobalGraphicsSettings.TileSize.y), 0);
 
                 Entity instance = _archetypeLibrary.CreateTile(
                     EntityManager, xy, pos, mapEntity);
@@ -83,48 +84,20 @@ namespace game
             return true;
         }
 
-        private void GenerateEmptyLevel()
-        {
-            // Removing blocking tags from all tiles
-            Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
-            {
-                PostUpdateCommands.RemoveComponent(entity, typeof(BlockMovement)); 
-            });
-
-            Entities.WithAll<Tile>().ForEach((Entity e, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer) =>
-            {
-                var x = tileCoord.x;
-                var y = tileCoord.y;
-
-                bool isVWall = (x == 0 || x == _view.Width - 1) && y > 0 && y < _view.Height - 2;
-                bool isHWall = (y == 1 || y == _view.Height - 2);
-
-                if(isVWall || isHWall)
-                {
-                    renderer.sprite = SpriteSystem.IndexSprites[ GlobalGraphicsSettings.ascii ? '#' : 2 ];
-                    PostUpdateCommands.AddComponent<BlockMovement>(e, new BlockMovement());
-                }
-                else
-                {
-                    renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '.' : 0];
-                }
-            });
-        }
-
         public void GenerateLevel()
         {
-            GenerateEmptyLevel();
+            _dungeon.GenerateDungeon(_view);
 
             // Hard code a couple of spear traps, so the player can die.
-            var trap1Coord = new int2(12, 12);
-            var trap2Coord = new int2(13, 11);
+            var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
+            var trap2Coord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
 
-            var stairwayCoord = new int2(22, 15);
+            var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
 
-            var crownCoord = new int2(13, 12);
+            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
 
             Random random = new Random((uint)UnityEngine.Time.time);//seed
@@ -137,31 +110,23 @@ namespace game
                 var goldCoord = new int2(randX+3, randY+3); // +3 to avoid borders
                 _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
             }
-        }
+            // var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
+            // _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+           
+            var collectibleCoord = new int2(15,12);
+            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+  
+       }
 
         public void GenerateCombatTestLevel()
         {
-            GenerateEmptyLevel();
-            
-            // Place the player
-            Entities.WithAll<PlayerInput>().ForEach(
-                (Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
-            {
-                coord.x = 10;
-                coord.y = 10;
-                translation.Value = View.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
-               
-                hp.max = TinyRogueConstants.StartPlayerHealth;
-                hp.now = hp.max;
+            _dungeon.GenerateDungeon(_view);
 
-                renderer.color = TinyRogueConstants.DefaultColor;
-            });
-
-            int2 dummyCoord = new int2(20, 10);
+            int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
             
             // Create 'Exit'
-            var crownCoord = new int2(1, 2);
+            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
         }
 
@@ -170,12 +135,16 @@ namespace game
             switch (_state)
             {
                 case eGameState.Startup:
-                {
-                    bool done = TryGenerateViewport();
-                    if (done)
-                       MoveToTitleScreen();
+                    {
+                        bool done = TryGenerateViewport();
+                        if (done)
+                        {
+                            _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                            MoveToTitleScreen();
+                        }
 
-                } break;
+                    }
+                    break;
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -195,17 +164,6 @@ namespace game
                         tms.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Press Space for next log");
                         log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
-
-                        // Place the player
-                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
-                        {
-                            coord.x = 10;
-                            coord.y = 10;
-                            translation.Value = View.PlayerViewCoordToWorldPos(new int2(coord.x, coord.y));
-
-                            hp.max = TinyRogueConstants.StartPlayerHealth;
-                            hp.now = hp.max;
-                        });
                         _state = eGameState.InGame;
                     }
                 } break;
@@ -246,14 +204,6 @@ namespace game
                     {
                         GenerateLevel();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
-
-                        // Place the player
-                        Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp) =>
-                        {
-                            coord.x = 10;
-                            coord.y = 10;
-                            translation.Value = View.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-                        });
                         _state = eGameState.InGame;
                     }
                     } break;
