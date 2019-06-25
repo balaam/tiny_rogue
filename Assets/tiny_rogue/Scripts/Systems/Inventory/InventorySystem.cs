@@ -48,7 +48,7 @@ namespace game
         {
             int2 playerPos = new int2(playerCoord.x, playerCoord.y);
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
-            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
 
             Entities.WithAll<Collectible>().ForEach(
                 (Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
@@ -58,7 +58,7 @@ namespace game
                         log.AddLog("You picked up a " + pickable.name);
                         AddItem(pickable.name, pickable.description, pickable.appearance);
                         
-                        gss.PostUpdateCommands.DestroyEntity(item);
+                        pis.PostUpdateCommands.DestroyEntity(item);
                     }
                 });
         }

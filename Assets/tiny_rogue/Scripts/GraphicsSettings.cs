@@ -15,6 +15,11 @@ namespace game
 {
     public static class GlobalGraphicsSettings
     {
-        public static bool ascii = false;
+        public static bool ascii;
+    }
+
+    public struct GraphicsSettings : IComponentData
+    {
+        public bool ascii;
     }
 }

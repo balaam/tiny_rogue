@@ -25,7 +25,6 @@ namespace game
         List<LogEntry> _newLogs = new List<LogEntry>();
         List<LogEntry> _oldLogs = new List<LogEntry>();
         
-        protected override void OnUpdate() { }
 
         /// <summary>
         /// Add a log to be written on the top line
@@ -44,7 +43,7 @@ namespace game
             _oldLogs.Clear();
         }
         
-        public override void OnTurn(uint turnNumber)
+        protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             View view = gss.View;

@@ -2,13 +2,23 @@ using Unity.Entities;
 
 namespace game
 {
+
+    [UpdateAfter(typeof(TurnManagementSystem))]
+    [UpdateInGroup(typeof(TurnSystemGroup))]
     public abstract class TurnSystem : ComponentSystem
     {
-        public TurnSystem()
+        protected override void OnCreate()
         {
-            TurnManager.RegisterSystem(this);
+            base.OnCreate();
+            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
+            tms.RegisterTurnSystem(this);
         }
 
-        public abstract void OnTurn(uint turnNumber);
+        protected override void OnDestroy()
+        {
+            var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
+            tms.UnregisterTurnSystem(this);
+            base.OnDestroy();
+        }
     }
 }

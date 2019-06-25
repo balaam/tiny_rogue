@@ -31,11 +31,9 @@ namespace game
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
-        TurnManager _turnManager = new TurnManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
 
         public View View => _view;
-        public TurnManager TurnManager => _turnManager;
         public bool IsInGame => (_state == eGameState.InGame);
 
         private bool TryGenerateViewport()
@@ -127,11 +125,15 @@ namespace game
 
             var crownCoord = new int2(13, 12);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
-            
+
+            //TODO: random positions for gold
+            var goldCoord = new int2(50, 15);
+            _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+           
             var collectibleCoord = new int2(15,12);
-            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord,
-                _view.ViewCoordToWorldPos(collectibleCoord));
-        }
+            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+  
+       }
 
         public void GenerateCombatTestLevel()
         {
@@ -148,6 +150,9 @@ namespace game
                 hp.now = hp.max;
             });
 
+            int2 dummyCoord = new int2(20, 10);
+            _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
+            
             // Create 'Exit'
             var crownCoord = new int2(1, 2);
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
@@ -178,8 +183,9 @@ namespace game
                     }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
+                        var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
                         GenerateLevel();
-                        TurnManager.ResetTurnCount();
+                        tms.ResetTurnCount();
                         log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
                         log.AddLog("HAPPY HACKWEEK!");
 
@@ -198,17 +204,7 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    var input = World.GetExistingSystem<PlayerInputSystem>();
-                    var sbs = World.GetOrCreateSystem<StatusBarSystem>();
-                    var ds = World.GetExistingSystem<DeathSystem>();
-                    sbs.OnUpdateManual();
-                    input.OnUpdateManual();
-
-                    if(TurnManager.NeedToTickTurn || TurnManager.TurnCount == 0)
-                        TurnManager.OnTurn();
-
-                    ds.OnUpdateManual();
-
+                    // Nothing to do here
                 } break;
                 case eGameState.Replay:
                 {
@@ -246,8 +242,9 @@ namespace game
 
                     if (input.GetKeyDown(KeyCode.Alpha1))
                     {
+                        var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
                         GenerateCombatTestLevel();
-                        TurnManager.ResetTurnCount();
+                        tms.ResetTurnCount();
                         log.AddLog("This is a room to test the combat system");
                         log.AddLog("Move to the crown to exit");
                         _state = eGameState.InGame;
@@ -260,7 +257,7 @@ namespace game
             }
         }
 
-        private void CleanUpGameWorld()
+        private void CleanUpGameWorld(EntityCommandBuffer cb)
         {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             log.Clear();
@@ -274,7 +271,7 @@ namespace game
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
             {
                 t.Value = TinyRogueConstants.OffViewport;
-                PostUpdateCommands.DestroyEntity(entity);
+                cb.DestroyEntity(entity);
             });
 
             Entities.WithAll<Player>().ForEach((ref Translation pos) =>
@@ -297,25 +294,25 @@ namespace game
             _state = eGameState.Title;
         }
 
-        public void MoveToGameOver()
-        {
-            CleanUpGameWorld();
+        public void MoveToGameOver(EntityCommandBuffer cb)
+        { 
+            CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
             _state = eGameState.GameOver;
         }
-
-        public void MoveToGameWin()
+        
+        public void MoveToGameWin(EntityCommandBuffer cb)
         {
-            CleanUpGameWorld();
+            CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
             _state = eGameState.GameOver;
         }
 
-        public void MoveToNextLevel()
+        public void MoveToNextLevel(EntityCommandBuffer cb)
         {
-            CleanUpGameWorld();
+            CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
