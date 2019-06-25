@@ -31,6 +31,7 @@ namespace game
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
+        ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
         DungeonSystem _dungeon;
 
@@ -147,6 +148,10 @@ namespace game
                     {
                         
                     }
+                    else if(input.GetKeyDown(KeyCode.H))
+                    {
+                        MoveToHiScores(PostUpdateCommands);
+                    }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
                         var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
@@ -245,6 +250,12 @@ namespace game
         public void MoveToTitleScreen()
         {
             // Clear the screen.
+            Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
+            {
+                _scoreManager.SetHiScores(gc.count + (level.level - 1) * 10);
+                level.level = 1;
+                gc.count = 0;
+            });
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0 ];
@@ -277,6 +288,17 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
+        }
+
+        public void MoveToHiScores(EntityCommandBuffer cb)
+        {
+            CleanUpGameWorld(cb);
+            _view.Blit(EntityManager, new int2(40, 7), "HiScores");
+            for (int i = 1; i < 11; i++)
+            {
+                _view.Blit(EntityManager, new int2(40, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(45, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+            }
         }
 
         private void MoveToDebugLevelSelect()
