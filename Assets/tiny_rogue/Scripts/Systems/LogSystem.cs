@@ -62,7 +62,14 @@ namespace game
                 _oldLogs.Add(topLog);
                 view.ClearLine(EntityManager, 0, ' ');
                 view.Blit(EntityManager, new int2(0,0), topLog.text);
-                
+
+                if (HasQueuedLogs())
+                {
+                    string pageMsg = "(cont)";
+                    view.Blit(EntityManager, new int2(view.Width - pageMsg.Length, 0), pageMsg);
+                }
+
+
                 if(_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }

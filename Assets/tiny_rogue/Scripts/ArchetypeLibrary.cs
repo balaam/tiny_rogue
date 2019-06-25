@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using UnityEngine;
 using Unity.Mathematics;
+using Color = Unity.Tiny.Core2D.Color;
 
 namespace game
 {
@@ -13,6 +14,14 @@ namespace game
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
         public EntityArchetype  Stairway { get; private set; }
+
+        public Color Default
+        {
+            get
+            {
+                return new Color(168.0f/255.0f, 168.0f/255.0f,168.0f/255.0f);
+            }
+        }
 
         public void Init(EntityManager em)
         {
@@ -70,7 +79,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
+            s.color = Default;
             s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
 
             entityManager.SetComponentData(entity, s);
@@ -93,7 +102,7 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(1, 1, 1, 1);
+            s.color = Default;
             s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '^' : 1];
             l.order = 1;
 
