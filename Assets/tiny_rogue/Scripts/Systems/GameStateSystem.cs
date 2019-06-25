@@ -91,7 +91,7 @@ namespace game
 
         public void GenerateLevel()
         {
-            _dungeon.GenerateDungeon(_view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
@@ -131,7 +131,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(_view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
@@ -292,6 +292,7 @@ namespace game
             CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
         
@@ -300,6 +301,7 @@ namespace game
             CleanUpGameWorld(cb);
             _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
 
