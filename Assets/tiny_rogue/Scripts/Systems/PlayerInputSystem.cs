@@ -13,6 +13,12 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
+    struct TimedAction
+    {
+        public Action action;
+        public float time;
+    }
+    
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
@@ -21,17 +27,14 @@ namespace game
 
         private bool alternateAction = false;
 
+        private List<TimedAction> ActionStream = new List<TimedAction>();
+
         public void StartRecording()
         {
             Replaying = false;
             StartTime = Time.time;
             
-            // Reset all ActionStream buffers
-            Entities.WithAll<ActionStream>().ForEach(e =>
-            {
-                var stream = EntityManager.GetBuffer<ActionStream>(e);
-                stream.Clear();
-            });
+            ActionStream.Clear();
         }
         
         public void StartReplaying()
@@ -70,25 +73,15 @@ namespace game
 
         private Action GetActionFromActionStream(Entity e, float time)
         {
-            // Don't run if we don't have an action stream
-            if (!EntityManager.HasComponent<ActionStream>(e))
-                return Action.None;
-            
-            // Get the action buffer
-            var stream = EntityManager.GetBuffer<ActionStream>(e);
-            if (stream.Length <= 0)
-                return Action.None;
-                
-            var action = stream[0];
+            var action = ActionStream[0];
 
             // Don't run if we've not reached the right time yet
             if (time < action.time)
                 return Action.None;
                 
             // Remove and run the action
-            stream.RemoveAt(0);
+            ActionStream.RemoveAt(0);
             return action.action;
-
         }
 
         private WorldCoord GetMove(Action a)
@@ -160,10 +153,9 @@ namespace game
                     }
                     
                     // Save the action to the action stream if the player has it
-                    if (!Replaying && EntityManager.HasComponent<ActionStream>(player))
+                    if (!Replaying)
                     {
-                        var stream = EntityManager.GetBuffer<ActionStream>(player);
-                        stream.Add(new ActionStream
+                        ActionStream.Add(new TimedAction()
                         {
                             action = action,
                             time = Time.time - StartTime
