@@ -57,16 +57,18 @@
         }, {
             "$type": "game.Player, tiny_rogue",
             "Direction": 0,
-            "Action": 0
+            "Action": 0,
+            "Initial": {},
+            "Destination": {}
         }, {
             "$type": "game.WorldCoord, tiny_rogue"
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 1
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 1488007241767469820,
             "b": 11384738274893832918
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -128,6 +130,10 @@
                 "StableTypeHash": 16779655563147745607
             }, {
                 "StableTypeHash": 13688764092462950983
+            }, {
+                "StableTypeHash": 396116209966398068
+            }, {
+                "StableTypeHash": 4301058344883206118
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
@@ -138,12 +144,12 @@
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 2
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 2346403976845739980,
             "b": 9762411986425830547
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
         }, {
             "$type": "Unity.Tiny.Core2D.SpriteAtlas, Unity.Tiny.Sprite2D",
             "Elements": [{
@@ -211,12 +217,12 @@
             "MoveId": 5,
             "DirectionId": 2
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 8
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 4526713921488243230,
             "b": 11762660961573624925
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 8
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -284,12 +290,12 @@
             "width": 25,
             "height": 25
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 3
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 4604247537078127658,
             "b": 11100065560476510850
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 3
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -352,11 +358,11 @@
                 "y": 1
             }
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 7523191366302844709,
             "b": 13384110438909731321
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
         }, {
             "$type": "Unity.Tiny.Core2D.Camera2D, Unity.Tiny.Core2D",
             "halfVerticalSize": 4,
@@ -433,12 +439,12 @@
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 6
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 5
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 9071493321064989259,
             "b": 12041692396642144659
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 5
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -511,12 +517,12 @@
             "$type": "game.AnimationSequence, tiny_rogue",
             "DirectionId": 2
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 2
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 9385053259397025677,
             "b": 11395131415543877049
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -600,12 +606,12 @@
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 7
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 3
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 10498604016042198335,
             "b": 13737337803737163148
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 3
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -686,12 +692,12 @@
         }, {
             "$type": "game.AnimationSequence, tiny_rogue"
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 1
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 11162448213905590524,
             "b": 13158601509829707225
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -777,12 +783,12 @@
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 5
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 7
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 16019351843361017379,
             "b": 10288881692865639230
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 7
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -847,11 +853,11 @@
             "width": 25,
             "height": 25
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 16656866902839214552,
             "b": 11245291498443650181
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -899,12 +905,12 @@
             "MoveId": 6,
             "DirectionId": 2
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 6
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 17355575997204221112,
             "b": 11495726811637081684
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 6
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}
@@ -976,12 +982,12 @@
             "MoveId": 7,
             "DirectionId": 2
         }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 4
+        }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 17837678820471947913,
             "b": 9242012097704888413
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 4
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {}

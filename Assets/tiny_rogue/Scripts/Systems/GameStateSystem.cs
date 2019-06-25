@@ -28,10 +28,12 @@ namespace game
             GameOver,
             NextLevel,
             DebugLevelSelect,
+            HiScores,
         }
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
+        ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
         DungeonSystem _dungeon;
 
@@ -163,6 +165,10 @@ namespace game
                     {
                         MoveToDebugLevelSelect();
                     }
+                    else if(input.GetKeyDown(KeyCode.H))
+                    {
+                        MoveToHiScores(PostUpdateCommands);
+                    }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
                         MoveToInGame(PostUpdateCommands, false);
@@ -220,10 +226,16 @@ namespace game
                         log.AddLog("Move to the crown to exit");
                         _state = eGameState.InGame;
                     }
-                    else if (input.GetKeyDown(KeyCode.Space))
+                    else if (input.GetKeyUp(KeyCode.Space))
                     {
                         MoveToTitleScreen();
                     }
+                } break;
+                case eGameState.HiScores:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyUp(KeyCode.Space))
+                        MoveToTitleScreen();
                 } break;
             }
         }
@@ -254,12 +266,19 @@ namespace game
         public void MoveToTitleScreen()
         {
             // Clear the screen.
+            Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
+            {
+                _scoreManager.SetHiScores(gc.count + (level.level - 1) * 10);
+                level.level = 1;
+                gc.count = 0;
+            });
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0 ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _view.Blit(EntityManager, new int2(30, 21), "PRESS H FOR HISCORES");
             _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
@@ -311,6 +330,19 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
+        }
+
+        public void MoveToHiScores(EntityCommandBuffer cb)
+        {
+            CleanUpGameWorld(cb);
+            _view.Blit(EntityManager, new int2(30, 7), "HiScores");
+            _view.Blit(EntityManager, new int2(25, 20), "Press Space to Continue");
+            for (int i = 1; i < 11; i++)
+            {
+                _view.Blit(EntityManager, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+            }
+            _state = eGameState.HiScores;
         }
 
         private void MoveToDebugLevelSelect()

@@ -18,7 +18,7 @@ namespace game
         public Action action;
         public float time;
     }
-    
+
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
@@ -123,18 +123,25 @@ namespace game
 
             if (gss.IsInGame)
             {
-                Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
+                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Player player, ref WorldCoord coord) =>
                 {
-                    var action = GetAction(player, time);
+                    // In Graphical, you have to wait for the animation of the action to complete first.
+                    if (!GlobalGraphicsSettings.ascii)
+                    {
+                        var currentAction = EntityManager.GetComponentData<Player>(playerEntity).Action;
+                        if (currentAction != Action.None) return;
+                    }
+
+                    var action = GetAction(playerEntity, time);
 
                     if (action == Action.None)
                         return;
+                        
 
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                     var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
 
-                    anim.StartAnimation(action);
-
+                    bool moved = false;
                     switch (action)
                     {
                         case Action.MoveUp:
@@ -142,10 +149,10 @@ namespace game
                         case Action.MoveRight:
                         case Action.MoveLeft:
                             var move = GetMove(action);
-                            pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
+                            moved = pas.TryMove(playerEntity, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
                             break;
                         case Action.Interact:
-                            pas.Interact(coord);
+                            pas.Interact(coord, PostUpdateCommands);
                             break;
                         case Action.Wait:
                             Debug.Log("Wait is happening.");
@@ -155,6 +162,12 @@ namespace game
                             break;
                         default:
                             throw new ArgumentOutOfRangeException("Unhandled input");
+                    }
+
+                    if (!GlobalGraphicsSettings.ascii)
+                    {
+                        Debug.Log($"Animate {(int)action} {moved}");
+                        anim.StartAnimation(action, moved);
                     }
 
                     // Save the action to the action stream if the player has it
