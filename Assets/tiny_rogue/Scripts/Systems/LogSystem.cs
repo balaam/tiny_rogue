@@ -22,7 +22,6 @@ namespace game
         List<LogEntry> _newLogs = new List<LogEntry>();
         List<LogEntry> _oldLogs = new List<LogEntry>();
         
-        protected override void OnUpdate() { }
 
         /// <summary>
         /// Add a log to be written on the top line
@@ -65,6 +64,7 @@ namespace game
                     string pageMsg = "(cont)";
                     var pageXY = new int2(view.Width - pageMsg.Length, 0);
                     view.Blit(EntityManager, pageXY, pageMsg, new Color(1,1,1,1));
+                    gss.MoveToReadQueuedLog();
                 }
 
 
@@ -75,7 +75,7 @@ namespace game
                 view.ClearLine(EntityManager, 0, ' ');
         }
         
-        public override void OnTurn(uint turnNumber)
+        protected override void OnUpdate()
         {
             ShowNextLog();
         }

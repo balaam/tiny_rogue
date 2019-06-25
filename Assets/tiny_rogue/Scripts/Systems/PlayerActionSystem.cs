@@ -22,10 +22,12 @@ namespace game
         }
 
         private GameStateSystem gss;
+        private TurnManagementSystem tms;
 
         protected override void OnCreate()
         {
-            gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            gss = EntityManager.World.GetOrCreateSystem<GameStateSystem>();
+            tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
             base.OnCreate();
         }
 
@@ -34,7 +36,7 @@ namespace game
             Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
             {
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
-                    gss.MoveToNextLevel();
+                    gss.MoveToNextLevel(PostUpdateCommands);
             });
         }
 
@@ -42,7 +44,7 @@ namespace game
         {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             log.AddLog("You wait a turn.");
-            gss.TurnManager.NeedToTickTurn = true;
+            tms.NeedToTickTurn = true;
         }
 
         public void TryMove(Entity e, WorldCoord c)
@@ -54,7 +56,7 @@ namespace game
                 {
                     EntityManager.SetComponentData(e, tileCoord);
                     EntityManager.SetComponentData(e, tileTrans);                        
-                    gss.TurnManager.NeedToTickTurn = true;
+                    tms.NeedToTickTurn = true;
                 }
             });
         }

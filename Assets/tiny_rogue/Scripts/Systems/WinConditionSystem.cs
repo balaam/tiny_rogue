@@ -7,9 +7,7 @@ namespace game
     // The WinCondition detection should be finer and only trigger a specific number of events.
     public class WinConditionSystem : TurnSystem
     {
-        protected override void OnUpdate() { }
-        
-        public override void OnTurn(uint turnNumber)
+        protected override void OnUpdate() 
         {
             int2 playerPos = new int2(0,0);
                         
@@ -25,7 +23,7 @@ namespace game
                 if (playerPos.x == crownPos.x && playerPos.y == crownPos.y)
                 {
                     var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                    gss.MoveToGameWin();    
+                    gss.MoveToGameWin(PostUpdateCommands);    
                 }
             });
         }
