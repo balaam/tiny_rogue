@@ -119,7 +119,7 @@ namespace game
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
 
-            var time = Time.time;
+            var time = Time.time - StartTime;
 
             if (gss.IsInGame)
             {
@@ -176,7 +176,7 @@ namespace game
                         ActionStream.Add(new TimedAction()
                         {
                             action = action,
-                            time = Time.time - StartTime
+                            time = time
                         });
                     }
                 });
