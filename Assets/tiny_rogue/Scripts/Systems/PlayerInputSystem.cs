@@ -17,7 +17,10 @@ namespace game
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
-        private Action GetAction()
+        public bool Replaying = false;
+        public float StartTime;
+        
+        private Action GetActionFromInput()
         {
             var input = EntityManager.World.GetExistingSystem<InputSystem>();
             if (input.GetKeyDown(KeyCode.W) || input.GetKeyDown(KeyCode.UpArrow))
@@ -33,6 +36,11 @@ namespace game
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
 
+            return Action.None;
+        }
+
+        private Action GetActionFromActionStream(Entity e, float time)
+        {
             return Action.None;
         }
 
@@ -59,19 +67,26 @@ namespace game
 
             return c;
         }
+
+        private Action GetAction(Entity e, float time)
+        {
+            return Replaying ? GetActionFromActionStream(e,time) : GetActionFromInput();
+        }
         
         protected override void OnUpdate() 
         { 
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+
+            var time = Time.time;
+            
             if (gss.IsInGame)
             {
-                var action = GetAction();
-
-                if (action == Action.None)
-                    return;
-                
                 Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
                 {
+                    var action = GetAction(player, time);
+                    if (action == Action.None)
+                        return;
+                    
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
                     
                     switch (action)
@@ -97,10 +112,14 @@ namespace game
                     }
                     
                     // Save the action to the action stream if the player has it
-                    if (EntityManager.HasComponent<ActionStream>(player))
+                    if (!Replaying && EntityManager.HasComponent<ActionStream>(player))
                     {
                         var stream = EntityManager.GetBuffer<ActionStream>(player);
-                        stream.Add(new ActionStream {action = action, time = Time.time});
+                        stream.Add(new ActionStream
+                        {
+                            action = action,
+                            time = Time.time - StartTime
+                        });
                     }
                 });
             }
