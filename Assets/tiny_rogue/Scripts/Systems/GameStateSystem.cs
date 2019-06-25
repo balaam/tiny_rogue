@@ -247,7 +247,7 @@ namespace game
             // Clear the screen.
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
-                renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
+                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics( ' ' )];
             });
 
             // Destroy everything that's not a tile or the player.
@@ -274,7 +274,7 @@ namespace game
             });
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
-                renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0 ];
+                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ' ) ];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
             _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
@@ -351,7 +351,7 @@ namespace game
             Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
             {
                 // TODO: need to figure out empty/none tile
-                renderer.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0 ];
+                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ' )];
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
             _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");

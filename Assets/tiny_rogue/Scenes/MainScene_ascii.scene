@@ -280,8 +280,11 @@
             "$type": "game.Level, tiny_rogue",
             "level": 1
         }, {
-            "$type": "game.Sight, tiny_rogue",
-            "SightRadius": 6
+            "$type": "game.Player, tiny_rogue",
+            "Direction": 0,
+            "Action": 0,
+            "Initial": {},
+            "Destination": {}
         }, {
             "$type": "game.WorldCoord, tiny_rogue",
             "x": 10,
@@ -356,14 +359,16 @@
             }, {
                 "StableTypeHash": 13843021685803350563
             }, {
-                "StableTypeHash": 6622059105241414304
+                "StableTypeHash": 16779655563147745607
+            }, {
+                "StableTypeHash": 396116209966398068
+            }, {
+                "StableTypeHash": 4301058344883206118
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
         }, {
             "$type": "game.BlockMovement, tiny_rogue"
-        }, {
-            "$type": "game.Player, tiny_rogue"
         }, {
             "$type": "game.PlayerInput, tiny_rogue"
         }]

@@ -45,7 +45,7 @@ namespace game
         List<Room> _rooms = new List<Room>();
         Entity _dungeonViewEntity;
         View _view;
-        
+
         protected override void OnUpdate() {}
 
         public void GenerateDungeon(EntityCommandBuffer cb, View view)
@@ -89,17 +89,17 @@ namespace game
             //Add monsters
 
             PlacePlayer();
-            
+
             // Update the tiles
             Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
             {
-                if (renderer.sprite == SpriteSystem.IndexSprites['|'])
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')])
                 {
                     cb.AddComponent<Door>(e, new Door() {Opened = false});
                     cb.AddComponent<BlockMovement>(e, new BlockMovement());
                 }
 
-                if (renderer.sprite == SpriteSystem.IndexSprites['#'])
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')])
                     cb.AddComponent<BlockMovement>(e, new BlockMovement());
             });
         }
@@ -118,7 +118,10 @@ namespace game
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
 
-                renderer.color = TinyRogueConstants.DefaultColor;
+                if (GlobalGraphicsSettings.ascii)
+                {
+                    renderer.color = TinyRogueConstants.DefaultColor;
+                }
             });
 
             EntityManager.World.GetExistingSystem<FogOfWarSystem>().CalculateFov(_view);
@@ -143,11 +146,11 @@ namespace game
 
                         if (isWall)
                         {
-                            renderer.sprite = SpriteSystem.IndexSprites['#'];
+                            renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
                         }
                         else
                         {
-                            renderer.sprite = SpriteSystem.IndexSprites['.'];
+                            renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
                         }
 
                         EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
@@ -233,9 +236,9 @@ namespace game
                     int2 xy = new int2(x, currentY);
                     CreateHallwayTile(xy, HallDirection.Vertical);
                     CreateWallsIfEmpty(
-                        new int2(x + 1, currentY), 
-                        new int2(x - 1, currentY), 
-                        new int2(x + 1, currentY + 1), 
+                        new int2(x + 1, currentY),
+                        new int2(x - 1, currentY),
+                        new int2(x + 1, currentY + 1),
                         new int2(x - 1, currentY - 1),
                         new int2(x + 1, currentY - 1),
                         new int2(x - 1, currentY + 1));
@@ -266,11 +269,11 @@ namespace game
             {
                 int tileIndex = View.XYToIndex(pos, _view.Width);
                 Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-                
+
                 //only add if the space is blank
-                if (renderer.sprite == SpriteSystem.IndexSprites[' '])
+                if (renderer.sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')])
                 {
-                    renderer.sprite = SpriteSystem.IndexSprites['#'];
+                    renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
                     EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
                 }
             }
@@ -297,7 +300,7 @@ namespace game
             //Clear the map
             Entities.WithAll<Tile>().ForEach((Entity entity, ref Sprite2DRenderer renderer) =>
             {
-                renderer.sprite = SpriteSystem.IndexSprites[' '];
+                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
             });
 
             //Clear all walls
@@ -317,9 +320,10 @@ namespace game
         {
             int tileIndex = View.XYToIndex(pos, _view.Width);
             Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-            renderer.sprite = SpriteSystem.IndexSprites[c];
+            renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(c)];
             EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
         }
+
 
         private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
@@ -342,9 +346,9 @@ namespace game
             var neighborEntityOne = _view.ViewTiles[View.XYToIndex(neighbor1, _view.Width)];
             var neighborEntityTwo = _view.ViewTiles[View.XYToIndex(neighbor2, _view.Width)];
 
-            bool tileIsWall = EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.IndexSprites['#'];
-            bool neighbor1IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityOne).sprite == SpriteSystem.IndexSprites['#'];
-            bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.IndexSprites['#'];
+            bool tileIsWall = EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
+            bool neighbor1IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityOne).sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
+            bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
 
             if(tileIsWall && neighbor1IsWall && neighbor2IsWall)
                 SetTileToChar(xy, '|');
