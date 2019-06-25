@@ -57,7 +57,9 @@
         }, {
             "$type": "game.Player, tiny_rogue",
             "Direction": 0,
-            "Action": 0
+            "Action": 0,
+            "Initial": {},
+            "Destination": {}
         }, {
             "$type": "game.WorldCoord, tiny_rogue"
         }, {
@@ -128,6 +130,10 @@
                 "StableTypeHash": 16779655563147745607
             }, {
                 "StableTypeHash": 13688764092462950983
+            }, {
+                "StableTypeHash": 396116209966398068
+            }, {
+                "StableTypeHash": 4301058344883206118
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
