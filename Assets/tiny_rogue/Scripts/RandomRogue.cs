@@ -9,7 +9,7 @@ public class RandomRogue
     public static int Next()
     {
         if (!initialized)
-            Init();
+            throw new System.InvalidOperationException("RandomRogue used before Init");
 
         return random.NextInt();
     }
@@ -17,7 +17,7 @@ public class RandomRogue
     public static int Next(int maxValue)
     {
         if (!initialized)
-            Init();
+            throw new System.InvalidOperationException("RandomRogue used before Init");
 
         return random.NextInt(maxValue);
     }
@@ -25,15 +25,14 @@ public class RandomRogue
     public static int Next(int minValue, int maxValue)
     {
         if (!initialized)
-            Init();
+            throw new System.InvalidOperationException("RandomRogue used before Init");
 
         return random.NextInt(minValue, maxValue);
     }
 
-    private static void Init()
+    public static void Init(uint i)
     {
-        long seed = 929374892134987;
-        random = new Random((uint)seed);
+        random = new Random(i);
         random.InitState();
 
         initialized = true;
