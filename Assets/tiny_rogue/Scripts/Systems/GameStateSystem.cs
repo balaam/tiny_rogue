@@ -27,11 +27,13 @@ namespace game
             GameOver,
             NextLevel,
             DebugLevelSelect,
+            HiScores
         }
 
         eGameState _state = eGameState.Startup;
         View _view = new View();
         TurnManager _turnManager = new TurnManager();
+        ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
 
         public View View => _view;
@@ -173,6 +175,10 @@ namespace game
                     {
                         
                     }
+                    else if (input.GetKeyDown(KeyCode.H))
+                    {
+                        MoveToHiScores();   
+                    }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
@@ -255,6 +261,12 @@ namespace game
                         MoveToTitleScreen();
                     }
                 } break;
+                case eGameState.HiScores:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.Space))
+                        MoveToTitleScreen();
+                } break;
             }
         }
 
@@ -290,8 +302,8 @@ namespace game
             });
             Entities.WithAll<Player>().ForEach((ref Gold gp, ref Level level) =>
             {
-                _scoreManager.SetHiScores(gp.count + (level.level * 10));
-                level.level = 0;
+                _scoreManager.SetHiScores(gp.count + ((level.level - 1) * 10));
+                level.level = 1;
                 gp.count = 0;
             });
             _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
@@ -322,6 +334,19 @@ namespace game
             _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
             _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
+        }
+
+        public void MoveToHiScores()
+        {
+            CleanUpGameWorld();
+            _view.Blit(EntityManager, new int2(40, 7), "HiScores");
+            _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO RETURN TO TITLE");
+            for (int i = 1; i < 11; i++)
+            {
+                _view.Blit(EntityManager, new int2(40, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(EntityManager, new int2(45, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+            }
+            _state = eGameState.HiScores;
         }
 
         private void MoveToDebugLevelSelect()
