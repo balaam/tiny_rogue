@@ -32,12 +32,12 @@ namespace game
             base.OnCreate();
         }
 
-        public void Interact(WorldCoord c)
+        public void Interact(WorldCoord c, EntityCommandBuffer commandBuffer)
         {
             Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
             {
                 if (c.x == stairCoord.x && c.y == stairCoord.y)
-                    gss.MoveToNextLevel(PostUpdateCommands);
+                    gss.MoveToNextLevel(commandBuffer);
             });
 
             var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();

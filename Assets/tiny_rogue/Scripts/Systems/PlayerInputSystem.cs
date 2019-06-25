@@ -142,7 +142,7 @@ namespace game
                             pas.TryMove(player, new WorldCoord { x = coord.x + move.x, y = coord.y + move.y }, alternateAction, PostUpdateCommands);
                             break;
                         case Action.Interact:
-                            pas.Interact(coord);
+                            pas.Interact(coord, PostUpdateCommands);
                             break;
                         case Action.Wait:
                             Debug.Log("Wait is happening.");
