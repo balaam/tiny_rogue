@@ -22,6 +22,10 @@ namespace game
                 
                 if (playerPos.x == crownPos.x && playerPos.y == crownPos.y)
                 {
+                    Entities.WithAll<Player>().ForEach((Entity player, ref GoldCount gc) =>
+                    {
+                        gc.count += 100;
+                    });
                     var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                     gss.MoveToGameWin(PostUpdateCommands);
                 }
