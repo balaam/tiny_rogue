@@ -99,23 +99,29 @@ namespace game
 
             var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+           
+            GenerateGold();
 
+            var collectibleCoord = new int2(15,12);
+            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+  
+       }
+
+       void GenerateGold()
+       {
             Random random = new Random((uint)UnityEngine.Time.time);//seed
             int goldPiles = (int)math.floor(random.NextFloat() * 10);
             for (int i = 0; i < goldPiles; i++) //hard code number of piles for now
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
-                int randX = (int)math.floor(random.NextFloat()  * (View.Width - 2)); // -2 to avoid borders
-                int randY = (int)math.floor(random.NextFloat()  * (View.Height - 2));
-                var goldCoord = new int2(randX+3, randY+3); // +3 to avoid borders
+
+                //int randX = (int)math.floor(random.NextFloat()  * (View.Width - 2)); // -2 to avoid borders
+                //int randY = (int)math.floor(random.NextFloat()  * (View.Height - 2));
+                //var goldCoord = new int2(randX+3, randY+3); // +3 to avoid borders
+
+                var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
                 _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
             }
-            // var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
-            // _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
-           
-            var collectibleCoord = new int2(15,12);
-            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
-  
        }
 
         public void GenerateCombatTestLevel()
