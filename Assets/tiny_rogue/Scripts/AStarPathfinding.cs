@@ -5,7 +5,6 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
-    
     // 4-directional A* Algorithm
     // TODO optimize with RSR or JPS
     // TODO currently this roguelike is 4-directional only, this algorithm will need minor rewrites if we switch to 8-directional
@@ -37,7 +36,7 @@ namespace game
                 closedList.Add(current);
                 // Did we just find the end square? If so then we're finished!
                 if (current.location.x == end.x && current.location.y == end.y) break;
-                var adjacentSquares = getAdjacentSquares(start);
+                var adjacentSquares = getWalkableAdjacentSquares(start);
                 foreach (var adjacentSquare in adjacentSquares)
                 {
                     // If we've already thoroughly searched this square then do nothing
@@ -94,7 +93,7 @@ namespace game
 
             return loc.location.x == simple.x && loc.location.y == simple.y;
         }
-        
+
         private static Location listFind(List<Location> list, int2 search)
         {
             foreach (var square in list)
@@ -116,7 +115,7 @@ namespace game
             int lowest = Int32.MaxValue;
 
             // Reverse order iteration - most recently inserted items are the most likely candidates
-            for (var i = list.Count -1; i >= 0; i--)
+            for (var i = list.Count - 1; i >= 0; i--)
             {
                 Location item = list[i];
                 if (item.totalPath < lowest)
@@ -129,10 +128,16 @@ namespace game
             return found;
         }
 
-
-        private static List<int2> getAdjacentSquares(int2 start)
+        private static List<int2> getWalkableAdjacentSquares(int2 start)
         {
-            throw new NotImplementedException();
+            //TODO proper implementation, currently all monsters are either ghosts or idiots since Walkability is not considered
+            return new List<int2>()
+            {
+                new int2 {x = start.x + 1, y = start.y},
+                new int2 {x = start.x - 1, y = start.y},
+                new int2 {x = start.x, y = start.y + 1},
+                new int2 {x = start.x, y = start.y - 1}
+            };
         }
     }
 }
