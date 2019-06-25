@@ -88,7 +88,8 @@ namespace game
                 closedList.Add(current);
                 // Did we just find the end square? If so then we're finished!
                 if (current.location.x == end.x && current.location.y == end.y) break;
-                var adjacentSquares = getWalkableAdjacentSquares(start);
+                var adjacentSquares = getWalkableAdjacentSquares(current.location);
+                travelDistance++;
                 foreach (var adjacentSquare in adjacentSquares)
                 {
                     // If we've already thoroughly searched this square then do nothing

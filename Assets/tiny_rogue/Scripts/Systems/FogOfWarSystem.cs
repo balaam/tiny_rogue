@@ -64,33 +64,51 @@ namespace game
         {
             ResetTilesInSight();
 
+            Console.WriteLine("Player Position: " + startPosition.ToString());
+
             for (int x = startPosition.x - sightDepth; x < startPosition.x + sightDepth; x++)
             {
                 for (int y = startPosition.y - sightDepth;  y < startPosition.y + sightDepth; y++)
                 {
                     int2 endPos = new int2(x, y);
-                    int2 currentPos = startPosition;
+                    //int2 currentPos = startPosition;
 
-                    while (currentPos.x != endPos.x && currentPos.y != endPos.y)
+                    AStarPathfinding.Path path = AStarPathfinding.getPath(startPosition, endPos);
+
+                    List<int2> reversedPath = new List<int2>();
+                    while (path.location.x != startPosition.x && path.location.y != startPosition.y)
                     {
-                        currentPos = AStarPathfinding.getNextStep(currentPos, endPos);
-                        Console.WriteLine(currentPos.x.ToString() + " " + currentPos.y.ToString());
+                        reversedPath.Add(path.location);
+                        path = path.stepFrom(path.location);
+                    }
+                    reversedPath.Reverse();
+
+                    Console.WriteLine("\nStarting a new Path");
+                    foreach (int2 position in reversedPath)
+                        //while(path.location.x != endPos.x && path.location.y != endPos.y)
+                        //while (currentPos.x != endPos.x && currentPos.y != endPos.y)
+                    {
+                        int2 currentPos = position; //AStarPathfinding.getNextStep(currentPos, endPos);
+
+                        Console.WriteLine("Next Step: " + currentPos.ToString());
+
+                        //path = path.stepFrom(path.location);
+
                         int index = View.XYToIndex(currentPos, view.Width);
-                        Console.WriteLine("Index: " + index);
-                        if (index > 0 && index < view.ViewTiles.Length)
+                        Entity tileEntity = view.ViewTiles[index];
+                        Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                        tile.IsSeen = true;
+                        tile.HasBeenRevealed = true;
+
+                        _revealedTiles.Add(tileEntity);
+
+                        EntityManager.SetComponentData(tileEntity, tile);
+
+                        if (EntityManager.HasComponent(tileEntity, typeof(BlockMovement)))
                         {
-                            Entity tileEntity = view.ViewTiles[index];
-                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                            tile.IsSeen = true;
-                            tile.HasBeenRevealed = true;
-
-                            _revealedTiles.Add(tileEntity);
-
-                            EntityManager.SetComponentData(tileEntity, tile);
-
-                            if (EntityManager.HasComponent(tileEntity, typeof(BlockMovement)))
-                                break;
+                            Console.WriteLine("Break");
+                            break;
                         }
                     }
                 }
