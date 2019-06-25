@@ -263,8 +263,8 @@
             "Index": 2
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
-            "a": 9962420284409989470,
-            "b": 10313058846474425423
+            "a": 5544385172088507114,
+            "b": 13246502558108825471
         }, {
             "$type": "Unity.Tiny.Core2D.SpriteAtlas, Unity.Tiny.Sprite2D",
             "Elements": [{
@@ -944,8 +944,8 @@
             "Index": 1
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
-            "a": 17217345890083294432,
-            "b": 12742655377067115198
+            "a": 14079089624513006841,
+            "b": 12614914631953195987
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
@@ -955,9 +955,6 @@
         }, {
             "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
             "order": 2
-        }, {
-            "$type": "game.ActionStream, tiny_rogue",
-            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -1009,10 +1006,6 @@
                 "StableTypeHash": 7693371993889051491
             }, {
                 "StableTypeHash": 10723762297176986422
-            }, {
-                "StableTypeHash": 5457566240645269000
-            }, {
-                "StableTypeHash": 433502474443295276
             }]
         }, {
             "$type": "game.BlockMovement, tiny_rogue"
@@ -1020,6 +1013,84 @@
             "$type": "game.Player, tiny_rogue"
         }, {
             "$type": "game.PlayerInput, tiny_rogue"
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
+        }, {
+            "$type": "game.GraphicsSettings, tiny_rogue",
+            "ascii": true
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 16308011050486811609,
+            "b": 13110048536491724772
+        }, {
+            "$type": "Unity.Tiny.Core2D.Camera2D, Unity.Tiny.Core2D",
+            "halfVerticalSize": 2,
+            "rect": {
+                "width": 1,
+                "height": 1
+            },
+            "backgroundColor": {
+                "a": 1
+            },
+            "clearFlags": 1,
+            "cullingMode": 0
+        }, {
+            "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
+            "Value": {}
+        }, {
+            "$type": "Unity.Tiny.Core2D.Rotation, Unity.Tiny.Core2D",
+            "Value": {
+                "value": {
+                    "w": 1
+                }
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
+            "Value": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            }
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "C"
+            }, {
+                "c": "a"
+            }, {
+                "c": "m"
+            }, {
+                "c": "e"
+            }, {
+                "c": "r"
+            }, {
+                "c": "a"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 742575471234645341
+            }, {
+                "StableTypeHash": 266869500686333426
+            }, {
+                "StableTypeHash": 9104342357061045742
+            }, {
+                "StableTypeHash": 17378348762221180850
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 5494849717997478739
+            }]
         }]
     }]
 }
