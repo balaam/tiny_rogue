@@ -46,6 +46,11 @@
             },
             "blending": 0
         }, {
+            "$type": "Unity.Tiny.Core2D.Sprite2DSequencePlayer, Unity.Tiny.Sprite2D",
+            "sequence": "9ae8fb82658948fcb69cbe5b1e5185d9",
+            "speed": 0.5,
+            "loop": 0
+        }, {
             "$type": "game.HealthPoints, tiny_rogue",
             "now": 10,
             "max": 10
@@ -121,6 +126,8 @@
                 "StableTypeHash": 13843021685803350563
             }, {
                 "StableTypeHash": 16779655563147745607
+            }, {
+                "StableTypeHash": 13688764092462950983
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
