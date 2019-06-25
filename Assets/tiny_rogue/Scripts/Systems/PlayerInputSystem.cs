@@ -72,7 +72,7 @@ namespace game
 
         private Action GetActionFromActionStream(Entity e, float time)
         {
-            if (ActionStream.Count > 0)
+            if (ActionStream.Count == 0)
                 return Action.None;
             
             var action = ActionStream[0];
