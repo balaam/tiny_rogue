@@ -56,17 +56,17 @@ namespace game
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
                         log.AddLog("You picked up a " + pickable.name);
-                        AddItem(pickable.name, pickable.description, pickable.appearance);
+                        AddItem(pickable);
                         
                         pis.PostUpdateCommands.DestroyEntity(item);
                     }
                 });
         }
 
-        public void AddItem(NativeString64 inName, NativeString64 inDesc, Sprite2DRenderer spr)
+        public void AddItem(CanBePickedUp pickable)
         {
             var Items = EntityManager.GetBuffer<InventoryItem>(inventoryEntity);
-            Items.Add(new InventoryItem(){name = inName, description = inDesc, appearance = spr});
+            Items.Add(new InventoryItem(){name = pickable.name, description = pickable.description, appearance = pickable.appearance});
         }
     }
 }

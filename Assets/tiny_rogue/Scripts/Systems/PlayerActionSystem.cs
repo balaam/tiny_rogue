@@ -54,6 +54,7 @@ namespace game
 
         public bool TryMove(Entity e, WorldCoord c, EntityCommandBuffer commandBuffer)
         {
+            Debug.Log("Trying Move");
             // Try and move the player first
             bool moved = false;
             Entities.WithNone<BlockMovement>().WithAll<Tile>().ForEach((ref WorldCoord tileCoord, ref Translation tileTrans) =>
@@ -61,6 +62,7 @@ namespace game
                 // This location the player wants to move has nothing blocking them, so update their position.
                 if (tileCoord.x == c.x && tileCoord.y == c.y)
                 {
+                    Debug.Log($"Found free tile on {tileCoord.x} {tileCoord.y}" );
                     EntityManager.SetComponentData(e, tileCoord);
                     // Graphical will animate the sprite to the new position.
                     if (GlobalGraphicsSettings.ascii)
@@ -87,17 +89,24 @@ namespace game
             }
             
             // Try and open doors in front of you
-            Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Sprite2DRenderer renderer, ref Door door) =>
+            Entities.WithAll<Door>().ForEach((Entity doorEntity, ref WorldCoord tileCoord, ref Door door) =>
             {
+                if( EntityManager.HasComponent<BlockMovement>(doorEntity) )
+                    Debug.Log($"Door at  {tileCoord.x} {tileCoord.y} has BlockMovement" );
+                
                 if (tileCoord.x == c.x && tileCoord.y == c.y)
                 {
+                    Debug.Log($"This is the one" );
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (!door.Opened)
                     {
+                        Debug.Log("Door was closed" );
                         log.AddLog("You opened a door.");
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
-                        renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')];
+                        
+                        // TODO: This also set the door renderer to '\\'
+                        
                         tms.NeedToTickTurn = true;
                     }
                 }
