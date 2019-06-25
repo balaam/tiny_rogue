@@ -203,7 +203,6 @@ namespace game
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
                         }
-
                     }
                     break;
                 case eGameState.Title:
