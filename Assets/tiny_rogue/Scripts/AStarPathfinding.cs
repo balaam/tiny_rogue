@@ -22,10 +22,10 @@ namespace game
             LocationRef current = null;
             var startLoc = new LocationRef {location = start};
             var closedList = new List<LocationRef>();
-            var openList = new LinkedList<LocationRef>();
+            var openList = new List<LocationRef>();
             var g = 0;
 
-            openList.AddLast(startLoc);
+            openList.Add(startLoc);
             while (openList.Count > 0)
             {
                 current = minList(openList);
@@ -47,7 +47,7 @@ namespace game
                         loc.totalPath = loc.distanceFromStart + loc.distanceToDestination;
                         loc.Parent = current;
 
-                        openList.AddFirst(loc);
+                        openList.Add(loc);
                     }
                     else
                     {
@@ -84,17 +84,7 @@ namespace game
 
             return loc.location.x == simple.x && loc.location.y == simple.y;
         }
-
-        private static LocationRef listFind(LinkedList<LocationRef> list, int2 search)
-        {
-            foreach (var square in list)
-            {
-                if (isEqual(square, search)) return square;
-            }
-
-            return null;
-        }
-
+        
         private static LocationRef listFind(List<LocationRef> list, int2 search)
         {
             foreach (var square in list)
@@ -110,12 +100,15 @@ namespace game
             return math.abs(start.x - destination.x) + math.abs(start.y - destination.y);
         }
 
-        private static LocationRef minList(LinkedList<LocationRef> list)
+        private static LocationRef minList(List<LocationRef> list)
         {
-            LocationRef found = list.First.Value;
-            int lowest = found.totalPath;
-            foreach (LocationRef item in list)
+            LocationRef found = null;
+            int lowest = Int32.MaxValue;
+
+            // Reverse order iteration - most recently inserted items are the most likely candidates
+            for (var i = list.Count -1; i >= 0; i--)
             {
+                LocationRef item = list[i];
                 if (item.totalPath < lowest)
                 {
                     lowest = item.totalPath;
