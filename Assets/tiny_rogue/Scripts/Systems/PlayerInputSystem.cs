@@ -65,11 +65,14 @@ namespace game
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             if (gss.IsInGame)
             {
-                Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation) =>
+                var action = GetAction();
+
+                if (action == Action.None)
+                    return;
+                
+                Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord) =>
                 {
                     var pas = EntityManager.World.GetExistingSystem<PlayerActionSystem>();
-
-                    var action = GetAction();
                     
                     switch (action)
                     {
