@@ -112,9 +112,9 @@ namespace game
             entityManager.SetComponentData(entity, l);
             entityManager.SetComponentData(entity, hp);
             entityManager.SetComponentData(entity, att);
-//            entityManager.SetComponentData(entity, sight);
+            entityManager.SetComponentData(entity, sight);
             entityManager.SetComponentData(entity, movement);
-//            entityManager.SetComponentData(entity, patrol);
+            entityManager.SetComponentData(entity, patrol);
             return entity;
         }
         
@@ -143,9 +143,9 @@ namespace game
             cb.SetComponent(entity, l);
             cb.SetComponent(entity, hp);
             cb.SetComponent(entity, att);
-//            cb.SetComponent(entity, sight);
+            cb.SetComponent(entity, sight);
             cb.SetComponent(entity, movement);
-//            cb.SetComponent(entity, patrol);
+            cb.SetComponent(entity, patrol);
             return entity;
         }
     }
