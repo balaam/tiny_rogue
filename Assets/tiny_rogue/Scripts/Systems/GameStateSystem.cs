@@ -292,10 +292,14 @@ namespace game
                         if (done)
                         {
                             var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
-                            Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
+                            // Re-parent the camera on graphical to follow the charcter.
+                            if (!GlobalGraphicsSettings.ascii)
                             {
-                                parent.Value = playerEntity;
-                            });
+                                Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
+                                {
+                                    parent.Value = playerEntity;
+                                });
+                            }
 
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
