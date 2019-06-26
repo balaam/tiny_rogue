@@ -98,6 +98,16 @@ namespace game
             
             _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
+            // Apply doors
+            foreach (var doorCoord in _dungeon.GetHorizontalDoors())
+            {
+                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+            }
+            foreach (var doorCoord in _dungeon.GetVerticalDoors())
+            {
+                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+            }
+
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
             var trap2Coord = _dungeon.GetRandomPositionInRandomRoom();
@@ -132,6 +142,8 @@ namespace game
         {
             var sprite = Sprite2DRenderer.Default;
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            var sprite2 = Sprite2DRenderer.Default;
+            sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
             
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
@@ -148,17 +160,19 @@ namespace game
             });
             
             // Set all door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
-            Entities.WithAll<Tile, Door>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
+            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
+            Entities.WithAll<Tile, Door>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
-                ecb.SetComponent(e, sprite);
+                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
             
             // Set all closed door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
-            Entities.WithAll<Tile, Door, BlockMovement>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // horizontal
+            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // vertical
+            Entities.WithAll<Tile, Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
-                ecb.SetComponent(e, sprite);
+                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
         }
 

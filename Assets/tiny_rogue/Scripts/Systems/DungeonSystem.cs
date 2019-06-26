@@ -48,7 +48,7 @@ namespace game
             eEmpty,
             eWall,
             eFloor,
-            eDoor,
+            eDoor
         }
 
         // Storage for created rooms
@@ -56,6 +56,9 @@ namespace game
         
         // Storage for all cells
         private Type[] _cells = new Type[0];
+        
+        private List<int2> _verticalDoors = new List<int2>();
+        private List<int2> _horizontalDoors = new List<int2>();
 
         private Entity _dungeonViewEntity;
         private View _view;
@@ -114,8 +117,8 @@ namespace game
             CreateRooms();
             CreateHallways();
 
-            // Add loot
-            // Add monsters
+            // TODO: Add loot
+            // TODO: Add monsters
 
             PlaceDungeon();
             PlacePlayer();
@@ -135,6 +138,7 @@ namespace game
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
 
+                // Only tint the player if ascii
                 if (GlobalGraphicsSettings.ascii)
                     renderer.color = TinyRogueConstants.DefaultColor;
             });
@@ -287,10 +291,10 @@ namespace game
         private void ClearCurrentLevel()
         {
             // Clear each of our level tile tags
-            Entities.WithAll<Tile,BlockMovement>().ForEach(_ecb.RemoveComponent<BlockMovement>);
-            Entities.WithAll<Tile,Door>().ForEach(_ecb.RemoveComponent<Door>);
-            Entities.WithAll<Tile,Wall>().ForEach(_ecb.RemoveComponent<Wall>);
-            Entities.WithAll<Tile,Floor>().ForEach(_ecb.RemoveComponent<Floor>);
+            Entities.WithAll<Tile, BlockMovement>().ForEach(_ecb.RemoveComponent<BlockMovement>);
+            Entities.WithAll<Tile, Door>().ForEach(_ecb.RemoveComponent<Door>);
+            Entities.WithAll<Tile, Wall>().ForEach(_ecb.RemoveComponent<Wall>);
+            Entities.WithAll<Tile, Floor>().ForEach(_ecb.RemoveComponent<Floor>);
         }
 
         public int2 GetRandomPositionInRandomRoom()
@@ -298,15 +302,25 @@ namespace game
             Room room = _rooms[RandomRogue.Next(0, _rooms.Count)];
             return room.GetRandomTile();
         }
+
+        public List<int2> GetHorizontalDoors()
+        {
+            return _horizontalDoors;
+        }
+
+        public List<int2> GetVerticalDoors()
+        {
+            return _verticalDoors;
+        }
         
         private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
-            var curent = _cells[View.XYToIndex(xy, _view.Width)];
+            var current = _cells[View.XYToIndex(xy, _view.Width)];
 
             int2 neighbor1 = xy;
             int2 neighbor2 = xy;
 
-            if(direction == HallDirection.Horizontal)
+            if (direction == HallDirection.Horizontal)
             {
                 neighbor1.y += 1;
                 neighbor2.y -= 1;
@@ -320,10 +334,22 @@ namespace game
             var neighborEntityOne = _cells[View.XYToIndex(neighbor1, _view.Width)];
             var neighborEntityTwo = _cells[View.XYToIndex(neighbor2, _view.Width)];
 
-            if (curent == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
+            if (current == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
+            {
                 _cells[View.XYToIndex(xy, _view.Width)] = Type.eDoor;
+                if (direction == HallDirection.Horizontal)
+                {
+                    _verticalDoors.Add(xy);
+                }
+                else
+                {
+                    _horizontalDoors.Add(xy);
+                }
+            }
             else
+            {
                 _cells[View.XYToIndex(xy, _view.Width)] = Type.eFloor;
+            }
         }
     }
 }

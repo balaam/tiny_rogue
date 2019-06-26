@@ -13,8 +13,10 @@ namespace game
         Collectible,
         Gold,
         CombatDummy,
-        OpenDoor,
-        ClosedDoor,
+        OpenVerticalDoor,
+        ClosedVerticalDoor,
+        OpenHorizontalDoor,
+        ClosedHorizontalDoor,
         Wall,
         Floor
 
@@ -64,10 +66,16 @@ namespace game
                     result = (char) SpriteEnum.CombatDummy;
                     break;
                 case '/':
-                    result = (char) SpriteEnum.OpenDoor;
+                    result = (char) SpriteEnum.OpenVerticalDoor;
                     break;
                 case '|':
-                    result = (char) SpriteEnum.ClosedDoor;
+                    result = (char) SpriteEnum.ClosedVerticalDoor;
+                    break;
+                case '\\':
+                    result = (char) SpriteEnum.OpenVerticalDoor;
+                    break;
+                case '_':
+                    result = (char) SpriteEnum.ClosedVerticalDoor;
                     break;
                 case '#':
                     result = (char) SpriteEnum.Wall;
