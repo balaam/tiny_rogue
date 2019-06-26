@@ -291,17 +291,7 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
-                            if (GlobalGraphicsSettings.ascii)
-                            {
-                                _creatureLibrary.SpawnPlayer(EntityManager);
-                            }
-                            else
-                            {
-                                Entities.WithAll<Player>().ForEach((Entity player) =>
-                                {
-                                    _creatureLibrary.FixupSpritePlayer(PostUpdateCommands, player);
-                                });
-                            }
+                            _creatureLibrary.SpawnPlayer(EntityManager);
 
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);

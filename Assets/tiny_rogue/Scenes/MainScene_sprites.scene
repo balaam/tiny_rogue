@@ -5,7 +5,6 @@
     "AssetReferences": [
         { "Guid": "b5773def4badfe84db07a5130426dc3f", "FileId": 21300000, "Type": 3},
         { "Guid": "c3ec12b00f2dfac4f82e09efba11a9d1", "FileId": 21300000, "Type": 3},
-        { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5115618752126089108, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 3739080502477263925, "Type": 3},
         { "Guid": "31bc0b240ebaf314ab1502e9f91fa233", "FileId": 21300000, "Type": 3},
         { "Guid": "3ff60003353b9c7498d4a8996ff3ec79", "FileId": 21300000, "Type": 3},
@@ -44,6 +43,7 @@
         { "Guid": "bf671a683ced70b42b962cde4327b041", "FileId": 7671915784223041292, "Type": 3},
         { "Guid": "bf671a683ced70b42b962cde4327b041", "FileId": 1117049863152555574, "Type": 3},
         { "Guid": "bf671a683ced70b42b962cde4327b041", "FileId": -7453111120980390391, "Type": 3},
+        { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5115618752126089108, "Type": 3},
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5050664382621690000, "Type": 3},
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5937766766644145194, "Type": 3},
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": 6213080392227812279, "Type": 3},
@@ -346,133 +346,6 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
-        }, {
-            "$type": "Unity.Tiny.Core2D.Sprite2DRenderer, Unity.Tiny.Sprite2D",
-            "sprite": "61f9d8efa25b73d93944f5894ed0ece3",
-            "color": {
-                "r": 1,
-                "g": 1,
-                "b": 1,
-                "a": 1
-            },
-            "blending": 0
-        }, {
-            "$type": "Unity.Tiny.Core2D.Sprite2DSequencePlayer, Unity.Tiny.Sprite2D",
-            "sequence": "9ae8fb82658948fcb69cbe5b1e5185d9",
-            "speed": 0.5,
-            "loop": 0
-        }, {
-            "$type": "game.Animated, tiny_rogue",
-            "Direction": 0,
-            "Action": 0
-        }, {
-            "$type": "game.GoldCount, tiny_rogue"
-        }, {
-            "$type": "game.HealthPoints, tiny_rogue",
-            "now": 10,
-            "max": 10
-        }, {
-            "$type": "game.Mobile, tiny_rogue",
-            "Initial": {},
-            "Destination": {}
-        }, {
-            "$type": "game.Sight, tiny_rogue",
-            "SightRadius": 4
-        }, {
-            "$type": "game.WorldCoord, tiny_rogue"
-        }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
-        }, {
-            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
-            "a": 1488007241767469820,
-            "b": 11384738274893832918
-        }, {
-            "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
-            "Value": {}
-        }, {
-            "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
-            "order": 2
-        }, {
-            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
-            "Elements": [{
-                "c": "P"
-            }, {
-                "c": "l"
-            }, {
-                "c": "a"
-            }, {
-                "c": "y"
-            }, {
-                "c": "e"
-            }, {
-                "c": "r"
-            }]
-        }, {
-            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
-            "Elements": [{
-                "StableTypeHash": 7960064150805274675
-            }, {
-                "StableTypeHash": 793987765392955020
-            }, {
-                "StableTypeHash": 12662904853204722592
-            }, {
-                "StableTypeHash": 266869500686333426
-            }, {
-                "StableTypeHash": 874803706151837934
-            }, {
-                "StableTypeHash": 12932679046359085526
-            }, {
-                "StableTypeHash": 16791256614846730296
-            }, {
-                "StableTypeHash": 10023716853446313203
-            }, {
-                "StableTypeHash": 11340511030919568210
-            }, {
-                "StableTypeHash": 837511310609896988
-            }, {
-                "StableTypeHash": 4244557941618249
-            }, {
-                "StableTypeHash": 10671612036134325838
-            }, {
-                "StableTypeHash": 5231504323926280887
-            }, {
-                "StableTypeHash": 8481167400895813168
-            }, {
-                "StableTypeHash": 15293753345900471037
-            }, {
-                "StableTypeHash": 7693371993889051491
-            }, {
-                "StableTypeHash": 13843021685803350563
-            }, {
-                "StableTypeHash": 16779655563147745607
-            }, {
-                "StableTypeHash": 13688764092462950983
-            }, {
-                "StableTypeHash": 396116209966398068
-            }, {
-                "StableTypeHash": 4301058344883206118
-            }, {
-                "StableTypeHash": 7211316427830589168
-            }, {
-                "StableTypeHash": 10856357832024813640
-            }, {
-                "StableTypeHash": 10723762297176986422
-            }, {
-                "StableTypeHash": 6622059105241414304
-            }]
-        }, {
-            "$type": "InventoryComponent, tiny_rogue"
-        }, {
-            "$type": "game.BlockMovement, tiny_rogue"
-        }, {
-            "$type": "game.Player, tiny_rogue"
-        }, {
-            "$type": "game.PlayerInput, tiny_rogue"
-        }]
-    }, {
-        "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "64e2d9cf1efb457b81f6e68794066adc"
         }, {
@@ -550,7 +423,7 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
+            "Index": 1
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 2346403976845739980,
@@ -1031,7 +904,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 5,
@@ -1090,7 +963,7 @@
             "height": 75
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 3
+            "Index": 2
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 4604247537078127658,
@@ -1149,7 +1022,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 8
@@ -1642,7 +1515,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.GraphicsSettings, tiny_rogue",
             "TileSize": {
@@ -1726,7 +1599,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 8,
@@ -1902,7 +1775,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 6
@@ -1970,7 +1843,7 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 4
+            "Index": 3
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {},
@@ -2047,7 +1920,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "DirectionId": 2
@@ -2387,7 +2260,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 7
@@ -2453,7 +2326,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue"
         }, {
@@ -3431,7 +3304,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 5
@@ -4047,7 +3920,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 6,
@@ -4586,7 +4459,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
-            "Value": "14a676b3dcc242fc9dfeb7245fd722d6"
+            "Value": "e72914323eb141d89c0f4d09a8743485"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 7,

@@ -188,7 +188,12 @@ namespace game
             Mobile mobile = new Mobile {Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false};
             Animated animated = new Animated { Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
             Sight sight = new Sight {SightRadius = 4};
-            
+
+            if (!GlobalGraphicsSettings.ascii)
+            {
+                Sprite2DSequencePlayer sequencePlayer = new Sprite2DSequencePlayer();
+                entityManager.AddComponentData(entity, sequencePlayer);
+            }
             
             
             // Only tint sprites if ascii
@@ -223,7 +228,7 @@ namespace game
             
             cb.AddComponent(player, att);
             cb.AddComponent(player, c);
-            cb.AddComponent(player, sight);
+            //cb.AddComponent(player, sight);
             cb.AddComponent(player, new tag_Attackable {});
         }
 
