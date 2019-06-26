@@ -94,7 +94,7 @@ public class AnimationSystem : ComponentSystem
             // Don't show walking animation if character is moving towards wall.
             if (action == Action.Move)
             {
-                if (EntityManager.HasComponent<Mobile>(e))
+                if (!EntityManager.HasComponent<Mobile>(e))
                 {
                     moved = false;
                     Debug.Log("This entity is not Mobile. It cannot move!");
