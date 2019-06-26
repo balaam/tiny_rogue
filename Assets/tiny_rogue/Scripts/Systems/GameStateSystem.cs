@@ -276,10 +276,7 @@ namespace game
        {
             // Saving the num in a variable so it can be used for
             // the replay system, if need be
-            uint seedNum = (uint)UnityEngine.Time.time;
-
-            Random random = new Random(seedNum);
-            int goldPiles = (int)math.floor(random.NextFloat() * 10);
+            int goldPiles = RandomRogue.Next(10);
             for (int i = 0; i < goldPiles; i++)
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
