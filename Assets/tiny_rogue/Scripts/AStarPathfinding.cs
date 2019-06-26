@@ -46,7 +46,7 @@ namespace game
                     step = step.Parent;
                 }
 
-                var steps = new int2[length]; //NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
+                var steps = new NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
                 step = this;
                 for(var i = length - 1; i >= 0; i--)
                 {

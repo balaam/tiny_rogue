@@ -168,7 +168,7 @@ namespace game
                             renderer.color.a = TinyRogueConstants.DefaultColor.a;
                         else
                         {
-                            //Check the tile, regardless of what entity we're looking at
+                            //Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
                             int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                             Entity tileEntity = _view.ViewTiles[tileIndex];
                             Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);

@@ -28,7 +28,10 @@ namespace game
                 float totalDistance = math.sqrt(math.pow(math.distance(playerPos.x, pos.x), 2) +
                                                 math.pow(math.distance(playerPos.y, pos.y), 2));
 
-                if (totalDistance <= viewDepth)
+                GameStateSystem gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                View view = gss.View;
+
+                if (totalDistance <= viewDepth && !SightBlocked(playerPos, pos, view))
                 {
                     tile.IsSeen = true;
                     tile.HasBeenRevealed = true;
@@ -36,6 +39,33 @@ namespace game
                 else
                     tile.IsSeen = false;
             });
+        }
+
+        private bool SightBlocked(int2 start, int2 end, View view)
+        {
+            float x = (end - start).x;
+            float y = (end - start).y;
+
+            float xDirection = math.sign(x);
+            float yDirection = math.sign(y);
+
+            int2 currentTile = start;
+
+            while (!currentTile.Equals(end))
+            {
+                int i = View.XYToIndex(currentTile, view.Width);
+                Entity checkTile = view.ViewTiles[i];
+                if (EntityManager.HasComponent(checkTile, typeof(BlockMovement)))
+                    return true;
+
+                if (currentTile.x != end.x)
+                    currentTile.x += (int)xDirection;
+
+                if (currentTile.y != end.y)
+                    currentTile.y += (int)yDirection;
+            }
+
+            return false;
         }
     }
 }
