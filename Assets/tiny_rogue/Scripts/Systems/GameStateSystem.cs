@@ -291,11 +291,18 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
-                            Entities.WithAll<Player>().ForEach((Entity Player) =>
+                            if (GlobalGraphicsSettings.ascii)
                             {
-                                PostUpdateCommands.AddComponent(Player,new Creature {id = (int)ECreatureId.Player});
-                                PostUpdateCommands.AddComponent(Player,new AttackStat {range = CreatureLibrary.CreatureDescriptions[(int)ECreatureId.Player].attackRange});
-                            });
+                                _creatureLibrary.SpawnPlayer(EntityManager);
+                            }
+                            else
+                            {
+                                Entities.WithAll<Player>().ForEach((Entity player) =>
+                                {
+                                    _creatureLibrary.FixupSpritePlayer(PostUpdateCommands, player);
+                                });
+                            }
+
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
                         }
@@ -435,6 +442,7 @@ namespace game
 
         public void MoveToInGame( EntityCommandBuffer cb, bool replay )
         {
+            
             // Generate a new seed
             if(!replay)
                 CurrentSeed = MakeNewRandom();
