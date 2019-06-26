@@ -10,8 +10,8 @@
             "b": 13303449598800002903
         }, {
             "$type": "Unity.Tiny.Core2D.DisplayInfo, Unity.Tiny.Core2D",
-            "width": 1280,
-            "height": 720,
+            "width": 1920,
+            "height": 1080,
             "autoSizeToFrame": true,
             "orientation": 0,
             "renderMode": 0
@@ -19,22 +19,22 @@
             "$type": "Unity.Tiny.Scenes.Scenes, Unity.Tiny.Scenes",
             "Elements": [{
                 "SceneReference": {
-                    "SceneGuid": "47b2702d9bcf406ab824394185184228"
+                    "SceneGuid": "2dafd427285a4e23994193fab47df02d"
+                }
+            }, {
+                "SceneReference": {
+                    "SceneGuid": "71846fdef5ad4670b25f7ef01f7418a5"
                 }
             }, {
                 "SceneReference": {
                     "SceneGuid": "47b2702d9bcf406ab824394185184229"
-                }
-            }, {
-                "SceneReference": {
-                    "SceneGuid": "d75674839da241a6881c083341b4a3b1"
                 }
             }]
         }, {
             "$type": "Unity.Tiny.Scenes.StartupScenes, Unity.Tiny.Scenes",
             "Elements": [{
                 "SceneReference": {
-                    "SceneGuid": "d75674839da241a6881c083341b4a3b1"
+                    "SceneGuid": "71846fdef5ad4670b25f7ef01f7418a5"
                 }
             }]
         }, {
