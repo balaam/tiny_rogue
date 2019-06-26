@@ -40,6 +40,8 @@ namespace game
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
+        public int CurrentLevel = 1;
+        private int LastDungeonNumber;
 
         private uint MakeNewRandom()
         {
@@ -129,18 +131,24 @@ namespace game
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
 
-            var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
-
-            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            if (CurrentLevel != LastDungeonNumber)
+            {
+                var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord,
+                    _view.ViewCoordToWorldPos(stairwayCoord));
+            }
+            else
+            {
+                var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            }
 
             GenerateGold();
 
             var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
-
-       }
+            CurrentLevel++;
+        }
 
         private void ClearView(EntityCommandBuffer ecb)
         {
@@ -289,7 +297,7 @@ namespace game
                             }
                             else
                             {
-                                Entities.WithAll<PlayerInput>().ForEach((Entity player) =>
+                                Entities.WithAll<Player>().ForEach((Entity player) =>
                                 {
                                     _creatureLibrary.FixupSpritePlayer(PostUpdateCommands, player);
                                 });
@@ -439,6 +447,7 @@ namespace game
             if(!replay)
                 CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
+            LastDungeonNumber = RandomRogue.Next(2, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
