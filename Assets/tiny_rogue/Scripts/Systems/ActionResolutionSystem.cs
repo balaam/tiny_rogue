@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
+using UnityEngine;
 
 namespace game
 {
@@ -15,7 +16,7 @@ namespace game
     public enum EInteractionFlags : byte
     {
         None = 0,
-        Interact= 1 << 3,
+        Interact = 1 << 3,
         Door = 1 << 4,
         Hostile = 1 << 5,
         Player = 1 << 6,
@@ -24,12 +25,14 @@ namespace game
 
     public struct PendingMove
     {
+        public Direction Dir;
         public Entity Ent;
         public WorldCoord Wc;
     }
 
     public struct PendingWait
     {
+        public Direction Dir;
         public Entity Ent;
         //public WorldCoord Wc;
     }
@@ -38,6 +41,7 @@ namespace game
     public struct PendingAttack
     {
         public Entity Attacker;
+        public Direction AttackerDir;
         public Entity Defender;
     }
 
@@ -165,7 +169,7 @@ namespace game
                 return (int) loc.x + (int) loc.y * MapSize.x;
             }
 
-            void TryMove(Entity e, uint2 moveFrom, uint2 moveTo)
+            void TryMove(Entity e, Direction direction, uint2 moveFrom, uint2 moveTo)
             {
                 int moveToIdx = GetIndex(moveTo);
                 int moveFromIdx = GetIndex(moveFrom);
@@ -173,7 +177,7 @@ namespace game
                 if ((targetFlags & (byte) EInteractionFlags.Blocking) == 0)
                 {
                     PendingMoves.Enqueue(new PendingMove
-                        { Ent = e, Wc = new WorldCoord { x = (int) moveTo.x, y = (int) moveTo.y } });
+                        { Ent = e, Dir = direction, Wc = new WorldCoord { x = (int) moveTo.x, y = (int) moveTo.y } });
                     FlagsMap[moveToIdx] = FlagsMap[moveFromIdx];
                     EntityMap[moveToIdx] = EntityMap[moveFromIdx];
                     FlagsMap[moveFromIdx] = 0;
@@ -181,11 +185,11 @@ namespace game
                 }
                 if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
                 {
-                    PendingWaits.Enqueue(new PendingWait { Ent = e }); //Don't move
+                    PendingWaits.Enqueue(new PendingWait { Ent = e, Dir = direction }); //Don't move
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
-                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, Defender = EntityMap[moveToIdx] });
+                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx] });
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
@@ -208,28 +212,28 @@ namespace game
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.y -= 1;
-                                TryMove(ar.Ent, ar.Loc, moveTo);
+                                TryMove(ar.Ent, Direction.Right, ar.Loc, moveTo);
                             } break;
                         
                             case Action.MoveDown:
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.y += 1;
-                                TryMove(ar.Ent, ar.Loc, moveTo);
+                                TryMove(ar.Ent, Direction.Left, ar.Loc, moveTo);
                             } break;
                         
                             case Action.MoveLeft:
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.x -= 1;
-                                TryMove(ar.Ent, ar.Loc, moveTo);
+                                TryMove(ar.Ent, Direction.Left, ar.Loc, moveTo);
                             } break;
                         
                             case Action.MoveRight:
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.x += 1;
-                                TryMove(ar.Ent, ar.Loc, moveTo);
+                                TryMove(ar.Ent, Direction.Right, ar.Loc, moveTo);
                             } break;
                         }
                     }
@@ -291,11 +295,10 @@ namespace game
             PendingMove pm;
             while (pendingMoves.TryDequeue(out pm))
             {
-                EntityManager.SetComponentData(pm.Ent, pm.Wc);
-                
                 var trans = _gss.View.ViewCoordToWorldPos(new int2(pm.Wc.x, pm.Wc.y));
                 if (GlobalGraphicsSettings.ascii)
                 {
+                    EntityManager.SetComponentData(pm.Ent, pm.Wc);
                     EntityManager.SetComponentData(pm.Ent, new Translation { Value = trans });
                 }
                 else
@@ -304,8 +307,9 @@ namespace game
                     var mobile = EntityManager.GetComponentData<Mobile>(pm.Ent);
                     mobile.Initial = EntityManager.GetComponentData<Translation>(pm.Ent).Value;
                     mobile.Destination = trans;
+                    mobile.DestWc = pm.Wc;
                     EntityManager.SetComponentData(pm.Ent, mobile);
-                    anim.StartAnimation(pm.Ent, Action.Move, true);
+                    anim.StartAnimation(pm.Ent, Action.Move, pm.Dir);
                 }
             }
 
@@ -316,6 +320,8 @@ namespace game
                 {
                     log.AddLog("You bumped into a wall. Ouch.");
                 }
+                var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
+                anim.StartAnimation(pw.Ent, Action.None, pw.Dir);
             }
 
             PendingAttack pa;
@@ -327,6 +333,9 @@ namespace game
                 Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
                 int dmg = RandomRogue.Next(att.range.x, att.range.y);
                 hp.now -= dmg;
+                
+                var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
+                anim.StartAnimation(pa.Attacker, Action.Attack, pa.AttackerDir);
 
                 string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                 string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
