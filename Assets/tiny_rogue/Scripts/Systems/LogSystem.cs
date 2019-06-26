@@ -60,16 +60,30 @@ namespace game
                 view.ClearLine(cb, 0, ' ');
                 view.Blit(cb, new int2(0,0), topLog.text);
 
+                int blitEnd = topLog.text.Length + 1; // + 1 for the space
+                
+                string pageMsg = "(cont)";
                 if (HasQueuedLogs())
                 {
-                    string pageMsg = "(cont)";
-                    var pageXY = new int2(view.Width - pageMsg.Length, 0);
-                    view.Blit(cb, pageXY, pageMsg, new Color(1,1,1,1));
-                    gss.MoveToReadQueuedLog();
+                    LogEntry nextTopLog =  _newLogs[0];
+
+                    if ((blitEnd + nextTopLog.text.Length) < (view.Width - pageMsg.Length))
+                    {
+                        _newLogs.RemoveAt(0);
+                        _oldLogs.Add(nextTopLog);
+                        view.Blit(cb, new int2(blitEnd,0), nextTopLog.text);
+                    }
+                    else
+                    {
+                        var pageXY = new int2(view.Width - pageMsg.Length, 0);
+                        view.Blit(cb, pageXY, pageMsg, new Color(1,1,1,1));
+                        gss.MoveToReadQueuedLog();    
+                    }
+                    
                 }
 
 
-                if(_oldLogs.Count > MaxLogHistory)
+                while(_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
             else if(gss.IsInGame)
