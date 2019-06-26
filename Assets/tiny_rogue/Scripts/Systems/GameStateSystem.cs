@@ -36,6 +36,7 @@ namespace game
         View _view = new View();
         ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        CreatureLibrary _creatureLibrary = new CreatureLibrary();
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
@@ -51,6 +52,7 @@ namespace game
         protected override void OnCreate()
         {
             base.OnCreate();
+            _creatureLibrary.Init(EntityManager);
         }
 
         private bool TryGenerateViewport()
@@ -103,7 +105,7 @@ namespace game
         {
             CleanUpGameWorld(PostUpdateCommands);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
 
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
@@ -202,10 +204,17 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
 
-            int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
+            for (int i = 0; i < 20; i++)
+            {
+                var worldCoord = _dungeon.GetRandomPositionInRandomRoom();
+                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
+                Entity ratEntity = _creatureLibrary.SpawnCreature(EntityManager, ECreatureId.Rat);
+
+                EntityManager.SetComponentData(ratEntity, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
+                EntityManager.SetComponentData(ratEntity, new Translation {Value = viewCoord});
+            }
 
             // Create 'Exit'
             var crownCoord = _dungeon.GetRandomPositionInRandomRoom();

@@ -3,11 +3,17 @@ using Unity.Entities;
 namespace game
 {
     
-    public struct tag_Creature : IComponentData 
+    public struct Creature : IComponentData
+    {
+        public int id;
+    }
+
+    public struct tag_Attackable : IComponentData 
     {
     }
 
-    public struct tag_Hostile : IComponentData 
+    public struct tag_Corpse : IComponentData
     {
+        
     }
 }

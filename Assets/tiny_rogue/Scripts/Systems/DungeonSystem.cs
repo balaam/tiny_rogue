@@ -64,7 +64,8 @@ namespace game
         private View _view;
 
         private EntityCommandBuffer _ecb;
-
+        private CreatureLibrary _creatureLibrary;
+        
         protected override void OnUpdate() {}
 
         public void ClearDungeon(EntityCommandBuffer cb, View view)
@@ -79,13 +80,14 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl)
         {
             _ecb = cb;
             _view = view;
+            _creatureLibrary = cl;
 
             ClearDungeon(cb, view);
-
+            
             _cells = new Type[_view.ViewTiles.Length];
 
             int maxRoom = 0;
@@ -118,10 +120,29 @@ namespace game
             CreateHallways();
 
             // TODO: Add loot
-            // TODO: Add monsters
+            PlaceCreatures();
 
             PlaceDungeon();
             PlacePlayer();
+        }
+
+        private void PlaceCreatures()
+        {
+            int minCreatureCount = 4;
+            int maxCreatureCount = 12;
+            
+            int creatureCount = RandomRogue.Next(minCreatureCount, maxCreatureCount);
+            int creatureTypeCount = CreatureLibrary.CreatureDescriptions.Length;
+            for (int i = 0; i < creatureCount; i++)
+            {
+                int creatureId = RandomRogue.Next(0, creatureTypeCount);
+                var worldCoord = GetRandomPositionInRandomRoom();
+                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
+                Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId);
+
+                _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
+                _ecb.SetComponent(cr, new Translation {Value = viewCoord});
+            }
         }
 
         private void PlacePlayer()
