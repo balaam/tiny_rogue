@@ -1095,7 +1095,8 @@
             "$type": "game.DungeonGenerator, tiny_rogue",
             "MaxNumberOfRooms": 11,
             "MinRoomSize": 6,
-            "MaxRoomSize": 10
+            "MaxRoomSize": 10,
+            "NumberOfCollectibles": 5
         }, {
             "$type": "game.Viewport, tiny_rogue",
             "width": 75,

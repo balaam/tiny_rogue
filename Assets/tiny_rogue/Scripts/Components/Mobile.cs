@@ -7,7 +7,7 @@ namespace game
     {
         public float3 Initial;
         public float3 Destination;
-        public WorldCoord DestWc;
+        public int2 DestPos;
         public bool Moving;
         public float MoveTime;
     }

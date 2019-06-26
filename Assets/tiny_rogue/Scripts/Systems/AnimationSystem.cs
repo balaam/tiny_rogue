@@ -35,7 +35,7 @@ public class AnimationSystem : ComponentSystem
                     {
                         mobile.Moving = false;
                         translation.Value = mobile.Destination;
-                        EntityManager.SetComponentData(e, mobile.DestWc);
+                        EntityManager.SetComponentData(e, new WorldCoord { x = mobile.DestPos.x, y = mobile.DestPos.y });
                     }
                 }
             });

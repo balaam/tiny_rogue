@@ -327,7 +327,7 @@ namespace game
                     var mobile = EntityManager.GetComponentData<Mobile>(pm.Ent);
                     mobile.Initial = EntityManager.GetComponentData<Translation>(pm.Ent).Value;
                     mobile.Destination = trans;
-                    mobile.DestWc = pm.Wc;
+                    mobile.DestPos = new int2 { x = pm.Wc.x, y = pm.Wc.y };
                     EntityManager.SetComponentData(pm.Ent, mobile);
                     anim.StartAnimation(pm.Ent, Action.Move, pm.Dir);
                 }
@@ -360,7 +360,7 @@ namespace game
                 string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                 string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
                 string logStr;
-                if(attackerName == "Player")
+                if (attackerName == "Player")
                 {
                     logStr = string.Concat(string.Concat(string.Concat(string.Concat(
                                     "You hit the ",
@@ -371,7 +371,7 @@ namespace game
                 }
                 else
                 {
-                	if(defenderName == "Player")
+                	if (defenderName == "Player")
                         defenderName = "you";
                     logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
                                     attackerName,
