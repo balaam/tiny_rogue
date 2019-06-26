@@ -21,16 +21,31 @@ namespace game
                 playerPos = new int2(coord.x, coord.y);
                 viewDepth = sight.SightRadius;
             });
+            
+            GameStateSystem gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            View view = gss.View;
 
+            // Monsters stop Patrolling and start actively following the Player if they can spot the Player
+            Entities.WithAll<PatrollingState, Sight>().ForEach(
+                (Entity e, ref WorldCoord coord, ref Sight sight) =>
+                {
+                    int2 pos = new int2(coord.x, coord.y);
+                    float totalDistance = math.sqrt(math.pow(math.distance(playerPos.x, pos.x), 2) +
+                                                    math.pow(math.distance(playerPos.y, pos.y), 2));
+                    
+                    if (totalDistance <= viewDepth && !SightBlocked(playerPos, pos, view))
+                    {
+                        PostUpdateCommands.RemoveComponent(e, typeof(PatrollingState));
+                    }
+                });
+
+            // Determine whether tile is visible to Player
             Entities.WithAll<Tile>().ForEach((Entity e, ref Tile tile, ref WorldCoord coord) =>
             {
                 int2 pos = new int2(coord.x, coord.y);
                 float totalDistance = math.sqrt(math.pow(math.distance(playerPos.x, pos.x), 2) +
                                                 math.pow(math.distance(playerPos.y, pos.y), 2));
-
-                GameStateSystem gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-                View view = gss.View;
-
+                
                 if (totalDistance <= viewDepth && !SightBlocked(playerPos, pos, view))
                 {
                     tile.IsSeen = true;
