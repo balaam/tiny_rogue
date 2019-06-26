@@ -16,19 +16,26 @@ public class AnimationSystem : ComponentSystem
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
+            Entities.WithAll<NeedsAnimationStart>().ForEach((Entity e) =>
+            {
+                StartAnimation(e, Action.None, Direction.Right);
+                PostUpdateCommands.RemoveComponent<NeedsAnimationStart>(e);
+            });
+            
             Entities.WithAll<Mobile>().ForEach((Entity e, ref Mobile mobile, ref Translation translation) =>
             {
                 if (mobile.Moving)
                 {
                     var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
-                    // Double frame time, so the move takes 0.5 of a second
-                    mobile.MoveTime += frameTime * 2;
+                    // Double frame time, so the move takes 0.25 of a second
+                    mobile.MoveTime += frameTime * 4;
                     translation.Value = math.lerp(mobile.Initial, mobile.Destination, mobile.MoveTime);
                     // Ensure player is left in correct position
                     if (mobile.MoveTime > 1f)
                     {
                         mobile.Moving = false;
                         translation.Value = mobile.Destination;
+                        EntityManager.SetComponentData(e, new WorldCoord { x = mobile.DestPos.x, y = mobile.DestPos.y });
                     }
                 }
             });
@@ -60,59 +67,26 @@ public class AnimationSystem : ComponentSystem
     /// </summary>
     /// <param name="e">Entity to animate. Looks for (Sprite2DSequencePlayer AND Animated) and/or Mobile component(s).</param>
     /// <param name="action">Action to map to animation. Avoid sending None.</param>
-    /// <param name="moved">Whether or not the character can move. False if cannot move or unable to move (for example wall is in the way).</param>
-    public void StartAnimation(Entity e, Action action, bool moved = false)
+    /// <param name="direction">Direction the action is in</param>
+    public void StartAnimation(Entity e, Action action, Direction direction)
     {
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
-            var direction = Direction.Right;
-            
-            // Map directional move to move and direction
-            if (action == Action.MoveLeft)
-            {
-                direction = Direction.Left;
-                action = Action.Move;
-            }
-            else if (action == Action.MoveRight)
-            {
-                direction = Direction.Right;
-                action = Action.Move;
-            }
-            else if (action == Action.MoveUp)
-            {
-                direction = Direction.Right;
-                action = Action.Move;
-            }
-            else if (action == Action.MoveDown)
-            {
-                direction = Direction.Left;
-                action = Action.Move;
-            }
-
             // Handle animated movement.
             // Don't show walking animation if character is moving towards wall.
             if (action == Action.Move)
             {
                 if (!EntityManager.HasComponent<Mobile>(e))
                 {
-                    moved = false;
-                    Debug.Log("This entity is not Mobile. It cannot move!");
+                    throw new Exception("This entity is not Mobile. It cannot move!");
                 }
                 
-                if (!moved)
-                {
-                    // Can't move, so cancel any move action
-                    action = Action.None;
-                }
-                else
-                {
-                    // Start moving animation
-                    var mobile = EntityManager.GetComponentData<Mobile>(e);
-                    mobile.Moving = true;
-                    mobile.MoveTime = 0f;
-                    EntityManager.SetComponentData(e, mobile);
-                }
+                // Start moving animation
+                var mobile = EntityManager.GetComponentData<Mobile>(e);
+                mobile.Moving = true;
+                mobile.MoveTime = 0f;
+                EntityManager.SetComponentData(e, mobile);
             }
 
             // Handle animated sprites.
@@ -126,21 +100,33 @@ public class AnimationSystem : ComponentSystem
                 var animated = EntityManager.GetComponentData<Animated>(e);
                 var sequencePlayer = EntityManager.GetComponentData<Sprite2DSequencePlayer>(e);
 
+                animated.Action = action;
                 animated.Direction = direction;
                 
                 // Set animation
-                if (action != Action.None)
+                if (animated.Action != Action.None)
                 {
                     animated.AnimationTrigger = true;
                     animated.AnimationTime = 0.5f;
-                    sequencePlayer.speed = animated.Action == Action.Move ? 0.75f : 0.5f;
-                    SetAnimation(ref animated, ref sequencePlayer);
                 }
-                else
+
+                switch (animated.Action)
                 {
-                    sequencePlayer.speed = 0.5f;
-                    SetAnimation(ref animated, ref sequencePlayer);
+                    case Action.None:
+                    case Action.Wait:
+                    case Action.Interact:
+                        sequencePlayer.speed = 0.5f;
+                        break;
+                    case Action.Attack:
+                        sequencePlayer.speed = 0.5f;
+                        animated.AnimationTime = 0.25f;
+                        break;
+                    case Action.Move:
+                        sequencePlayer.speed = 0.75f;
+                        animated.AnimationTime = 0.25f;
+                        break;
                 }
+                SetAnimation(ref animated, ref sequencePlayer);
                 
                 // Update components
                 EntityManager.SetComponentData(e, animated);
@@ -153,12 +139,13 @@ public class AnimationSystem : ComponentSystem
     {
         var direction = (int)animated.Direction;
         var action = (int)animated.Action;
+        var id = animated.Id;
         Debug.Log($"Try set animation: {direction} {action}");
 
         Entity animation = Entity.Null;
         Entities.WithAll<AnimationSequence>().ForEach((Entity entity, ref AnimationSequence animationSequence) =>
         {
-            if (animationSequence.MoveId == action && animationSequence.DirectionId == direction && animationSequence.PlayerId == 0)
+            if (animationSequence.MoveId == action && animationSequence.DirectionId == direction && animationSequence.PlayerId == id)
             {
                 animation = entity;
                 Debug.Log("Found animation");
