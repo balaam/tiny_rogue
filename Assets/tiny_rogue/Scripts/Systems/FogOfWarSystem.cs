@@ -53,8 +53,6 @@ namespace game
                 }
                 else
                     tile.IsSeen = false;
-                
-                tile.IsSeen = true;
             });
         }
 
