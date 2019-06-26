@@ -43,6 +43,7 @@ namespace game
         private uint CurrentSeed = 1;
         public int CurrentLevel = 1;
         private int LastDungeonNumber;
+        public bool ShouldInteract = false;
 
         private uint MakeNewRandom()
         {
@@ -356,6 +357,15 @@ namespace game
                         MoveToInventoryScreen(PostUpdateCommands);
                     }
 
+                    if(ShouldInteract)
+                    {
+                        Debug.Log("Should Interact");
+                        Entities.WithAll<Player>().ForEach((Entity e, ref WorldCoord wc) =>
+                        {
+                            Interact(wc, PostUpdateCommands);
+                        });
+                        ShouldInteract = false;
+                    }
                 } break;
                 case eGameState.Inventory:
                 {
@@ -430,6 +440,17 @@ namespace game
             }
         }
 
+        public void Interact(WorldCoord c, EntityCommandBuffer commandBuffer)
+        {
+            Entities.WithAll<Stairway>().ForEach((ref WorldCoord stairCoord, ref Translation stairTrans) =>
+            {
+                if (c.x == stairCoord.x && c.y == stairCoord.y)
+                    MoveToNextLevel(commandBuffer);
+            });
+
+            var inventorySystem = EntityManager.World.GetExistingSystem<InventorySystem>();
+            inventorySystem.CollectItemsAt(c);
+        }
 
         private void CleanUpGameWorld(EntityCommandBuffer cb)
         {

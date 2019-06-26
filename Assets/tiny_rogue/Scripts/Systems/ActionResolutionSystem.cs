@@ -46,6 +46,11 @@ namespace game
         public Entity DoorEnt;
         public Entity OpeningEntity;
     }
+
+    public struct PendingInteraction
+    {
+        
+    }
     
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public class ActionResolutionSystem : JobComponentSystem
@@ -159,6 +164,7 @@ namespace game
             public NativeQueue<PendingWait> PendingWaits;
             public NativeQueue<PendingAttack> PendingAttacks;
             public NativeQueue<PendingDoorOpen> PendingOpens;
+            public NativeQueue<PendingInteraction> PendingInteractions;
 
             private int GetIndex(uint2 loc)
             {
@@ -192,7 +198,11 @@ namespace game
                     PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx], OpeningEntity = e});
                     FlagsMap[moveToIdx] &= (byte)~(EInteractionFlags.Blocking);
                 }
+            }
 
+            void TryInteract()
+            {
+                PendingInteractions.Enqueue(new PendingInteraction());
             }
             
             public void Execute()
@@ -230,6 +240,11 @@ namespace game
                                 uint2 moveTo = ar.Loc;
                                 moveTo.x += 1;
                                 TryMove(ar.Ent, ar.Loc, moveTo);
+                            } break;
+                            case Action.Interact:
+                            {
+                                uint2 interactWith = ar.Loc;
+                                TryInteract();
                             } break;
                         }
                     }
@@ -271,6 +286,7 @@ namespace game
             var pendingWaits = new NativeQueue<PendingWait>(Allocator.TempJob);
             var pendingAttacks = new NativeQueue<PendingAttack>(Allocator.TempJob);
             var pendingOpens = new NativeQueue<PendingDoorOpen>(Allocator.TempJob);
+            var pendingInteractions = new NativeQueue<PendingInteraction>(Allocator.TempJob);
             var actionJob = new ConsumeActionsJob()
             {
                 MapSize = _cachedMapSize,
@@ -280,7 +296,8 @@ namespace game
                 PendingMoves = pendingMoves,
                 PendingWaits = pendingWaits,
                 PendingAttacks = pendingAttacks,
-                PendingOpens = pendingOpens
+                PendingOpens = pendingOpens,
+                PendingInteractions = pendingInteractions
             };
             var actionJobHandle =actionJob.Schedule(fillJobHandle);
             
@@ -359,13 +376,19 @@ namespace game
                 EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
             }
+
+            PendingInteraction pi;
+            while(pendingInteractions.TryDequeue(out pi))
+            {
+                _gss.ShouldInteract = true;
+            }
             
             // Cleanup
             pendingMoves.Dispose();
             pendingAttacks.Dispose();
             pendingWaits.Dispose();
             pendingOpens.Dispose();
-            
+            pendingInteractions.Dispose();
             return actionJobHandle;
         }
     }
