@@ -26,6 +26,7 @@ namespace game
         public char ascii;
         public Color asciiColor;
         public int sightRadius;
+        public int speed;
     }
 
     public class CreatureLibrary
@@ -44,7 +45,8 @@ namespace game
                 attackRange = new int2(1,1),
                 ascii = 'r', 
                 asciiColor = new Color(0.9f, 0.5f, 0.3f),
-                sightRadius = 10 // Rats have good eyesight
+                sightRadius = 10, // Rats have good eyesight
+                speed = 1
             },
             /* Kobold */
             new CreatureDescription
@@ -54,7 +56,8 @@ namespace game
                 attackRange = new int2(1,3),
                 ascii = 'k',
                 asciiColor = new Color(0.5f, 0.9f, 0.3f),
-                sightRadius = 3 // Kobolds aren't very good at spotting enemies
+                sightRadius = 3, // Kobolds aren't very good at spotting enemies
+                speed = 3
             },
             
             // Unspawnables
@@ -85,7 +88,8 @@ namespace game
                 typeof(tag_Attackable),
                 typeof(PatrollingState),
                 typeof(MeleeAttackMovement),
-                typeof(Sight)
+                typeof(Sight),
+                typeof(Speed)
             });
             
             _playerArchetype = em.CreateArchetype(new ComponentType[]
@@ -109,6 +113,7 @@ namespace game
                 typeof(Mobile),
                 typeof(Animated),
                 typeof(Sight),
+                typeof(Speed)
             });
         }
 
@@ -125,6 +130,7 @@ namespace game
             Sight sight = new Sight {SightRadius = descr.sightRadius};
             PatrollingState patrol = new PatrollingState();
             MeleeAttackMovement movement = new MeleeAttackMovement();
+            Speed speed = new Speed(){SpeedRate = descr.speed};
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
@@ -139,6 +145,8 @@ namespace game
             entityManager.SetComponentData(entity, sight);
             entityManager.SetComponentData(entity, movement);
             entityManager.SetComponentData(entity, patrol);
+            entityManager.SetComponentData(entity, speed);
+
             return entity;
         }
         
@@ -156,6 +164,7 @@ namespace game
             Sight sight = new Sight {SightRadius = descr.sightRadius};
             PatrollingState patrol = new PatrollingState();
             MeleeAttackMovement movement = new MeleeAttackMovement();
+            Speed speed = new Speed() { SpeedRate = descr.speed };
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
@@ -170,6 +179,8 @@ namespace game
             cb.SetComponent(entity, sight);
             cb.SetComponent(entity, movement);
             cb.SetComponent(entity, patrol);
+            cb.SetComponent(entity, speed);
+
             return entity;
         }
         
