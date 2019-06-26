@@ -3,7 +3,6 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
-using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
@@ -113,6 +112,51 @@ namespace game
             _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
   
        }
+        
+        private void ClearView(EntityCommandBuffer ecb)
+        {
+            Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            {
+                ecb.SetComponent(e, new Sprite2DRenderer
+                {
+                    sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')]
+                });
+            });
+        }
+
+        private void UpdateView(EntityCommandBuffer ecb)
+        {
+            var sprite = Sprite2DRenderer.Default;
+            sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            
+            // Set all floor tiles
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
+            Entities.WithAll<Tile, Floor>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            {
+                ecb.SetComponent(e, sprite);
+            });
+            
+            // Default all block tiles to a wall
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
+            Entities.WithAll<Tile, Wall>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            {
+                ecb.SetComponent(e, sprite);
+            });
+            
+            // Set all door tiles
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
+            Entities.WithAll<Tile, Door>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            {
+                ecb.SetComponent(e, sprite);
+            });
+            
+            // Set all closed door tiles
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
+            Entities.WithAll<Tile, Door, BlockMovement>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            {
+                ecb.SetComponent(e, sprite);
+            });
+        }
 
        void GenerateGold()
        {
@@ -145,6 +189,10 @@ namespace game
 
         protected override void OnUpdate()
         {
+            // Update the view when we're not in startup
+            if(_state != eGameState.Startup)
+                UpdateView(PostUpdateCommands);
+            
             switch (_state)
             {
                 case eGameState.Startup:
@@ -153,9 +201,8 @@ namespace game
                         if (done)
                         {
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
-                            MoveToTitleScreen();
+                            MoveToTitleScreen(PostUpdateCommands);
                         }
-
                     }
                     break;
                 case eGameState.Title:
@@ -163,7 +210,7 @@ namespace game
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.D))
                     {
-                        MoveToDebugLevelSelect();
+                        MoveToDebugLevelSelect(PostUpdateCommands);
                     }
                     else if(input.GetKeyDown(KeyCode.H))
                     {
@@ -176,7 +223,7 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-
+                    
                 } break;
                 case eGameState.ReadQueuedLog:
                 {
@@ -197,7 +244,7 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyUp(KeyCode.Space))
-                        MoveToTitleScreen();
+                        MoveToTitleScreen(PostUpdateCommands);
                     else if (input.GetKeyUp(KeyCode.R))
                         MoveToInGame(PostUpdateCommands, true);
                 } break;
@@ -208,10 +255,10 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
-                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+                        log.AddLog("You descend another floor.");
                         _state = eGameState.InGame;
                     }
-                    } break;
+                } break;
                 case eGameState.DebugLevelSelect:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -228,14 +275,14 @@ namespace game
                     }
                     else if (input.GetKeyUp(KeyCode.Space))
                     {
-                        MoveToTitleScreen();
+                        MoveToTitleScreen(PostUpdateCommands);
                     }
                 } break;
                 case eGameState.HiScores:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyUp(KeyCode.Space))
-                        MoveToTitleScreen();
+                        MoveToTitleScreen(PostUpdateCommands);
                 } break;
             }
         }
@@ -244,11 +291,9 @@ namespace game
         {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             log.Clear();
-            // Clear the screen.
-            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
-            {
-                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics( ' ' )];
-            });
+            
+            // Clear the screen
+            ClearView(cb);
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
@@ -263,7 +308,7 @@ namespace game
             });
         }
 
-        public void MoveToTitleScreen()
+        public void MoveToTitleScreen(EntityCommandBuffer cb)
         {
             // Clear the screen.
             Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
@@ -272,14 +317,12 @@ namespace game
                 level.level = 1;
                 gc.count = 0;
             });
-            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
-            {
-                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ' ) ];
-            });
-            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO BEGIN");
-            _view.Blit(EntityManager, new int2(30, 21), "PRESS H FOR HISCORES");
-            _view.Blit(EntityManager, new int2(70, 23),"(d)ebug");
+            ClearView(cb);
+            
+            _view.Blit(cb, new int2(0, 0), "TINY ROGUE");
+            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            _view.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
+            _view.Blit(cb, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
 
@@ -301,61 +344,57 @@ namespace game
             
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You are in a vast cavern.    Press Space for next log");
-            log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
+            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
         }
 
         public void MoveToGameOver(EntityCommandBuffer cb)
         { 
             CleanUpGameWorld(cb);
-            _view.Blit(EntityManager, new int2(0, 0), "GAME OVER!");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
-            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
+            _view.Blit(cb, new int2(0, 0), "GAME OVER!");
+            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            _view.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
         
         public void MoveToGameWin(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(EntityManager, new int2(0, 0), "YOU WIN!");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO START AGAIN");
-            _view.Blit(EntityManager, new int2(30, 21),"PRESS R FOR REPLAY");
+            _view.Blit(cb, new int2(0, 0), "YOU WIN!");
+            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            _view.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
 
         public void MoveToNextLevel(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(EntityManager, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
-            _view.Blit(EntityManager, new int2(30, 20), "PRESS SPACE TO CONTINUE");
+            _view.Blit(cb, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
+            _view.Blit(cb, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
         }
 
         public void MoveToHiScores(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(EntityManager, new int2(30, 7), "HiScores");
-            _view.Blit(EntityManager, new int2(25, 20), "Press Space to Continue");
+            _view.Blit(cb, new int2(30, 7), "HiScores");
+            _view.Blit(cb, new int2(25, 20), "Press Space to Continue");
             for (int i = 1; i < 11; i++)
             {
-                _view.Blit(EntityManager, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
-                _view.Blit(EntityManager, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+                _view.Blit(cb, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
+                _view.Blit(cb, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
             }
             _state = eGameState.HiScores;
         }
 
-        private void MoveToDebugLevelSelect()
+        private void MoveToDebugLevelSelect(EntityCommandBuffer cb)
         {
             // Clear the screen.
-            Entities.WithAll<Tile>().ForEach((ref Sprite2DRenderer renderer) =>
-            {
-                // TODO: need to figure out empty/none tile
-                renderer.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ' )];
-            });
-            _view.Blit(EntityManager, new int2(0, 0), "TINY ROGUE (Debug Levels)");
-            _view.Blit(EntityManager, new int2(30, 10),"1) Combat Test");
-            _view.Blit(EntityManager, new int2(30, 20),"PRESS SPACE TO EXIT");
+            ClearView(cb);
+            
+            _view.Blit(cb, new int2(0, 0), "TINY ROGUE (Debug Levels)");
+            _view.Blit(cb, new int2(30, 10),"1) Combat Test");
+            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO EXIT");
             _state = eGameState.DebugLevelSelect;
         }
 

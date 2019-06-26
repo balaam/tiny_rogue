@@ -82,7 +82,8 @@ namespace game
                 typeof(LayerSorting),  
                 typeof(HealthPoints),
                 typeof(BlockMovement),
-                typeof(Creature)
+                typeof(tag_Creature),
+                typeof(tag_Hostile)
             });
 
             Gold = em.CreateArchetype(new ComponentType[] //trying
@@ -114,6 +115,11 @@ namespace game
             {
                 s.color = TinyRogueConstants.DefaultColor;
             }
+            else
+            {
+                s.color = Color.Default;
+            }
+
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
 
@@ -141,6 +147,10 @@ namespace game
             if (GlobalGraphicsSettings.ascii)
             {
                 s.color = TinyRogueConstants.DefaultColor;
+            }
+            else
+            {
+                s.color = Color.Default;
             }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
@@ -171,6 +181,10 @@ namespace game
             {
                 s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
             }
+            else
+            {
+                s.color = Color.Default;
+            }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 127 )];
             l.order = 1;
@@ -199,6 +213,10 @@ namespace game
             if (GlobalGraphicsSettings.ascii)
             {
                 s.color = new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f);
+            }
+            else
+            {
+                s.color = Color.Default;
             }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
@@ -230,6 +248,10 @@ namespace game
             if (GlobalGraphicsSettings.ascii)
             {
                 s.color = new Unity.Tiny.Core2D.Color(1, 1, 1);
+            }
+            else
+            {
+                s.color = Color.Default;
             }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
@@ -268,6 +290,10 @@ namespace game
             {
                 s.color = new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f);
             }
+            else
+            {
+                s.color = Color.Default;
+            }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
             l.order = 1;
@@ -298,6 +324,10 @@ namespace game
             if (GlobalGraphicsSettings.ascii)
             {
                 s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
+            }
+            else
+            {
+                s.color = Color.Default;
             }
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('d')];
