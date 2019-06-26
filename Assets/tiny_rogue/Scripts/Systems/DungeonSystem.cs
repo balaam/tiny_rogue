@@ -148,20 +148,12 @@ namespace game
         private void PlacePlayer()
         {
             // Place the player
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<PlayerInput>().ForEach((Entity player) =>
             {
                 int2 randomStartPosition = GetPlayerStartPosition();
-
-                coord.x = randomStartPosition.x;
-                coord.y = randomStartPosition.y;
-                translation.Value = _view.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-
-                hp.max = TinyRogueConstants.StartPlayerHealth;
-                hp.now = hp.max;
-
-                // Only tint the player if ascii
-                if (GlobalGraphicsSettings.ascii)
-                    renderer.color = TinyRogueConstants.DefaultColor;
+                WorldCoord worldCoord = new WorldCoord {x = randomStartPosition.x, y = randomStartPosition.y};
+                Translation translation = new Translation {Value = _view.ViewCoordToWorldPos(randomStartPosition)};
+                _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
             });
         }
 
