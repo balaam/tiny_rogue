@@ -171,6 +171,10 @@ namespace game
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
             var sprite2 = Sprite2DRenderer.Default;
             sprite2.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite3 = Sprite2DRenderer.Default;
+            sprite3.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite4 = Sprite2DRenderer.Default;
+            sprite4.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
 
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
@@ -191,25 +195,33 @@ namespace game
             // Set all door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
-            Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
-            {
-                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
-            });
-
             // Set all closed door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // horizontal
-            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // vertical
-            Entities.WithAll<Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
+            sprite3.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // closed horizontal
+            sprite4.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // closed vertical
+            Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Door door, ref WorldCoord coord) =>
             {
-                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
+                Sprite2DRenderer spriteRenderer;
+                if (door.Opened)
+                    spriteRenderer = door.Horizontal ? sprite : sprite2;
+                else
+                    spriteRenderer = door.Horizontal ? sprite3 : sprite4;
+                
+                // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
+                int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                Entity tileEntity = _view.ViewTiles[tileIndex];
+                Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                spriteRenderer.color.a = GetAlphaForTile(tile);
+                
+                ecb.SetComponent(e, spriteRenderer);
             });
             
-            Entities.WithNone<Player,Tile>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord ) =>
+            // This reads from *before* the above changes, so shouldn't be used on the same entities
+            Entities.WithNone<Player, Tile, Door>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
                     
-                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
@@ -382,6 +394,12 @@ namespace game
 
             // Clear the dungeon
             _dungeon.ClearDungeon(cb, _view);
+            
+            // Clear all Tile data
+            Entities.WithAll<Tile>().ForEach((Entity e) =>
+            {
+                cb.SetComponent(e, new Tile());
+            });
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
