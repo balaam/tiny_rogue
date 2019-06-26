@@ -55,7 +55,7 @@ namespace game
         private List<Room> _rooms = new List<Room>();
         
         // Storage for all cells
-        private Type[] _cells;
+        private Type[] _cells = new Type[0];
 
         private Entity _dungeonViewEntity;
         private View _view;
@@ -64,15 +64,24 @@ namespace game
         
         protected override void OnUpdate() {}
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view)
+        public void ClearDungeon(EntityCommandBuffer cb, View view)
         {
-            if (!SpriteSystem.Loaded)
-                return;
-            
-            _rooms.Clear();
-
             _ecb = cb;
             _view = view;
+            
+            _rooms.Clear();
+            for (var i = 0; i < _cells.Length; i++)
+                _cells[i] = Type.eEmpty;
+
+            ClearCurrentLevel();
+        }
+
+        public void GenerateDungeon(EntityCommandBuffer cb, View view)
+        {
+            _ecb = cb;
+            _view = view;
+
+            ClearDungeon(cb, view);
             
             _cells = new Type[_view.ViewTiles.Length];
 
@@ -101,8 +110,6 @@ namespace game
                     _rooms.Add(newRoom);
             }
 
-            ClearCurrentLevel();
-            
             // Create the rooms, and then the hallways
             CreateRooms();
             CreateHallways();
@@ -285,8 +292,8 @@ namespace game
             // Clear each of our level tile tags
             Entities.WithAll<Tile,BlockMovement>().ForEach(_ecb.RemoveComponent<BlockMovement>);
             Entities.WithAll<Tile,Door>().ForEach(_ecb.RemoveComponent<Door>);
-            Entities.WithAll<Tile,Wall>().ForEach(_ecb.RemoveComponent<Door>);
-            Entities.WithAll<Tile,Floor>().ForEach(_ecb.RemoveComponent<Door>);
+            Entities.WithAll<Tile,Wall>().ForEach(_ecb.RemoveComponent<Wall>);
+            Entities.WithAll<Tile,Floor>().ForEach(_ecb.RemoveComponent<Floor>);
         }
 
         public int2 GetRandomPositionInRandomRoom()
