@@ -106,7 +106,7 @@ namespace game
         {
             CleanUpGameWorld(PostUpdateCommands);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
 
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
@@ -138,12 +138,19 @@ namespace game
 
             GenerateGold();
 
-            for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
-            {
-                var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
-            }
+            GenerateCollectibles();
+
         }
+
+        void GenerateCollectibles()
+        {
+            for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
+             {
+                 //TODO: figure out how it can know to avoid tiles that already have an entity
+                 var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
+                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+             }
+       }
 
         private void ClearView(EntityCommandBuffer ecb)
         {
@@ -244,7 +251,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
 
             for (int i = 0; i < 20; i++)
             {

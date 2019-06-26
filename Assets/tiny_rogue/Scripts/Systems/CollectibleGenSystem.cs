@@ -3,39 +3,41 @@ using Unity.Entities;
 
 public class CollectibleGenSystem : ComponentSystem
 {
-    DynamicBuffer<CollectibleEntry> collectibles;
-    
-    protected override void OnCreate()
+    public void GetRandomCollectible(EntityManager entityManager, Entity entity, CanBePickedUp c, HealthBonus hb )
     {
-        Init();
-    }
-
-    void Init()
-    {
-        Entities.WithAll<SpriteLookUp>().ForEach((entity) =>
-        {
-            collectibles = EntityManager.GetBuffer<CollectibleEntry>(entity);
-        });
-    }
-
-    public void GetRandomCollectible(ref Entity item, ref CanBePickedUp c )
-    {
-        var collectible = collectibles[RandomRogue.Next(0, collectibles.Length)];
-
-        c.appearance.sprite = GlobalGraphicsSettings.ascii ? collectible.spriteAscii : collectible.spriteGraphics;
-        c.description = collectible.description;
-        c.name = collectible.name;
-
-        if (collectible.healthBonus != 0)
-        {
-            var healthBonus = new HealthBonus();
-            healthBonus.healthAdded = collectible.healthBonus;
-            EntityManager.SetComponentData(item,healthBonus);
-        }
+        CollectibleEntry colEntry = new CollectibleEntry();
         
+        Entities.WithAll<CollectibleLookup>().ForEach((lookup) =>
+        {
+            DynamicBuffer<CollectibleEntry>  collectibles = EntityManager.GetBuffer<CollectibleEntry>(lookup);
+            
+        
+            if (collectibles.Length == 0)
+                return;
+        
+            colEntry = collectibles[RandomRogue.Next(0, collectibles.Length)];
+            c.appearance.sprite = GlobalGraphicsSettings.ascii ? colEntry.spriteAscii : colEntry.spriteGraphics;
+            c.description = colEntry.description;
+            c.name = colEntry.name;
+
+            entityManager.SetComponentData(entity, c);
+        
+            if (colEntry.healthBonus != 0)
+            {
+                hb.healthAdded = colEntry.healthBonus;
+            
+                //TODO: fix this
+                //entityManager.SetComponentData(entity, hb);
+            }
+
+
+        });
+        
+
     }
 
     protected override void OnUpdate()
     {
+        
     }
 }

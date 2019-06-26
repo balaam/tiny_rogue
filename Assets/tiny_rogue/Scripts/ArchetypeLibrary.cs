@@ -246,7 +246,7 @@ namespace game
             return entity;
         }
         
-        public Entity CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)
+        public void CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)
         {
             Entity entity = entityManager.CreateEntity(Collectible);
 
@@ -255,6 +255,7 @@ namespace game
             WorldCoord c = new WorldCoord();
             LayerSorting l = new LayerSorting();
             CanBePickedUp p = new CanBePickedUp();
+            HealthBonus hb = new HealthBonus();
             t.Value = pos;
 
             c.x = xy.x;
@@ -274,9 +275,10 @@ namespace game
           
             p.name = new NativeString64("unknown pickup");
             p.description = new NativeString64("Check collectible gen");
+
+            var collectibleGenSystem = World.Active.GetOrCreateSystem<CollectibleGenSystem>();
             
-            var collectibleGenSystem = entityManager.World.GetExistingSystem<CollectibleGenSystem>();
-            collectibleGenSystem.GetRandomCollectible(ref entity, ref p);
+            collectibleGenSystem.GetRandomCollectible(entityManager, entity, p, hb);
             s.sprite = p.appearance.sprite;
 
             entityManager.SetComponentData(entity, s);
@@ -285,7 +287,6 @@ namespace game
             entityManager.SetComponentData(entity, l);
             entityManager.SetComponentData(entity, p);
 
-            return entity;
         }
 
         public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
