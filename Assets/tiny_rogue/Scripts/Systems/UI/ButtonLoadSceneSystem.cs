@@ -12,6 +12,7 @@ public class ButtonLoadSceneSystem : ComponentSystem
 	{
 		ButtonLoadScene scene = new ButtonLoadScene();
 		bool sceneSelected = false;
+		Entity e = Entity.Null;
 		Entities.WithAll<ButtonLoadScene>().ForEach((Entity entity, ref PointerInteraction pointerInteraction) =>
             {
                 if (pointerInteraction.clicked)
@@ -19,10 +20,14 @@ public class ButtonLoadSceneSystem : ComponentSystem
                     // Go to the referenced scene
                     scene = EntityManager.GetComponentData<ButtonLoadScene>(entity);
                     sceneSelected = true;
+                    e = entity;
 				}
             });
-		
-		if(sceneSelected)
+
+		if (sceneSelected)
+		{
+			SceneService.UnloadSceneInstance(e);
 			SceneService.LoadSceneAsync(scene.sceneReference);
+		}
 	}
 }
