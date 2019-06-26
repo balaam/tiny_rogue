@@ -101,13 +101,6 @@ namespace game
                         return;
 
                     tms.AddActionRequest(action, playerEntity, coord);
-                    
-                    bool moved = false;
-                    if (!GlobalGraphicsSettings.ascii)
-                    {
-                        Debug.Log($"Animate {(int)action} {moved}");
-                        anim.StartAnimation(playerEntity, action, moved);
-                    }
 
                     // Save the action to the action stream if the player has it
                     if (!Replaying)

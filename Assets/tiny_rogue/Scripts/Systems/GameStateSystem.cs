@@ -260,14 +260,14 @@ namespace game
                 (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
-                    
+
                     // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
 
-                    spriteRenderer.color = GetColorForObject(tile);
-                    
+                    spriteRenderer.color.a = tile.IsSeen ? 1 : 0;
+
                     ecb.SetComponent(e, spriteRenderer);
                 });
         }
@@ -318,7 +318,7 @@ namespace game
                         if (done)
                         {
                             var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
-                            // Re-parent the camera on graphical to follow the charcter.
+                            // Re-parent the camera on graphical to follow the character.
                             if (!GlobalGraphicsSettings.ascii)
                             {
                                 Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
