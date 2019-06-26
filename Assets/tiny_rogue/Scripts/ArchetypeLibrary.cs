@@ -247,6 +247,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
+            entityManager.SetComponentData(entity, d);
 
             return entity;
         }
