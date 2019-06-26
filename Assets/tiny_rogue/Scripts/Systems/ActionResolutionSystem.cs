@@ -318,12 +318,10 @@ namespace game
 
                 string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                 string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
+                string logStr;
                 if(attackerName == "Player")
                 {
-                    logStr = string.Format("You hit the {0} for {1} damage!",
-                        defenderName,
-                        dmg);
-                    string logStr = string.Concat(string.Concat(string.Concat(string.Concat(
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(
                                     "You hit the ",
                                     defenderName),
                                     " for "),
@@ -334,7 +332,7 @@ namespace game
                 {
                 	if(defenderName == "Player")
                         defenderName = "you";
-                	string logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
                                     attackerName, 
                                     " hits "),
                                     defenderName),
