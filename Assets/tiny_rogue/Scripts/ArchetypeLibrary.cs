@@ -109,7 +109,8 @@ namespace game
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
-
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
 
@@ -136,7 +137,8 @@ namespace game
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
-
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
             l.order = 1;
 
@@ -165,6 +167,8 @@ namespace game
             s.color = GlobalGraphicsSettings.ascii 
                 ? new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f) 
                 : Color.Default;
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 127 )];
             l.order = 1;
@@ -193,6 +197,8 @@ namespace game
             s.color = GlobalGraphicsSettings.ascii 
                 ? new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f) 
                 : Color.Default;
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
             l.order = 1;
@@ -224,6 +230,8 @@ namespace game
             s.color = GlobalGraphicsSettings.ascii 
                 ? new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f) 
                 : Color.Default;
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(horizontal ? '\\' : '/')];
             // Have to draw above character in graphical
@@ -256,6 +264,8 @@ namespace game
             s.color = GlobalGraphicsSettings.ascii 
                 ? new Unity.Tiny.Core2D.Color(1, 1, 1) 
                 : Color.Default;
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
             l.order = 1;
@@ -292,6 +302,8 @@ namespace game
             s.color = GlobalGraphicsSettings.ascii 
                 ? new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f) 
                 : Color.Default;
+            if(GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
             l.order = 1;
