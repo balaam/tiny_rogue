@@ -340,14 +340,12 @@ namespace game
             // Generate a new seed
             if(!replay)
                 CurrentSeed = (uint) Guid.NewGuid().GetHashCode();
+            RandomRogue.Init(CurrentSeed);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();      
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
-            
-            // TODO: Set this properly (make it random the first time, but ditto for the replay case)
-            RandomRogue.Init(CurrentSeed); 
-            
+
             if( replay )
                 pis.StartReplaying();
             else
