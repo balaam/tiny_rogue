@@ -137,7 +137,7 @@ namespace game
         private void UpdateView(EntityCommandBuffer ecb)
         {
             var sprite = Sprite2DRenderer.Default;
-            sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
             
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
