@@ -309,7 +309,7 @@ namespace game
                         if (done)
                         {
                             var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
-                            // Re-parent the camera on graphical to follow the charcter.
+                            // Re-parent the camera on graphical to follow the character.
                             if (!GlobalGraphicsSettings.ascii)
                             {
                                 Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
