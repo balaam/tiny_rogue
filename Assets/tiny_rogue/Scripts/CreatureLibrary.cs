@@ -217,20 +217,6 @@ namespace game
             return entity;
         }
 
-        public void FixupSpritePlayer(EntityCommandBuffer cb, Entity player)
-        {
-            CreatureDescription descr = CreatureDescriptions[(int) ECreatureId.Player];
-            
-            Creature c = new Creature {id = (int) ECreatureId.Player};
-            AttackStat att = new AttackStat { range = descr.attackRange };
-            Sight sight = new Sight {SightRadius = 4};
-            
-            cb.AddComponent(player, att);
-            cb.AddComponent(player, c);
-            //cb.AddComponent(player, sight);
-            cb.AddComponent(player, new tag_Attackable {});
-        }
-
         public void ResetPlayer(EntityCommandBuffer cb, Entity player, WorldCoord worldCoord, Translation translation)
         {
             CreatureDescription descr = CreatureDescriptions[(int) ECreatureId.Player];
@@ -245,11 +231,15 @@ namespace game
             Animated animated = new Animated { Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
             Sight sight = new Sight {SightRadius = 4};
             
-            
+            if (!GlobalGraphicsSettings.ascii)
+            {
+                Sprite2DSequencePlayer sequencePlayer = new Sprite2DSequencePlayer();
+                cb.AddComponent(player, sequencePlayer);
+            }
             
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
-            LayerSorting l = new LayerSorting();
+            LayerSorting l = new LayerSorting { order = 2 };
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
             l.order = 1;
