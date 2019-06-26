@@ -393,14 +393,13 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
-                    {
-                        // Generate a new seed
-                        CurrentSeed = MakeNewRandom();
-                        GenerateLevel();
-                        log.AddLog("You descend another floor.");
-                        _state = eGameState.InGame;
-                    }
+
+                    // Generate a new seed
+                    CurrentSeed = MakeNewRandom();
+                    GenerateLevel();
+                    log.AddLog("You descend another floor.");
+                    log.ShowNextLog(PostUpdateCommands); 
+                    _state = eGameState.InGame;
                 } break;
                 case eGameState.DebugLevelSelect:
                 {
@@ -486,7 +485,7 @@ namespace game
             if(!replay)
                 CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
-            LastDungeonNumber = RandomRogue.Next(2, 10);
+            LastDungeonNumber = RandomRogue.Next(5, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
