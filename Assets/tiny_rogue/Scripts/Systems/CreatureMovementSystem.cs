@@ -40,22 +40,17 @@ public class CreatureMovementSystem : ComponentSystem
             
             Entities.WithAll<PatrollingState>().ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol) =>
             {
-//                int2 monsterPos = new int2(coord.x, coord.y);
-//                if (!patrol.currentPath.pathSteps.IsCreated || patrol.currentPath.pathSteps.Length == 0 ||
-//                    patrol.currentPath.currentIdx == patrol.currentPath.pathSteps.Length)
-//                {
-//                    // Get new patrol path if one does not exist or has been completed
-//                    DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
-//                    int2 destination = ds.GetRandomPositionInRandomRoom();
-//                    var newPath = AStarPathfinding.getPath(monsterPos, destination);
-//                    // TODO set in new path, next line probably will not work
-//                    patrol.currentPath = newPath;
-//                }
-//                
-//                // Follow defined path now that we have ensured that one exists
-//                int2 nextPos = AStarPathfinding.stepAlong(patrol.currentPath, monsterPos);
-//                // TODO May now need to update the Monster path...
-//                // TODO move monster
+                int2 monsterPos = new int2(coord.x, coord.y);
+                if (patrol.Equals(default(PatrollingState)))
+                {
+                    DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                    patrol.destination = ds.GetRandomPositionInRandomRoom();
+                }
+                
+                // Follow defined path now that we have ensured that one exists
+                int2 nextPos = AStarPathfinding.getNextStep(monsterPos, patrol.destination);
+                // TODO May now need to update the Monster path...
+                // TODO move monster
             });
         }
     }

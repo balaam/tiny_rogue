@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace game
 {
@@ -8,6 +9,10 @@ namespace game
     // This is fine but all creatures should activate once hit.
     public struct PatrollingState: IComponentData
     {
+        // Efficient cache of destination path
 //        public SavedPath currentPath;
+
+        // Inefficient save of destination
+        public int2 destination;
     }
 }
