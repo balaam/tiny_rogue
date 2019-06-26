@@ -27,6 +27,7 @@ namespace game
         public Color asciiColor;
         public int sightRadius;
         public int speed;
+        public int spriteId;
     }
 
     public class CreatureLibrary
@@ -46,7 +47,8 @@ namespace game
                 ascii = 'r', 
                 asciiColor = new Color(0.9f, 0.5f, 0.3f),
                 sightRadius = 10, // Rats have good eyesight
-                speed = 1
+                speed = 1,
+                spriteId = 2
             },
             /* Kobold */
             new CreatureDescription
@@ -57,7 +59,8 @@ namespace game
                 ascii = 'k',
                 asciiColor = new Color(0.5f, 0.9f, 0.3f),
                 sightRadius = 3, // Kobolds aren't very good at spotting enemies
-                speed = 3
+                speed = 3,
+                spriteId = 1
             },
             
             // Unspawnables
@@ -68,7 +71,8 @@ namespace game
                 health = TinyRogueConstants.StartPlayerHealth,
                 attackRange = new int2(1,1),
                 ascii = (char)1,
-                asciiColor = new Color(1, 1, 1)
+                asciiColor = new Color(1, 1, 1),
+                spriteId = 0
             },
         };
 
@@ -125,12 +129,14 @@ namespace game
             Sprite2DRenderer s = new Sprite2DRenderer();
             LayerSorting l = new LayerSorting();
             Creature c = new Creature {id = (int)cId};
-            HealthPoints hp = new HealthPoints {max = descr.health, now = descr.health};
+            HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
-            Sight sight = new Sight {SightRadius = descr.sightRadius};
+            Sight sight = new Sight { SightRadius = descr.sightRadius };
             PatrollingState patrol = new PatrollingState();
             MeleeAttackMovement movement = new MeleeAttackMovement();
-            Speed speed = new Speed(){SpeedRate = descr.speed};
+            Speed speed = new Speed { SpeedRate = descr.speed };
+            Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
+            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
@@ -146,6 +152,8 @@ namespace game
             entityManager.SetComponentData(entity, movement);
             entityManager.SetComponentData(entity, patrol);
             entityManager.SetComponentData(entity, speed);
+            entityManager.SetComponentData(entity, mobile);
+            entityManager.SetComponentData(entity, animated);
 
             return entity;
         }
@@ -158,13 +166,15 @@ namespace game
             
             Sprite2DRenderer s = new Sprite2DRenderer();
             LayerSorting l = new LayerSorting();
-            Creature c = new Creature {id = (int)cId};
-            HealthPoints hp = new HealthPoints {max = descr.health, now = descr.health};
+            Creature c = new Creature { id = (int)cId };
+            HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
-            Sight sight = new Sight {SightRadius = descr.sightRadius};
+            Sight sight = new Sight { SightRadius = descr.sightRadius };
             PatrollingState patrol = new PatrollingState();
             MeleeAttackMovement movement = new MeleeAttackMovement();
-            Speed speed = new Speed() { SpeedRate = descr.speed };
+            Speed speed = new Speed { SpeedRate = descr.speed };
+            Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
+            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
@@ -180,6 +190,8 @@ namespace game
             cb.SetComponent(entity, movement);
             cb.SetComponent(entity, patrol);
             cb.SetComponent(entity, speed);
+            cb.SetComponent(entity, mobile);
+            cb.SetComponent(entity, animated);
 
             return entity;
         }
@@ -190,15 +202,15 @@ namespace game
             Entity entity = entityManager.CreateEntity(_playerArchetype);
             CreatureDescription descr = CreatureDescriptions[(int) ECreatureId.Player];
             
-            Creature c = new Creature {id = (int) ECreatureId.Player};
-            HealthPoints hp = new HealthPoints {max = descr.health, now = descr.health};
+            Creature c = new Creature { id = (int) ECreatureId.Player };
+            HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
-            Level lvl = new Level {level = 1};
-            ExperiencePoints exp = new ExperiencePoints {now = 0};
-            GoldCount gp = new GoldCount {count = 0};
-            Mobile mobile = new Mobile {Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false};
-            Animated animated = new Animated { Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
-            Sight sight = new Sight {SightRadius = 4};
+            Level lvl = new Level { level = 1 };
+            ExperiencePoints exp = new ExperiencePoints { now = 0 };
+            GoldCount gp = new GoldCount { count = 0 };
+            Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0, Moving = false };
+            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
+            Sight sight = new Sight { SightRadius = 4 };
 
             if (!GlobalGraphicsSettings.ascii)
             {
@@ -232,15 +244,15 @@ namespace game
         {
             CreatureDescription descr = CreatureDescriptions[(int) ECreatureId.Player];
             
-            Creature c = new Creature {id = (int) ECreatureId.Player};
-            HealthPoints hp = new HealthPoints {max = descr.health, now = descr.health};
+            Creature c = new Creature { id = (int) ECreatureId.Player };
+            HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
-            Level lvl = new Level {level = 1};
+            Level lvl = new Level { level = 1 };
             ExperiencePoints exp = new ExperiencePoints {now = 0};
-            GoldCount gp = new GoldCount {count = 0};
-            Mobile mobile = new Mobile {Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false};
-            Animated animated = new Animated { Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
-            Sight sight = new Sight {SightRadius = 4};
+            GoldCount gp = new GoldCount { count = 0 };
+            Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
+            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
+            Sight sight = new Sight { SightRadius = 4 };
             
             if (!GlobalGraphicsSettings.ascii)
             {

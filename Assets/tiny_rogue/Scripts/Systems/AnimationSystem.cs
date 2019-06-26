@@ -153,12 +153,13 @@ public class AnimationSystem : ComponentSystem
     {
         var direction = (int)animated.Direction;
         var action = (int)animated.Action;
+        var id = animated.Id;
         Debug.Log($"Try set animation: {direction} {action}");
 
         Entity animation = Entity.Null;
         Entities.WithAll<AnimationSequence>().ForEach((Entity entity, ref AnimationSequence animationSequence) =>
         {
-            if (animationSequence.MoveId == action && animationSequence.DirectionId == direction && animationSequence.PlayerId == 0)
+            if (animationSequence.MoveId == action && animationSequence.DirectionId == direction && animationSequence.PlayerId == id)
             {
                 animation = entity;
                 Debug.Log("Found animation");
