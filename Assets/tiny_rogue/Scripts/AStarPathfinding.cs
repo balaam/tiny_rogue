@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
 
@@ -69,19 +70,19 @@ namespace game
         }
 
         // The main method you should use to identify where a given monster will step next
-        public static int2 getNextStep(int2 start, int2 end)
+        public static int2 getNextStep(int2 start, int2 end, View view, EntityManager em)
         {
-            return _getPath(start, end).stepFrom(start).location;
+            return _getPath(start, end, view, em).stepFrom(start).location;
         }
 
-        public static SavedPath getPath(int2 start, int2 end)
+        public static SavedPath getPath(int2 start, int2 end, View view, EntityManager em)
         {
-            return _getPath(start, end).toSavedPath();
+            return _getPath(start, end, view, em).toSavedPath();
         }
 
         // The A* algorithm returning the entire Path from Start to End. Usually getNextStep will be better
         // though but this is exposed for caching purposes e.g. with patrolling monsters.
-        private static Path _getPath(int2 start, int2 end)
+        private static Path _getPath(int2 start, int2 end, View view, EntityManager em)
         {
             Path current = null;
             var startLoc = new Path {location = start};
@@ -97,7 +98,7 @@ namespace game
                 closedList.Add(current);
                 // Did we just find the end square? If so then we're finished!
                 if (current.location.x == end.x && current.location.y == end.y) break;
-                var adjacentSquares = getWalkableAdjacentSquares(current.location);
+                var adjacentSquares = getWalkableAdjacentSquares(current.location, view, em);
                 travelDistance++;
                 foreach (var adjacentSquare in adjacentSquares)
                 {
@@ -175,16 +176,27 @@ namespace game
             return found;
         }
 
-        private static List<int2> getWalkableAdjacentSquares(int2 start)
+        private static List<int2> getWalkableAdjacentSquares(int2 start, View view, EntityManager em)
         {
+            List<int2> walkableSquares = new List<int2>();
             //TODO proper implementation, currently all monsters are either ghosts or idiots since Walkability is not considered
-            return new List<int2>()
+            List<int2>adjacentSquares = new List<int2>()
             {
                 new int2(start.x + 1, start.y),
                 new int2(start.x - 1, start.y),
                 new int2(start.x, start.y + 1),
                 new int2(start.x, start.y - 1)
             };
+
+            foreach (int2 pos in adjacentSquares)
+            {
+                int i = View.XYToIndex(pos, view.Width);
+                Entity e = view.ViewTiles[i];
+                if(!em.HasComponent(e, typeof(BlockMovement)))
+                    walkableSquares.Add(pos);
+            }
+
+            return walkableSquares;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace game
 
         protected override void OnUpdate()
         {
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
             if (lastTurn != tms.TurnCount) // Don't always be moving!
             {
@@ -29,7 +30,7 @@ namespace game
                     .ForEach((Entity creature, ref WorldCoord coord) =>
                     {
                         int2 creaturePos = new int2(coord.x, coord.y);
-                        int2 nextPos = AStarPathfinding.getNextStep(creaturePos, playerPos);
+                        int2 nextPos = AStarPathfinding.getNextStep(creaturePos, playerPos, gss.View, EntityManager);
                         // TODO currently monsters can't actually pathfind correctly
                         Action movement = getDirection(creaturePos, nextPos);
                         tms.AddDelayedAction(movement, creature, coord);
@@ -46,7 +47,7 @@ namespace game
                 EntityManager.SetComponentData(creature, patrol);
 
                 // Follow defined path now that we have ensured that one exists
-                int2 nextPos = AStarPathfinding.getNextStep(monsterPos, patrol.destination);
+                int2 nextPos = AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
                 Action movement = getDirection(monsterPos, nextPos);
                 tms.AddDelayedAction(movement, creature, coord);
             });
