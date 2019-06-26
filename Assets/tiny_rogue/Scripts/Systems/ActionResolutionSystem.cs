@@ -44,6 +44,7 @@ namespace game
     public struct PendingDoorOpen
     {
         public Entity DoorEnt;
+        public Entity OpeningEntity;
     }
     
     [UpdateInGroup(typeof(TurnSystemGroup))]
@@ -188,7 +189,7 @@ namespace game
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
-                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx]});
+                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx], OpeningEntity = e});
                     FlagsMap[moveToIdx] &= (byte)~(EInteractionFlags.Blocking);
                 }
 
@@ -325,7 +326,10 @@ namespace game
             PendingDoorOpen pd;
             while (pendingOpens.TryDequeue(out pd))
             {
-                log.AddLog("You opened a door.");
+                if (EntityManager.HasComponent<Player>(pd.OpeningEntity))
+                {
+                    log.AddLog("You opened a door.");
+                }
                 Sprite2DRenderer s = EntityManager.GetComponentData<Sprite2DRenderer>(pd.DoorEnt);
                 var door = EntityManager.GetComponentData<Door>(pd.DoorEnt);
                 door.Locked = false;
