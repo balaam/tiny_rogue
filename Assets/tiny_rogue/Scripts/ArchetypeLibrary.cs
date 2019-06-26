@@ -304,7 +304,7 @@ namespace game
             
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii 
-                ? new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f) 
+                ? new Unity.Tiny.Core2D.Color(0.964f, 0.749f, 0.192f) 
                 : Color.Default;
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
