@@ -77,6 +77,12 @@ namespace game
                     tms.NeedToTickTurn = true;
                     moved = true;
                 }
+                else
+                {
+                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
+                    log.AddLog("You bumped into the wall. Ouch.");
+
+                }
             });
 
             // Update the inventory when we move
