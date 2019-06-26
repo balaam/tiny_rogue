@@ -24,6 +24,7 @@ namespace game
     {
         private bool Replaying = false;
         private float StartTime;
+        private int ReplayPosition = 0;
 
         private List<TimedAction> ActionStream = new List<TimedAction>();
 
@@ -38,6 +39,7 @@ namespace game
         {
             Replaying = true;
             StartTime = Time.time;
+            ReplayPosition = 0;
         }
 
         private Action GetActionFromInput()
@@ -63,49 +65,20 @@ namespace game
             return Action.None;
         }
 
-        private Action GetActionFromActionStream(Entity e, float time)
+        private Action GetActionFromActionStream(float time)
         {
-            if (ActionStream.Count == 0)
+            // Bail when we're outside of the stream
+            if (ReplayPosition >= ActionStream.Count)
                 return Action.None;
-            
-            var action = ActionStream[0];
+
+            var action = ActionStream[ReplayPosition];
 
             // Don't run if we've not reached the right time yet
             if (time < action.time)
                 return Action.None;
 
-            // Remove and run the action
-            ActionStream.RemoveAt(0);
+            ReplayPosition++;
             return action.action;
-        }
-
-        private WorldCoord GetMove(Action a)
-        {
-            WorldCoord c = new WorldCoord();
-            switch (a)
-            {
-                case Action.MoveUp:
-                    c.y -= 1;
-                    break;
-                case Action.MoveDown:
-                    c.y += 1;
-                    break;
-                case Action.MoveRight:
-                    c.x += 1;
-                    break;
-                case Action.MoveLeft:
-                    c.x -= 1;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(a));
-            }
-
-            return c;
-        }
-
-        private Action GetAction(Entity e, float time)
-        {
-            return Replaying ? GetActionFromActionStream(e,time) : GetActionFromInput();
         }
 
         protected override void OnUpdate()
@@ -119,16 +92,16 @@ namespace game
 
             if (gss.IsInGame)
             {
-                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Player player, ref WorldCoord coord) =>
+                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Animated animated, ref WorldCoord coord) =>
                 {
                     // In Graphical, you have to wait for the animation of the action to complete first.
                     if (!GlobalGraphicsSettings.ascii)
                     {
-                        var currentAction = EntityManager.GetComponentData<Player>(playerEntity).Action;
+                        var currentAction = animated.Action;
                         if (currentAction != Action.None) return;
                     }
 
-                    var action = GetAction(playerEntity, time);
+                    var action = Replaying ? GetActionFromActionStream(time) : GetActionFromInput();
 
                     if (action == Action.None)
                         return;
@@ -139,7 +112,7 @@ namespace game
                     if (!GlobalGraphicsSettings.ascii)
                     {
                         Debug.Log($"Animate {(int)action} {moved}");
-                        anim.StartAnimation(action, moved);
+                        anim.StartAnimation(playerEntity, action, moved);
                     }
 
                     // Save the action to the action stream if the player has it

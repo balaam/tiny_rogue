@@ -7,5 +7,6 @@ namespace game
         public bool Opened;
         public bool Locked;
         public bool Hidden;
+        public bool Horizontal;
     }
 }

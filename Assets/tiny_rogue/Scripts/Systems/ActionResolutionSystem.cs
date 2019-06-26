@@ -65,7 +65,13 @@ namespace game
             
             _mapFillQuery = GetEntityQuery(query);
         }
-        
+
+        protected override void OnDestroy()
+        {
+            if (_entityMap.IsCreated) { _entityMap.Dispose();}
+            if (_flagMap.IsCreated) { _flagMap.Dispose();}
+            base.OnDestroy();
+        }
 
         private void ResizeMaps(int width, int height)
         {
@@ -110,7 +116,7 @@ namespace game
             [ReadOnly] public ArchetypeChunkComponentType<WorldCoord> WorldCoordType;
             [ReadOnly] public ArchetypeChunkComponentType<BlockMovement> BlockedMovementType;
             [ReadOnly] public ArchetypeChunkComponentType<Door> DoorType;
-            [ReadOnly] public ArchetypeChunkComponentType<tag_Hostile> HostileType;
+            [ReadOnly] public ArchetypeChunkComponentType<tag_Attackable> HostileType;
             [ReadOnly] public ArchetypeChunkComponentType<Player> PlayerType;
 
             public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
@@ -120,7 +126,7 @@ namespace game
                 byte flags = (byte)EInteractionFlags.None;
                 flags |= (byte)(chunk.Has<BlockMovement>(BlockedMovementType) ? EInteractionFlags.Blocking : EInteractionFlags.None);
                 flags |= (byte)(chunk.Has<Door>(DoorType) ? EInteractionFlags.Door : EInteractionFlags.None);
-                flags |= (byte)(chunk.Has<tag_Hostile>(HostileType) ? EInteractionFlags.Hostile : EInteractionFlags.None);
+                flags |= (byte)(chunk.Has<tag_Attackable>(HostileType) ? EInteractionFlags.Hostile : EInteractionFlags.None);
                 flags |= (byte)(chunk.Has<Player>(PlayerType) ? EInteractionFlags.Player : EInteractionFlags.None);
                 
                 for (var i = 0; i < chunk.Count; i++)
@@ -244,7 +250,7 @@ namespace game
                 WorldCoordType = GetArchetypeChunkComponentType<WorldCoord>(true),
                 BlockedMovementType = GetArchetypeChunkComponentType<BlockMovement>(true),
                 DoorType = GetArchetypeChunkComponentType<Door>(true),
-                HostileType = GetArchetypeChunkComponentType<tag_Hostile>(true),
+                HostileType = GetArchetypeChunkComponentType<tag_Attackable>(true),
                 PlayerType = GetArchetypeChunkComponentType<Player>(true)
             };
             var fillJobHandle = fillJob.Schedule(_mapFillQuery, clearJobHandle);
@@ -289,9 +295,10 @@ namespace game
             {
                 log.AddLog("You opened a door.");
                 Sprite2DRenderer s = EntityManager.GetComponentData<Sprite2DRenderer>(pd.DoorEnt);
-                s.sprite = SpriteSystem.IndexSprites['\\'];
+                var door = EntityManager.GetComponentData<Door>(pd.DoorEnt);
+                door.Locked = false;
                 EntityManager.RemoveComponent(pd.DoorEnt, typeof(BlockMovement));
-                EntityManager.SetComponentData(pd.DoorEnt, new Door {Locked = false});
+                EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
             }
             pendingMoves.Dispose();
