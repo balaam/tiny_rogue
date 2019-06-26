@@ -378,6 +378,12 @@ namespace game
 
             // Clear the dungeon
             _dungeon.ClearDungeon(cb, _view);
+            
+            // Clear all Tile data
+            Entities.WithAll<Tile>().ForEach((Entity e) =>
+            {
+                cb.SetComponent(e, new Tile());
+            });
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
