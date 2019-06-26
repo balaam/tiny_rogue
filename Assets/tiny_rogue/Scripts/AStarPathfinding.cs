@@ -191,7 +191,7 @@ namespace game
             {
                 int i = View.XYToIndex(pos, view.Width);
                 Entity e = view.ViewTiles[i];
-                if(!em.HasComponent(e, typeof(BlockMovement)) && !em.HasComponent(e, typeof(Creature)))
+                if(!em.HasComponent(e, typeof(BlockMovement)))
                     walkableSquares.Add(pos);
             }
 
