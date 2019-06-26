@@ -38,6 +38,7 @@ namespace game
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
+        public ArchetypeLibrary ArchetypeLibrary => _archetypeLibrary;
 
         protected override void OnCreate()
         {

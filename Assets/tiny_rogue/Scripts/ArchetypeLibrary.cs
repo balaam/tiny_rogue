@@ -28,7 +28,7 @@ namespace game
                 typeof(WorldCoord), // should be view coord?
                 typeof(Sprite2DRenderer),
                 typeof(LayerSorting),
-                typeof(Tile)
+                typeof(Tile),
             });
 
             SpearTrap = em.CreateArchetype(new ComponentType[]
@@ -83,7 +83,10 @@ namespace game
                 typeof(HealthPoints),
                 typeof(BlockMovement),
                 typeof(tag_Creature),
-                typeof(tag_Hostile)
+                typeof(tag_Hostile),
+                typeof(PatrollingState),
+                typeof(Sight),
+                typeof(MeleeAttackMovement)
             });
 
             Gold = em.CreateArchetype(new ComponentType[] //trying
@@ -274,6 +277,46 @@ namespace game
             entityManager.SetComponentData(entity, l);
             entityManager.SetComponentData(entity, p);
 
+            return entity;
+        }
+        
+        public Entity CreateCreature(EntityManager entityManager, int2 xy, float3 pos)
+        {
+            Entity entity = entityManager.CreateEntity(Creature);
+            
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            Sight sight = new Sight();
+            PatrollingState patrol = new PatrollingState();
+            sight.SightRadius = 5;
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+            
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = TinyRogueConstants.DefaultColor;
+                s.color.a = 0;
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
+            l.order = 1;
+            
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            entityManager.SetComponentData(entity, sight);
+            entityManager.SetComponentData(entity, patrol);
+            
             return entity;
         }
 

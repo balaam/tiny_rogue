@@ -116,11 +116,23 @@ namespace game
 
             // Add loot
             // Add monsters
+            PlaceMonsters();
 
             PlaceDungeon();
             PlacePlayer();
         }
 
+        private void PlaceMonsters()
+        {
+            int monsterCount = RandomRogue.Next(1, 5);
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            for (var i = 0; i < monsterCount; i++)
+            {
+                var creatureCoord = GetRandomPositionInRandomRoom();
+                gss.ArchetypeLibrary.CreateCreature(EntityManager, creatureCoord, gss.View.ViewCoordToWorldPos(creatureCoord));
+            }
+        }
+        
         private void PlacePlayer()
         {
             // Place the player
