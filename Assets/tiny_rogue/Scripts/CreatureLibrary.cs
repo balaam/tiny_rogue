@@ -195,10 +195,9 @@ namespace game
                 entityManager.AddComponentData(entity, sequencePlayer);
             }
             
-            
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
-            LayerSorting l = new LayerSorting();
+            LayerSorting l = new LayerSorting { order = 2 };
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
             l.order = 1;

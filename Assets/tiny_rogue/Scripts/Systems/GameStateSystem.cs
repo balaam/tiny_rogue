@@ -291,7 +291,11 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
-                            _creatureLibrary.SpawnPlayer(EntityManager);
+                            var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
+                            Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
+                            {
+                                parent.Value = playerEntity;
+                            });
 
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
