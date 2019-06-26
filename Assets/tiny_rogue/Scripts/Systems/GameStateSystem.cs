@@ -112,7 +112,7 @@ namespace game
             }
             foreach (var doorCoord in _dungeon.GetVerticalDoors())
             {
-                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
             }
 
             // Hard code a couple of spear traps, so the player can die.
@@ -169,7 +169,7 @@ namespace game
             // Set all door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
-            Entities.WithAll<Tile, Door>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Door>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
                 ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
@@ -177,7 +177,7 @@ namespace game
             // Set all closed door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // horizontal
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // vertical
-            Entities.WithAll<Tile, Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
                 ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });

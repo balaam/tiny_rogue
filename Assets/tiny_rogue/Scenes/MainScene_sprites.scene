@@ -1614,11 +1614,7 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 17378348762221180850
-            }, {
-                "StableTypeHash": 8144720687316769559
             }]
-        }, {
-            "$type": "Unity.Entities.Disabled, Unity.Entities"
         }]
     }, {
         "Components": [{
@@ -4295,11 +4291,7 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 17378348762221180850
-            }, {
-                "StableTypeHash": 8144720687316769559
             }]
-        }, {
-            "$type": "Unity.Entities.Disabled, Unity.Entities"
         }]
     }, {
         "Components": [{
@@ -4714,11 +4706,7 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 17378348762221180850
-            }, {
-                "StableTypeHash": 8144720687316769559
             }]
-        }, {
-            "$type": "Unity.Entities.Disabled, Unity.Entities"
         }]
     }, {
         "Components": [{
