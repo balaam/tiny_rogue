@@ -58,7 +58,7 @@ public class PlayerAnimationSystem : ComponentSystem
     /// <summary>
     /// Start an animation for a given action.
     /// </summary>
-    /// <param name="e">Entity to animate. Sprite2DSequencePlayer, Animated, and optionally Mobile components.</param>
+    /// <param name="e">Entity to animate. Looks for (Sprite2DSequencePlayer AND Animated) and/or Mobile component(s).</param>
     /// <param name="action">Action to map to animation. Avoid sending None.</param>
     /// <param name="moved">Whether or not the character can move.</param>
     public void StartAnimation(Entity e, Action action, bool moved = false)
@@ -66,33 +66,33 @@ public class PlayerAnimationSystem : ComponentSystem
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
-            Animated animated = EntityManager.GetComponentData<Animated>(e);
-            Sprite2DSequencePlayer sequencePlayer = EntityManager.GetComponentData<Sprite2DSequencePlayer>(e);
-                
+            var direction = Direction.Right;
+            
             // Map directional move to move and direction
             if (action == Action.MoveLeft)
             {
-                animated.Direction = Direction.Left;
-                animated.Action = Action.Move;
+                direction = Direction.Left;
+                action = Action.Move;
             }
             else if (action == Action.MoveRight)
             {
-                animated.Direction = Direction.Right;
-                animated.Action = Action.Move;
+                direction = Direction.Right;
+                action = Action.Move;
             }
             else if (action == Action.MoveUp)
             {
-                animated.Direction = Direction.Right;
-                animated.Action = Action.Move;
+                direction = Direction.Right;
+                action = Action.Move;
             }
             else if (action == Action.MoveDown)
             {
-                animated.Direction = Direction.Left;
-                animated.Action = Action.Move;
+                direction = Direction.Left;
+                action = Action.Move;
             }
 
-            // Don't show walking animation if character is moving towards wall
-            if (animated.Action == Action.Move)
+            // Handle animated movement.
+            // Don't show walking animation if character is moving towards wall.
+            if (action == Action.Move)
             {
                 if (EntityManager.HasComponent<Mobile>(e))
                 {
@@ -103,7 +103,7 @@ public class PlayerAnimationSystem : ComponentSystem
                 if (!moved)
                 {
                     // Can't move, so cancel any move action
-                    animated.Action = Action.None;
+                    action = Action.None;
                 }
                 else
                 {
@@ -114,25 +114,38 @@ public class PlayerAnimationSystem : ComponentSystem
                     EntityManager.SetComponentData(e, mobile);
                 }
             }
-            
-            Debug.Log($"Setting Action as {(int)animated.Action}");
 
-            if (animated.Action != Action.None)
+            // Handle animated sprites.
+            if (EntityManager.HasComponent<Animated>(e))
             {
-                animated.AnimationTrigger = true;
-                animated.AnimationTime = 0.5f;
-                sequencePlayer.speed = animated.Action == Action.Move ? 0.75f : 0.5f;
-                SetAnimation(ref animated, ref sequencePlayer);
+                if (!EntityManager.HasComponent<Sprite2DSequencePlayer>(e))
+                {
+                    throw new Exception("Cannot animate without a Sprite2DSequencePlayer!");
+                }
+                
+                var animated = EntityManager.GetComponentData<Animated>(e);
+                var sequencePlayer = EntityManager.GetComponentData<Sprite2DSequencePlayer>(e);
+
+                animated.Direction = direction;
+                
+                // Set animation
+                if (action != Action.None)
+                {
+                    animated.AnimationTrigger = true;
+                    animated.AnimationTime = 0.5f;
+                    sequencePlayer.speed = animated.Action == Action.Move ? 0.75f : 0.5f;
+                    SetAnimation(ref animated, ref sequencePlayer);
+                }
+                else
+                {
+                    sequencePlayer.speed = 0.5f;
+                    SetAnimation(ref animated, ref sequencePlayer);
+                }
+                
+                // Update components
+                EntityManager.SetComponentData(e, animated);
+                EntityManager.SetComponentData(e, sequencePlayer);
             }
-            else
-            {
-                sequencePlayer.speed = 0.5f;
-                SetAnimation(ref animated, ref sequencePlayer);
-            }
-            
-            // Update components
-            EntityManager.SetComponentData(e, animated);
-            EntityManager.SetComponentData(e, sequencePlayer);
         }
     }
 
