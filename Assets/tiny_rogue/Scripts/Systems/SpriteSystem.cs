@@ -72,10 +72,10 @@ namespace game
                     result = (char) SpriteEnum.ClosedVerticalDoor;
                     break;
                 case '\\':
-                    result = (char) SpriteEnum.OpenVerticalDoor;
+                    result = (char) SpriteEnum.OpenHorizontalDoor;
                     break;
                 case '_':
-                    result = (char) SpriteEnum.ClosedVerticalDoor;
+                    result = (char) SpriteEnum.ClosedHorizontalDoor;
                     break;
                 case '#':
                     result = (char) SpriteEnum.Wall;
