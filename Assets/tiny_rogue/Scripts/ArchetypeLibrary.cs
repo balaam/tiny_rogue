@@ -201,7 +201,7 @@ namespace game
                 s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
-            l.order = 1;
+            l.layer = 1;
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
@@ -235,7 +235,7 @@ namespace game
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(horizontal ? '\\' : '/')];
             // Have to draw above character in graphical
-            l.order = (short)(GlobalGraphicsSettings.ascii ? 1 : 3);
+            l.layer = (short)(GlobalGraphicsSettings.ascii ? 1 : 3);
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
@@ -268,7 +268,7 @@ namespace game
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
 
-            l.order = 1;
+            l.layer = 1;
 
             p.appearance.color = s.color;
             p.appearance.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];   //defaults
@@ -304,13 +304,13 @@ namespace game
             
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii 
-                ? new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f) 
+                ? new Unity.Tiny.Core2D.Color(0.964f, 0.749f, 0.192f) 
                 : Color.Default;
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
-            l.order = 1;
+            l.layer = 1;
             
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);

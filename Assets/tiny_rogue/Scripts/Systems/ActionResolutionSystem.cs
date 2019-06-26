@@ -351,7 +351,14 @@ namespace game
                 Creature attacker = EntityManager.GetComponentData<Creature>(pa.Attacker);
                 HealthPoints hp = EntityManager.GetComponentData<HealthPoints>(pa.Defender);
                 Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
+                HealthPoints attackerHp = EntityManager.GetComponentData<HealthPoints>(pa.Attacker);
+
+                if (attackerHp.now <= 0) // don't let the dead attack, is this hack? Maybe.
+                    continue;
+
                 int dmg = RandomRogue.Next(att.range.x, att.range.y);
+                bool firstHit = hp.now == hp.max;
+
                 hp.now -= dmg;
 
                 var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
@@ -359,8 +366,18 @@ namespace game
 
                 string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                 string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
+
+                bool playerAttack = attackerName == "Player";
+                bool killHit = hp.now <= 0;
+
                 string logStr;
-                if (attackerName == "Player")
+
+                if (playerAttack && killHit && firstHit)
+                {
+                    logStr = string.Concat("You destroy the ", defenderName);
+                    logStr = string.Concat(logStr, ".");
+                }
+                else if (playerAttack)
                 {
                     logStr = string.Concat(string.Concat(string.Concat(string.Concat(
                                     "You hit the ",
@@ -368,11 +385,15 @@ namespace game
                                     " for "),
                                     dmg.ToString()),
                                     " damage!");
+
+                    if(killHit)
+                        logStr = string.Concat(logStr, " Killing it.");
                 }
                 else
                 {
                 	if (defenderName == "Player")
                         defenderName = "you";
+
                     logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
                                     attackerName,
                                     " hits "),
@@ -382,6 +403,7 @@ namespace game
                                     " damage!");
                 }
                 log.AddLog(logStr);
+
                 EntityManager.SetComponentData(pa.Defender, hp);
             }
 
