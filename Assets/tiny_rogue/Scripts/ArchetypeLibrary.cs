@@ -16,7 +16,6 @@ namespace game
         public EntityArchetype Crown { get; private set; }
         public EntityArchetype  Stairway { get; private set; }
         public EntityArchetype Collectible { get; private set; }
-        public EntityArchetype Creature { get; private set; }
         public EntityArchetype  Gold { get; private set; }
 
         public void Init(EntityManager em)
@@ -72,21 +71,7 @@ namespace game
                 typeof(Collectible)
             });
 
-            
-            Creature = em.CreateArchetype(new ComponentType[]
-            {
-                typeof(Parent),
-                typeof(Translation),
-                typeof(WorldCoord), // should be view coord?
-                typeof(Sprite2DRenderer),
-                typeof(LayerSorting),  
-                typeof(HealthPoints),
-                typeof(BlockMovement),
-                typeof(tag_Creature),
-                typeof(tag_Hostile)
-            });
-
-            Gold = em.CreateArchetype(new ComponentType[] //trying
+           Gold = em.CreateArchetype(new ComponentType[] //trying
             {                                             //to
                 typeof(Parent),                           //avoid
                 typeof(Translation),                      //any
@@ -306,41 +291,5 @@ namespace game
             return entity;
         }
 
-        public Entity CreateCombatDummy(EntityManager entityManager, int2 xy, float3 pos)
-        {
-            Entity entity = entityManager.CreateEntity(Creature);
-            
-            Sprite2DRenderer s = new Sprite2DRenderer();
-            Translation t = new Translation();
-            WorldCoord c = new WorldCoord();
-            LayerSorting l = new LayerSorting();
-            HealthPoints hp = new HealthPoints();
-            t.Value = pos;
-
-            c.x = xy.x;
-            c.y = xy.y;
-            
-            // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
-
-            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('d')];
-            l.order = 2;
-            hp.max = hp.now = 1000000;
-            
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
-            entityManager.SetComponentData(entity, hp);
-            
-            return entity;
-        }
     }
 }
