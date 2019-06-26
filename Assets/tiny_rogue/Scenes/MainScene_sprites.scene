@@ -363,9 +363,17 @@
             "speed": 0.5,
             "loop": 0
         }, {
+            "$type": "game.Animated, tiny_rogue",
+            "Direction": 0,
+            "Action": 0
+        }, {
             "$type": "game.HealthPoints, tiny_rogue",
             "now": 10,
             "max": 10
+        }, {
+            "$type": "game.Mobile, tiny_rogue",
+            "Initial": {},
+            "Destination": {}
         }, {
             "$type": "game.WorldCoord, tiny_rogue"
         }, {
@@ -440,6 +448,10 @@
                 "StableTypeHash": 396116209966398068
             }, {
                 "StableTypeHash": 4301058344883206118
+            }, {
+                "StableTypeHash": 7211316427830589168
+            }, {
+                "StableTypeHash": 10856357832024813640
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"

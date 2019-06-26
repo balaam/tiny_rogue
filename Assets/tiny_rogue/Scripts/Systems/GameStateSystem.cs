@@ -110,11 +110,17 @@ namespace game
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
             {
-                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                }
             }
             foreach (var doorCoord in _dungeon.GetVerticalDoors())
             {
-                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                }
             }
 
             // Hard code a couple of spear traps, so the player can die.
@@ -147,6 +153,18 @@ namespace game
             });
         }
 
+        private static float GetAlphaForTile(Tile tile)
+        {
+            float alpha = 0;
+            
+            if (tile.IsSeen)
+                alpha = TinyRogueConstants.DefaultColor.a;
+            else if (tile.HasBeenRevealed)
+                alpha = TinyRogueConstants.DefaultColor.a / 2;
+
+            return alpha;
+        }
+
         private void UpdateView(EntityCommandBuffer ecb)
         {
             var sprite = Sprite2DRenderer.Default;
@@ -156,15 +174,17 @@ namespace game
 
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
-            Entities.WithAll<Tile, Floor>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
             {
+                sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
 
             // Default all block tiles to a wall
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
-            Entities.WithAll<Tile, Wall>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
             {
+                sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
 
@@ -173,7 +193,6 @@ namespace game
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
             Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
-                Debug.Log(door.Horizontal ? "Horizontal" : "Vertical");
                 ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
 
@@ -184,9 +203,27 @@ namespace game
             {
                 ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
+            
+            Entities.WithNone<Player,Tile>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord ) =>
+                {
+                    Sprite2DRenderer spriteRenderer = renderer;
+                    
+                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                    int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                    Entity tileEntity = _view.ViewTiles[tileIndex];
+                    Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                    if (tile.IsSeen)
+                        spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
+                    else
+                        spriteRenderer.color.a = 0f;
+                    
+                    ecb.SetComponent(e, spriteRenderer);
+                });
         }
 
-       void GenerateGold()
+        void GenerateGold()
        {
             // Saving the num in a variable so it can be used for
             // the replay system, if need be
