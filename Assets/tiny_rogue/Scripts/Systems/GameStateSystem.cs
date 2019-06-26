@@ -30,6 +30,7 @@ namespace game
             NextLevel,
             DebugLevelSelect,
             HiScores,
+            Inventory,
         }
 
         eGameState _state = eGameState.Startup;
@@ -107,7 +108,7 @@ namespace game
         {
             CleanUpGameWorld(PostUpdateCommands);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
 
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
@@ -145,9 +146,20 @@ namespace game
 
             GenerateGold();
 
-            var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+            GenerateCollectibles();
             CurrentLevel++;
+
+
+        }
+
+        void GenerateCollectibles()
+        {
+            for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
+             {
+                 //TODO: figure out how it can know to avoid tiles that already have an entity
+                 var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
+                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+             }
         }
 
         void ClearView(EntityCommandBuffer ecb)
@@ -163,8 +175,7 @@ namespace game
 
         static Unity.Tiny.Core2D.Color GetColorForTile(Tile tile)
         {
-            Unity.Tiny.Core2D.Color color = GlobalGraphicsSettings.ascii 
-                ? TinyRogueConstants.DefaultColor : Color.Default;
+            Unity.Tiny.Core2D.Color color = TinyRogueConstants.DefaultColor;
             
             if (!tile.IsSeen && tile.HasBeenRevealed)
             {
@@ -182,9 +193,8 @@ namespace game
         
         private static Unity.Tiny.Core2D.Color GetColorForObject(Tile tile)
         {
-            Unity.Tiny.Core2D.Color color = GlobalGraphicsSettings.ascii 
-                ? TinyRogueConstants.DefaultColor : Color.Default;
-            
+            var color = TinyRogueConstants.DefaultColor;
+
             if (!tile.IsSeen)
             {
                 color.a = 0f;
@@ -195,44 +205,46 @@ namespace game
 
         private void UpdateView(EntityCommandBuffer ecb)
         {
-            var sprite = Sprite2DRenderer.Default;
-            sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
-            var sprite2 = Sprite2DRenderer.Default;
-            sprite2.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
-            var sprite3 = Sprite2DRenderer.Default;
-            sprite3.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
-            var sprite4 = Sprite2DRenderer.Default;
-            sprite4.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var tileSprite = Sprite2DRenderer.Default;
 
             // Set all floor tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
+            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
             Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
             {
-                sprite.color = GetColorForTile(tile);
-                ecb.SetComponent(e, sprite);
+                tileSprite.color = GetColorForTile(tile);
+                ecb.SetComponent(e, tileSprite);
             });
 
             // Default all block tiles to a wall
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
+            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
             Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
             {
-                sprite.color = GetColorForTile(tile);
-                ecb.SetComponent(e, sprite);
+                tileSprite.color = GetColorForTile(tile);
+                ecb.SetComponent(e, tileSprite);
             });
+            
+            
+            var horizontalDoorOpen = Sprite2DRenderer.Default;
+            horizontalDoorOpen.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; 
 
-            // Set all door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
-            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
-            // Set all closed door tiles
-            sprite3.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // closed horizontal
-            sprite4.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // closed vertical
+            var verticalDoorOpen = Sprite2DRenderer.Default;
+            verticalDoorOpen.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
+            
+            var horizontalDoorClosed = Sprite2DRenderer.Default;
+            horizontalDoorClosed.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')];
+            
+            var verticalDoorClosed = Sprite2DRenderer.Default;
+            verticalDoorClosed.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
+            
+            // Set all door tiles// horizontal // vertical
+            // Set all closed door tiles // closed horizontal // closed vertical
             Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Door door, ref WorldCoord coord) =>
             {
                 Sprite2DRenderer spriteRenderer;
                 if (door.Opened)
-                    spriteRenderer = door.Horizontal ? sprite : sprite2;
+                    spriteRenderer = door.Horizontal ? horizontalDoorOpen : verticalDoorOpen;
                 else
-                    spriteRenderer = door.Horizontal ? sprite3 : sprite4;
+                    spriteRenderer = door.Horizontal ? horizontalDoorClosed : verticalDoorClosed;
                 
                 // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                 int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
@@ -264,10 +276,7 @@ namespace game
        {
             // Saving the num in a variable so it can be used for
             // the replay system, if need be
-            uint seedNum = (uint)UnityEngine.Time.time;
-
-            Random random = new Random(seedNum);
-            int goldPiles = (int)math.floor(random.NextFloat() * 10);
+            int goldPiles = RandomRogue.Next(10);
             for (int i = 0; i < goldPiles; i++)
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
@@ -278,7 +287,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
 
             for (int i = 0; i < 20; i++)
             {
@@ -341,6 +350,20 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.I))
+                    {
+                        MoveToInventoryScreen(PostUpdateCommands);
+                    }
+
+                } break;
+                case eGameState.Inventory:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.Escape))
+                    {
+                        MoveBackToGame(PostUpdateCommands);
+                    }
 
                 } break;
                 case eGameState.ReadQueuedLog:
@@ -370,14 +393,13 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
-                    {
-                        // Generate a new seed
-                        CurrentSeed = MakeNewRandom();
-                        GenerateLevel();
-                        log.AddLog("You descend another floor.");
-                        _state = eGameState.InGame;
-                    }
+
+                    // Generate a new seed
+                    CurrentSeed = MakeNewRandom();
+                    GenerateLevel();
+                    log.AddLog("You descend another floor.");
+                    log.ShowNextLog(PostUpdateCommands); 
+                    _state = eGameState.InGame;
                 } break;
                 case eGameState.DebugLevelSelect:
                 {
@@ -406,6 +428,7 @@ namespace game
                 } break;
             }
         }
+
 
         private void CleanUpGameWorld(EntityCommandBuffer cb)
         {
@@ -462,7 +485,7 @@ namespace game
             if(!replay)
                 CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
-            LastDungeonNumber = RandomRogue.Next(2, 10);
+            LastDungeonNumber = RandomRogue.Next(5, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
@@ -478,6 +501,20 @@ namespace game
             log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
         }
+        
+        void MoveToInventoryScreen(EntityCommandBuffer cb)
+        {
+            
+            _state = eGameState.Inventory;
+        }
+
+        void MoveBackToGame(EntityCommandBuffer cb)
+        {
+            
+            _state = eGameState.InGame;
+        }
+
+
 
         public void MoveToGameOver(EntityCommandBuffer cb)
         {

@@ -108,7 +108,7 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            s.color = TinyRogueConstants.DefaultColor;
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
 
@@ -136,7 +136,7 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            s.color = TinyRogueConstants.DefaultColor;
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
@@ -246,7 +246,7 @@ namespace game
             return entity;
         }
         
-        public Entity CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)
+        public void CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)
         {
             Entity entity = entityManager.CreateEntity(Collectible);
 
@@ -255,6 +255,7 @@ namespace game
             WorldCoord c = new WorldCoord();
             LayerSorting l = new LayerSorting();
             CanBePickedUp p = new CanBePickedUp();
+            HealthBonus hb = new HealthBonus();
             t.Value = pos;
 
             c.x = xy.x;
@@ -267,14 +268,18 @@ namespace game
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
 
-            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
             l.order = 1;
 
-            p.appearance.sprite = s.sprite;
             p.appearance.color = s.color;
+            p.appearance.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];   //defaults
+          
+            p.name = new NativeString64("unknown pickup");
+            p.description = new NativeString64("Check collectible gen");
+
+            var collectibleGenSystem = World.Active.GetOrCreateSystem<CollectibleGenSystem>();
             
-            p.name = new NativeString64("sword");
-            p.description = new NativeString64("Sword of Damocles");
+            collectibleGenSystem.GetRandomCollectible(entityManager, entity, p, hb);
+            s.sprite = p.appearance.sprite;
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
@@ -282,7 +287,6 @@ namespace game
             entityManager.SetComponentData(entity, l);
             entityManager.SetComponentData(entity, p);
 
-            return entity;
         }
 
         public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
