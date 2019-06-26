@@ -708,7 +708,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -1490,7 +1494,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -1625,7 +1633,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -2390,7 +2402,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -2525,7 +2541,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -2854,7 +2874,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -2989,7 +3013,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -3302,7 +3330,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -3537,7 +3569,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -3672,7 +3708,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -3807,7 +3847,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -4071,7 +4115,11 @@
                 "StableTypeHash": 147127668789581756
             }, {
                 "StableTypeHash": 11410773464688625477
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -4573,7 +4621,11 @@
                 "StableTypeHash": 17649336122499667438
             }, {
                 "StableTypeHash": 16791256614846730296
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -4777,7 +4829,11 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 147127668789581756
+            }, {
+                "StableTypeHash": 17634385923729376840
             }]
+        }, {
+            "$type": "game.InventoryUI, tiny_rogue"
         }]
     }, {
         "Components": [{
@@ -5056,6 +5112,8 @@
                 "StableTypeHash": 874803706151837934
             }, {
                 "StableTypeHash": 17378348762221180850
+            }, {
+                "StableTypeHash": 129305022877887216
             }]
         }]
     }, {
