@@ -60,7 +60,7 @@ namespace game
             }
         }
         
-        public int2 stepAlong(SavedPath path, int2 currentLocation)
+        public static int2 stepAlong(SavedPath path, int2 currentLocation)
         {
             if (path.currentIdx >= path.pathSteps.Length) return currentLocation;
             var result = path.pathSteps[path.currentIdx];

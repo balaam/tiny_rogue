@@ -19,7 +19,7 @@ public class CreatureMovementSystem : ComponentSystem
             });
 
             // Move all creatures towards Player
-            Entities.WithNone<PatrollingCreature>().WithAll<MeleeAttackMovement>()
+            Entities.WithNone<PatrollingState>().WithAll<MeleeAttackMovement>()
                 .ForEach((Entity creature, ref WorldCoord coord) =>
                 {
                     int2 creaturePos = new int2(coord.x, coord.y);
@@ -37,6 +37,26 @@ public class CreatureMovementSystem : ComponentSystem
 //                    EntityManager.SetComponentData(creature, nextStep);
                     }
                 });
+            
+            Entities.WithAll<PatrollingState>().ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol) =>
+            {
+                int2 monsterPos = new int2(coord.x, coord.y);
+                if (patrol.currentPath.currentIdx == -1 ||
+                    patrol.currentPath.currentIdx == patrol.currentPath.pathSteps.Length)
+                {
+                    // Get new patrol path if one does not exist or has been completed
+                    DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                    int2 destination = ds.GetRandomPositionInRandomRoom();
+                    var newPath = AStarPathfinding.getPath(monsterPos, destination);
+                    // TODO set in new path, next line probably will not work
+                    patrol.currentPath = newPath;
+                }
+                
+                // Follow defined path now that we have ensured that one exists
+                int2 nextPos = AStarPathfinding.stepAlong(patrol.currentPath, monsterPos);
+                // TODO May now need to update the Monster path...
+                // TODO move monster
+            });
         }
     }
 }
