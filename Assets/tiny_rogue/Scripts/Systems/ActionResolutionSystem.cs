@@ -27,6 +27,12 @@ namespace game
         public Entity Ent;
         public WorldCoord Wc;
     }
+
+    public struct PendingWait
+    {
+        public Entity Ent;
+        //public WorldCoord Wc;
+    }
     
     
     public struct PendingAttack
@@ -149,6 +155,7 @@ namespace game
             public NativeArray<byte> FlagsMap;
             public NativeArray<Entity> EntityMap;
             public NativeQueue<PendingMove> PendingMoves;
+            public NativeQueue<PendingWait> PendingWaits;
             public NativeQueue<PendingAttack> PendingAttacks;
             public NativeQueue<PendingDoorOpen> PendingOpens;
 
@@ -170,6 +177,10 @@ namespace game
                     EntityMap[moveToIdx] = EntityMap[moveFromIdx];
                     FlagsMap[moveFromIdx] = 0;
                     EntityMap[moveFromIdx] = Entity.Null;
+                }
+                if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
+                {
+                    PendingWaits.Enqueue(new PendingWait {Ent = e}); //Don't move
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
@@ -256,6 +267,7 @@ namespace game
             var fillJobHandle = fillJob.Schedule(_mapFillQuery, clearJobHandle);
             
             var pendingMoves = new NativeQueue<PendingMove>(Allocator.TempJob);
+            var pendingWaits = new NativeQueue<PendingWait>(Allocator.TempJob);
             var pendingAttacks = new NativeQueue<PendingAttack>(Allocator.TempJob);
             var pendingOpens = new NativeQueue<PendingDoorOpen>(Allocator.TempJob);
             var actionJob = new ConsumeActionsJob()
@@ -265,6 +277,7 @@ namespace game
                 FlagsMap = _flagMap,
                 EntityMap = _entityMap,
                 PendingMoves = pendingMoves,
+                PendingWaits = pendingWaits,
                 PendingAttacks = pendingAttacks,
                 PendingOpens = pendingOpens
             };
@@ -281,6 +294,12 @@ namespace game
 
                 var trans = _gss.View.ViewCoordToWorldPos(new int2(pm.Wc.x, pm.Wc.y));
                 EntityManager.SetComponentData<Translation>(pm.Ent, new Translation {Value = trans});
+            }
+
+            PendingWait pw;
+            while (pendingWaits.TryDequeue(out pw))
+            {
+                log.AddLog("You bumped into a wall. Ouch.");
             }
 
             PendingAttack pa;
