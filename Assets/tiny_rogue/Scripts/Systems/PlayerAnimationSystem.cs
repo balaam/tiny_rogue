@@ -58,17 +58,15 @@ public class PlayerAnimationSystem : ComponentSystem
     /// <summary>
     /// Start an animation for a given action.
     /// </summary>
-    /// <param name="e">Entity to animate. Must have Mobile, Sprite2DSequencePlayer, and Animated components.</param>
+    /// <param name="e">Entity to animate. Sprite2DSequencePlayer, Animated, and optionally Mobile components.</param>
     /// <param name="action">Action to map to animation. Avoid sending None.</param>
     /// <param name="moved">Whether or not the character can move.</param>
-    public void StartAnimation(Entity e, Action action, bool moved)
+    public void StartAnimation(Entity e, Action action, bool moved = false)
     {
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
-            // TODO: make mobile optional
             Animated animated = EntityManager.GetComponentData<Animated>(e);
-            Mobile mobile = EntityManager.GetComponentData<Mobile>(e);
             Sprite2DSequencePlayer sequencePlayer = EntityManager.GetComponentData<Sprite2DSequencePlayer>(e);
                 
             // Map directional move to move and direction
@@ -96,14 +94,24 @@ public class PlayerAnimationSystem : ComponentSystem
             // Don't show walking animation if character is moving towards wall
             if (animated.Action == Action.Move)
             {
+                if (EntityManager.HasComponent<Mobile>(e))
+                {
+                    moved = false;
+                    Debug.Log("This entity is not Mobile. It cannot move!");
+                }
+                
                 if (!moved)
                 {
+                    // Can't move, so cancel any move action
                     animated.Action = Action.None;
                 }
                 else
                 {
+                    // Start moving animation
+                    var mobile = EntityManager.GetComponentData<Mobile>(e);
                     mobile.Moving = true;
                     mobile.MoveTime = 0f;
+                    EntityManager.SetComponentData(e, mobile);
                 }
             }
             
@@ -124,7 +132,6 @@ public class PlayerAnimationSystem : ComponentSystem
             
             // Update components
             EntityManager.SetComponentData(e, animated);
-            EntityManager.SetComponentData(e, mobile);
             EntityManager.SetComponentData(e, sequencePlayer);
         }
     }
