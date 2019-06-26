@@ -129,7 +129,7 @@ namespace game
 
             GenerateGold();
 
-            var collectibleCoord = new int2(15,12);
+            var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
 
        }
