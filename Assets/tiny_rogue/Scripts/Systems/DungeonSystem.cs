@@ -56,13 +56,19 @@ namespace game
         private List<Room> _rooms = new List<Room>();
         private List<int2> _verticalDoors = new List<int2>();
         private List<int2> _horizontalDoors = new List<int2>();
+        
+        private List<int2> _collectiblesCoords = new List<int2>();
 
         private Entity _dungeonViewEntity;
         private View _view;
 
         private EntityCommandBuffer _ecb;
         private CreatureLibrary _creatureLibrary;
-        
+        ArchetypeLibrary _archetypeLibrary;
+
+        int numberOfCollectibles = 0;
+        public int NumberOfCollectibles => numberOfCollectibles;
+
         protected override void OnUpdate() {}
 
         public void ClearDungeon(EntityCommandBuffer cb, View view)
@@ -79,11 +85,12 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al)
         {
             _ecb = cb;
             _view = view;
             _creatureLibrary = cl;
+            _archetypeLibrary = al;
 
             ClearDungeon(cb, view);
             
@@ -98,6 +105,7 @@ namespace game
                 maxRoom = gen.MaxNumberOfRooms;
                 maxRoomSize = gen.MaxRoomSize;
                 minRoomSize = gen.MinRoomSize;
+                numberOfCollectibles = gen.NumberOfCollectibles;
             });
 
             for (int i = 0; i < maxRoom; i++)
@@ -118,7 +126,7 @@ namespace game
             CreateRooms();
             CreateHallways();
 
-            // TODO: Add loot
+            // TODO: Add loot - this is added in GenerateCollectible in GameSystem
             PlaceCreatures();
 
             PlaceDungeon();
