@@ -25,10 +25,9 @@ namespace game
         public int2 attackRange;
         public char ascii;
         public Color asciiColor;
+        public int sightRadius;
     }
-    
-    
-    
+
     public class CreatureLibrary
     {
 
@@ -43,7 +42,8 @@ namespace game
                 health = 1, 
                 attackRange = new int2(1,1),
                 ascii = 'r', 
-                asciiColor = new Color(0.9f, 0.5f, 0.3f)
+                asciiColor = new Color(0.9f, 0.5f, 0.3f),
+                sightRadius = 10 // Rats have good eyesight
             },
             /* Kobold */
             new CreatureDescription
@@ -52,7 +52,8 @@ namespace game
                 health = 3,
                 attackRange = new int2(1,3),
                 ascii = 'k',
-                asciiColor = new Color(0.5f, 0.9f, 0.3f)
+                asciiColor = new Color(0.5f, 0.9f, 0.3f),
+                sightRadius = 3 // Kobolds aren't very good at spotting enemies
             },
             
             // Unspawnables
@@ -80,7 +81,10 @@ namespace game
                 typeof(BlockMovement),
                 typeof(Creature),
                 typeof(AttackStat),
-                typeof(tag_Attackable)
+                typeof(tag_Attackable),
+                typeof(PatrollingState),
+                typeof(MeleeAttackMovement),
+                typeof(Sight)
             });
         }
 
@@ -94,8 +98,10 @@ namespace game
             Creature c = new Creature {id = (int)cId};
             HealthPoints hp = new HealthPoints {max = descr.health, now = descr.health};
             AttackStat att = new AttackStat { range = descr.attackRange };
-            
-            
+            Sight sight = new Sight {SightRadius = descr.sightRadius};
+            PatrollingState patrol = new PatrollingState();
+            MeleeAttackMovement movement = new MeleeAttackMovement();
+
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
@@ -106,6 +112,9 @@ namespace game
             entityManager.SetComponentData(entity, l);
             entityManager.SetComponentData(entity, hp);
             entityManager.SetComponentData(entity, att);
+//            entityManager.SetComponentData(entity, sight);
+            entityManager.SetComponentData(entity, movement);
+//            entityManager.SetComponentData(entity, patrol);
             return entity;
         }
         
@@ -120,8 +129,10 @@ namespace game
             Creature c = new Creature {id = (int)cId};
             HealthPoints hp = new HealthPoints {max = descr.health, now = descr.health};
             AttackStat att = new AttackStat { range = descr.attackRange };
-            
-            
+            Sight sight = new Sight {SightRadius = descr.sightRadius};
+            PatrollingState patrol = new PatrollingState();
+            MeleeAttackMovement movement = new MeleeAttackMovement();
+
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
@@ -132,6 +143,9 @@ namespace game
             cb.SetComponent(entity, l);
             cb.SetComponent(entity, hp);
             cb.SetComponent(entity, att);
+//            cb.SetComponent(entity, sight);
+            cb.SetComponent(entity, movement);
+//            cb.SetComponent(entity, patrol);
             return entity;
         }
     }

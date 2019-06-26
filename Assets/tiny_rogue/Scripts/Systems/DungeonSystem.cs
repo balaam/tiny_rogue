@@ -142,6 +142,7 @@ namespace game
 
                 _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
                 _ecb.SetComponent(cr, new Translation {Value = viewCoord});
+                _ecb.SetComponent(cr, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
             }
         }
 

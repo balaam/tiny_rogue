@@ -37,18 +37,23 @@ namespace game
             _turnCount = 0;
         }
 
-        public void AddActionRequest(Action a, Entity e, WorldCoord loc)
+        public void AddDelayedAction(Action a, Entity e, WorldCoord loc)
         {
             if (!_actionQueue.IsCreated)
             {
                 _actionQueue = new NativeQueue<ActionRequest>(Allocator.TempJob);
             }
-            NeedToTickTurn = true;
             ActionRequest ar;
             ar.Act = a;
             ar.Ent = e;
             ar.Loc = new uint2((uint)loc.x, (uint)loc.y);
             _actionQueue.Enqueue(ar);
+        }
+
+        public void AddActionRequest(Action a, Entity e, WorldCoord loc)
+        {
+            AddDelayedAction(a, e, loc);
+            NeedToTickTurn = true;
         }
 
         public bool ConsumeActionRequest(out ActionRequest ar)

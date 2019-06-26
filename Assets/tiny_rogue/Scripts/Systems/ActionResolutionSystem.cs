@@ -299,7 +299,10 @@ namespace game
             PendingWait pw;
             while (pendingWaits.TryDequeue(out pw))
             {
-                log.AddLog("You bumped into a wall. Ouch.");
+                if (EntityManager.HasComponent<Player>(pw.Ent))
+                {
+                    log.AddLog("You bumped into a wall. Ouch.");
+                }
             }
 
             PendingAttack pa;
