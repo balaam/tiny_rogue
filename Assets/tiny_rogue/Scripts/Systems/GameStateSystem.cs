@@ -255,7 +255,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
-                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+                        log.AddLog("You descend another floor.");
                         _state = eGameState.InGame;
                     }
                 } break;
@@ -344,8 +344,7 @@ namespace game
             
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You are in a vast cavern.    Press Space for next log");
-            log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
+            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
         }
 
