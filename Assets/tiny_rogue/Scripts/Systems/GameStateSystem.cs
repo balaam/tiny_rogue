@@ -175,8 +175,6 @@ namespace game
                             Entity tileEntity = _view.ViewTiles[tileIndex];
                             Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
 
-                            Console.WriteLine("Tile seen: " + tile.IsSeen);
-
                             if (tile.IsSeen)
                                 spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
                             else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
