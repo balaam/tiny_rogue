@@ -170,16 +170,15 @@ namespace game
 
        void GenerateGold()
        {
-            Random random = new Random((uint)UnityEngine.Time.time);//seed
+            // Saving the num in a variable so it can be used for
+            // the replay system, if need be
+            uint seedNum = (uint)UnityEngine.Time.time; 
+
+            Random random = new Random(seedNum);
             int goldPiles = (int)math.floor(random.NextFloat() * 10);
-            for (int i = 0; i < 5; i++) //hard code number of piles for now
+            for (int i = 0; i < goldPiles; i++)
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
-
-                //int randX = (int)math.floor(random.NextFloat()  * (View.Width - 2)); // -2 to avoid borders
-                //int randY = (int)math.floor(random.NextFloat()  * (View.Height - 2));
-                //var goldCoord = new int2(randX+3, randY+3); // +3 to avoid borders
-
                 var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
                 _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
             }
