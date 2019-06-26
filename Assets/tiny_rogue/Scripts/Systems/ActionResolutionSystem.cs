@@ -318,25 +318,28 @@ namespace game
 
                 string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                 string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
-
-                string logStr = "";
+                string logStr;
                 if(attackerName == "Player")
                 {
-                    logStr = string.Format("You hit the {0} for {1} damage!",
-                        defenderName,
-                        dmg);
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(
+                                    "You hit the ",
+                                    defenderName),
+                                    " for "),
+                                    dmg.ToString()),
+                                    " damage!");
                 }
-                else 
+                else
                 {
-                    if(defenderName == "Player")
+                	if(defenderName == "Player")
                         defenderName = "you";
-
-                    logStr = string.Format("{0} hits {1} for {2} damage!",
-                        attackerName,
-                        defenderName,
-                        dmg);
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
+                                    attackerName, 
+                                    " hits "),
+                                    defenderName),
+                                    " for "),
+                                    dmg.ToString()),
+                                    " damage!");
                 }
-
                 log.AddLog(logStr);
                 EntityManager.SetComponentData(pa.Defender, hp);
             }
