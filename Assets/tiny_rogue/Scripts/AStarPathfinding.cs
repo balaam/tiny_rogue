@@ -11,7 +11,7 @@ namespace game
     // TODO currently this roguelike is 4-directional only, this algorithm will need minor rewrites if we switch to 8-directional
     public class AStarPathfinding
     {
-        public class Path
+        private class Path
         {
             // Tile coordinates
             public int2 location;
@@ -41,12 +41,11 @@ namespace game
                 var length = 0;
                 while (step.Parent != null)
                 {
-                    step = step.Parent;
                     length++;
                     step = step.Parent;
                 }
 
-                var steps = new NativeArray<int2>(length, Allocator.Persistent); // TODO possibly add allocator tags
+                var steps = new NativeArray<int2>(length, Allocator.Persistent);
                 step = this;
                 for(var i = length - 1; i >= 0; i--)
                 {
@@ -54,28 +53,35 @@ namespace game
                     step = step.Parent;
                 }
                 result.pathSteps = steps;
-                result.currentIdx = length - 1;
+                
+                // We don't actually use the first step since it should be the current position
+                result.currentIdx = 1;
                 return result;
             }
         }
         
         public int2 stepAlong(SavedPath path, int2 currentLocation)
         {
-            if (path.currentIdx >= 0) return currentLocation;
+            if (path.currentIdx >= path.pathSteps.Length) return currentLocation;
             var result = path.pathSteps[path.currentIdx];
-            path.currentIdx--;
+            path.currentIdx++;
             return result;
         }
 
         // The main method you should use to identify where a given monster will step next
         public static int2 getNextStep(int2 start, int2 end)
         {
-            return getPath(start, end).stepFrom(start).location;
+            return _getPath(start, end).stepFrom(start).location;
+        }
+
+        public static SavedPath getPath(int2 start, int2 end)
+        {
+            return _getPath(start, end).toSavedPath();
         }
 
         // The A* algorithm returning the entire Path from Start to End. Usually getNextStep will be better
         // though but this is exposed for caching purposes e.g. with patrolling monsters.
-        public static Path getPath(int2 start, int2 end)
+        private static Path _getPath(int2 start, int2 end)
         {
             Path current = null;
             var startLoc = new Path {location = start};
