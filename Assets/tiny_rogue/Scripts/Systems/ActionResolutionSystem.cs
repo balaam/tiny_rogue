@@ -178,7 +178,7 @@ namespace game
                     FlagsMap[moveFromIdx] = 0;
                     EntityMap[moveFromIdx] = Entity.Null;
                 }
-                if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0)
+                if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
                 {
                     PendingWaits.Enqueue(new PendingWait {Ent = e}); //Don't move
                 }
