@@ -65,7 +65,13 @@ namespace game
             
             _mapFillQuery = GetEntityQuery(query);
         }
-        
+
+        protected override void OnDestroy()
+        {
+            if (_entityMap.IsCreated) { _entityMap.Dispose();}
+            if (_flagMap.IsCreated) { _flagMap.Dispose();}
+            base.OnDestroy();
+        }
 
         private void ResizeMaps(int width, int height)
         {
