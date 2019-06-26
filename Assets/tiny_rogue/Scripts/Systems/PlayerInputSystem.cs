@@ -19,7 +19,7 @@ namespace game
         private bool Replaying = false;
         private int ReplayPosition = 0;
         
-        private static float ReplaySpeed = 0.25f;
+        private static float ReplaySpeed = 0.125f;
         private static float LastTime = 0.0f;
 
         private List<Action> ActionStream = new List<Action>();
