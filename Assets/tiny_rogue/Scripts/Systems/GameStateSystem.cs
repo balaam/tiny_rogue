@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
+using UnityEngine;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
@@ -37,6 +38,11 @@ namespace game
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
+
+        private uint MakeNewRandom()
+        {
+            return (uint)(Time.time * 100000.0);
+        }
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
@@ -259,7 +265,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         // Generate a new seed
-                        CurrentSeed = (uint) Guid.NewGuid().GetHashCode();
+                        CurrentSeed = MakeNewRandom();
                         GenerateLevel();
                         log.AddLog("You descend another floor.");
                         _state = eGameState.InGame;
@@ -339,7 +345,7 @@ namespace game
         {
             // Generate a new seed
             if(!replay)
-                CurrentSeed = (uint) Guid.NewGuid().GetHashCode();
+                CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();      
