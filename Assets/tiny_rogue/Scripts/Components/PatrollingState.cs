@@ -8,6 +8,6 @@ namespace game
     // This is fine but all creatures should activate once hit.
     public struct PatrollingState: IComponentData
     {
-        public SavedPath currentPath;
+//        public SavedPath currentPath;
     }
 }
