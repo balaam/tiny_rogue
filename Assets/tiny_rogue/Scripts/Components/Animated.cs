@@ -12,6 +12,7 @@ namespace game
     
     public struct Animated : IComponentData
     {
+        public int Id;
         public Direction Direction;
         public Action Action;
         public bool AnimationTrigger;

@@ -19,7 +19,6 @@ namespace game
         ClosedHorizontalDoor,
         Wall,
         Floor
-
     }
     /// <summary>
     /// Reads in the ASCII sprites and stores then in an array indexable by the chars decimal value. i.e. A is 65
