@@ -367,6 +367,8 @@
             "Direction": 0,
             "Action": 0
         }, {
+            "$type": "game.GoldCount, tiny_rogue"
+        }, {
             "$type": "game.HealthPoints, tiny_rogue",
             "now": 10,
             "max": 10
@@ -374,6 +376,9 @@
             "$type": "game.Mobile, tiny_rogue",
             "Initial": {},
             "Destination": {}
+        }, {
+            "$type": "game.Sight, tiny_rogue",
+            "SightRadius": 4
         }, {
             "$type": "game.WorldCoord, tiny_rogue"
         }, {
@@ -452,9 +457,15 @@
                 "StableTypeHash": 7211316427830589168
             }, {
                 "StableTypeHash": 10856357832024813640
+            }, {
+                "StableTypeHash": 10723762297176986422
+            }, {
+                "StableTypeHash": 6622059105241414304
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
+        }, {
+            "$type": "game.BlockMovement, tiny_rogue"
         }, {
             "$type": "game.Player, tiny_rogue"
         }, {

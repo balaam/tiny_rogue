@@ -171,6 +171,10 @@ namespace game
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
             var sprite2 = Sprite2DRenderer.Default;
             sprite2.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite3 = Sprite2DRenderer.Default;
+            sprite3.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite4 = Sprite2DRenderer.Default;
+            sprite4.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
 
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
@@ -191,25 +195,23 @@ namespace game
             // Set all door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
-            Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
-            {
-                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
-            });
-
             // Set all closed door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // horizontal
-            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // vertical
-            Entities.WithAll<Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
+            sprite3.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // closed horizontal
+            sprite4.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // closed vertical
+            Entities.WithAll<Door>().ForEach((Entity e, ref Door door) =>
             {
-                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
+                if (door.Opened)
+                    ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
+                else
+                    ecb.SetComponent(e, door.Horizontal ? sprite3 : sprite4);
             });
             
-            Entities.WithNone<Player,Tile>().ForEach(
+            Entities.WithNone<Player, Tile>().ForEach(
                 (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord ) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
                     
-                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
@@ -271,6 +273,12 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
+                            
+                            Entities.WithAll<Player>().ForEach((Entity Player) =>
+                            {
+                                PostUpdateCommands.AddComponent(Player,new Creature {id = (int)ECreatureId.Player});
+                                PostUpdateCommands.AddComponent(Player,new AttackStat {range = CreatureLibrary.CreatureDescriptions[(int)ECreatureId.Player].attackRange});
+                            });
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
                         }
