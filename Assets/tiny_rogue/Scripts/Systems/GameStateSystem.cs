@@ -150,7 +150,7 @@ namespace game
             CurrentLevel++;
         }
 
-        private void ClearView(EntityCommandBuffer ecb)
+        void ClearView(EntityCommandBuffer ecb)
         {
             Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
             {
@@ -161,16 +161,36 @@ namespace game
             });
         }
 
-        private static float GetAlphaForTile(Tile tile)
+        static Unity.Tiny.Core2D.Color GetColorForTile(Tile tile)
         {
-            float alpha = 0;
+            Unity.Tiny.Core2D.Color color = GlobalGraphicsSettings.ascii 
+                ? TinyRogueConstants.DefaultColor : Color.Default;
             
-            if (tile.IsSeen)
-                alpha = TinyRogueConstants.DefaultColor.a;
-            else if (tile.HasBeenRevealed)
-                alpha = TinyRogueConstants.DefaultColor.a / 2;
+            if (!tile.IsSeen && tile.HasBeenRevealed)
+            {
+                color.r /= 2f;
+                color.g /= 2f;
+                color.b /= 2f;
+            }
+            else if (!tile.IsSeen)
+            {
+                color.a = 0f;
+            }
 
-            return alpha;
+            return color;
+        }
+        
+        private static Unity.Tiny.Core2D.Color GetColorForObject(Tile tile)
+        {
+            Unity.Tiny.Core2D.Color color = GlobalGraphicsSettings.ascii 
+                ? TinyRogueConstants.DefaultColor : Color.Default;
+            
+            if (!tile.IsSeen)
+            {
+                color.a = 0f;
+            }
+
+            return color;
         }
 
         private void UpdateView(EntityCommandBuffer ecb)
@@ -188,7 +208,7 @@ namespace game
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
             Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
             {
-                sprite.color.a = GetAlphaForTile(tile);
+                sprite.color = GetColorForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
 
@@ -196,7 +216,7 @@ namespace game
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
             Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
             {
-                sprite.color.a = GetAlphaForTile(tile);
+                sprite.color = GetColorForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
 
@@ -218,7 +238,7 @@ namespace game
                 int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                 Entity tileEntity = _view.ViewTiles[tileIndex];
                 Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                spriteRenderer.color.a = GetAlphaForTile(tile);
+                spriteRenderer.color = GetColorForTile(tile);
                 
                 ecb.SetComponent(e, spriteRenderer);
             });
@@ -234,10 +254,7 @@ namespace game
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
 
-                    if (tile.IsSeen)
-                        spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
-                    else
-                        spriteRenderer.color.a = 0f;
+                    spriteRenderer.color = GetColorForObject(tile);
                     
                     ecb.SetComponent(e, spriteRenderer);
                 });
@@ -291,15 +308,13 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
-                            if (GlobalGraphicsSettings.ascii)
+                            var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
+                            // Re-parent the camera on graphical to follow the charcter.
+                            if (!GlobalGraphicsSettings.ascii)
                             {
-                                _creatureLibrary.SpawnPlayer(EntityManager);
-                            }
-                            else
-                            {
-                                Entities.WithAll<Player>().ForEach((Entity player) =>
+                                Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
                                 {
-                                    _creatureLibrary.FixupSpritePlayer(PostUpdateCommands, player);
+                                    parent.Value = playerEntity;
                                 });
                             }
 

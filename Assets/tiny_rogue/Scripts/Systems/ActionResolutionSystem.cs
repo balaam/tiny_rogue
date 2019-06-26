@@ -315,10 +315,31 @@ namespace game
                 Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
                 int dmg = RandomRogue.Next(att.range.x, att.range.y);
                 hp.now -= dmg;
-                string logStr = string.Format("{0} attacks the {1} for {2} damage!",
-                    CreatureLibrary.CreatureDescriptions[attacker.id].name,
-                    CreatureLibrary.CreatureDescriptions[defender.id].name,
-                    dmg);
+
+                string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
+                string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
+                string logStr;
+                if(attackerName == "Player")
+                {
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(
+                                    "You hit the ",
+                                    defenderName),
+                                    " for "),
+                                    dmg.ToString()),
+                                    " damage!");
+                }
+                else
+                {
+                	if(defenderName == "Player")
+                        defenderName = "you";
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
+                                    attackerName, 
+                                    " hits "),
+                                    defenderName),
+                                    " for "),
+                                    dmg.ToString()),
+                                    " damage!");
+                }
                 log.AddLog(logStr);
                 EntityManager.SetComponentData(pa.Defender, hp);
             }
