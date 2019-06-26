@@ -48,19 +48,23 @@ namespace game
             eEmpty,
             eWall,
             eFloor,
-            eDoor,
+            eDoor
         }
 
         // Storage for created rooms
         private List<Room> _rooms = new List<Room>();
-        
+
         // Storage for all cells
         private Type[] _cells = new Type[0];
+
+        private List<int2> _verticalDoors = new List<int2>();
+        private List<int2> _horizontalDoors = new List<int2>();
 
         private Entity _dungeonViewEntity;
         private View _view;
 
         private EntityCommandBuffer _ecb;
+        private CreatureLibrary _creatureLibrary;
         
         protected override void OnUpdate() {}
 
@@ -68,7 +72,7 @@ namespace game
         {
             _ecb = cb;
             _view = view;
-            
+
             _rooms.Clear();
             for (var i = 0; i < _cells.Length; i++)
                 _cells[i] = Type.eEmpty;
@@ -76,10 +80,11 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl)
         {
             _ecb = cb;
             _view = view;
+            _creatureLibrary = cl;
 
             ClearDungeon(cb, view);
             
@@ -114,11 +119,30 @@ namespace game
             CreateRooms();
             CreateHallways();
 
-            // Add loot
-            // Add monsters
+            // TODO: Add loot
+            PlaceCreatures();
 
             PlaceDungeon();
             PlacePlayer();
+        }
+
+        private void PlaceCreatures()
+        {
+            int minCreatureCount = 4;
+            int maxCreatureCount = 12;
+            
+            int creatureCount = RandomRogue.Next(minCreatureCount, maxCreatureCount);
+            int creatureTypeCount = CreatureLibrary.CreatureDescriptions.Length;
+            for (int i = 0; i < creatureCount; i++)
+            {
+                int creatureId = RandomRogue.Next(0, creatureTypeCount);
+                var worldCoord = GetRandomPositionInRandomRoom();
+                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
+                Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId);
+
+                _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
+                _ecb.SetComponent(cr, new Translation {Value = viewCoord});
+            }
         }
 
         private void PlacePlayer()
@@ -135,6 +159,7 @@ namespace game
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
 
+                // Only tint the player if ascii
                 if (GlobalGraphicsSettings.ascii)
                     renderer.color = TinyRogueConstants.DefaultColor;
             });
@@ -172,7 +197,7 @@ namespace game
                     {
                         int2 xy = new int2(i, j);
                         int tileIndex = View.XYToIndex(xy, _view.Width);
-                        
+
                         bool isWall = (i == room.startX
                             || i == room.startX + room.width - 1
                             || j == room.startY
@@ -222,7 +247,7 @@ namespace game
             var from = Math.Min(_from, _to);
             var to = Math.Max(_from, _to);
             int currentX = from;
-            
+
             while (currentX < to)
             {
                 var xy = new int2(currentX, y);
@@ -248,9 +273,9 @@ namespace game
                 var xy = new int2(x, currentY);
                 CreateHallwayTile(xy, HallDirection.Vertical);
                 CreateWallsIfEmpty(
-                    new int2(x + 1, currentY), 
-                    new int2(x - 1, currentY), 
-                    new int2(x + 1, currentY + 1), 
+                    new int2(x + 1, currentY),
+                    new int2(x - 1, currentY),
+                    new int2(x + 1, currentY + 1),
                     new int2(x - 1, currentY - 1),
                     new int2(x + 1, currentY - 1),
                     new int2(x - 1, currentY + 1));
@@ -287,7 +312,7 @@ namespace game
         private void ClearCurrentLevel()
         {
             // Clear each of our level tile tags
-            Entities.WithAll<Tile,BlockMovement>().ForEach((Entity e) =>_ecb.RemoveComponent<BlockMovement>(e));    
+            Entities.WithAll<Tile,BlockMovement>().ForEach((Entity e) =>_ecb.RemoveComponent<BlockMovement>(e));
             Entities.WithAll<Tile,Wall>().ForEach((Entity e) =>_ecb.RemoveComponent<Wall>(e));
             Entities.WithAll<Tile,Floor>().ForEach((Entity e) =>_ecb.RemoveComponent<Floor>(e));
         }
@@ -297,15 +322,25 @@ namespace game
             Room room = _rooms[RandomRogue.Next(0, _rooms.Count)];
             return room.GetRandomTile();
         }
-        
+
+        public List<int2> GetHorizontalDoors()
+        {
+            return _horizontalDoors;
+        }
+
+        public List<int2> GetVerticalDoors()
+        {
+            return _verticalDoors;
+        }
+
         private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
-            var curent = _cells[View.XYToIndex(xy, _view.Width)];
+            var current = _cells[View.XYToIndex(xy, _view.Width)];
 
             int2 neighbor1 = xy;
             int2 neighbor2 = xy;
 
-            if(direction == HallDirection.Horizontal)
+            if (direction == HallDirection.Horizontal)
             {
                 neighbor1.y += 1;
                 neighbor2.y -= 1;
@@ -319,10 +354,22 @@ namespace game
             var neighborEntityOne = _cells[View.XYToIndex(neighbor1, _view.Width)];
             var neighborEntityTwo = _cells[View.XYToIndex(neighbor2, _view.Width)];
 
-            if (curent == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
+            if (current == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
+            {
                 _cells[View.XYToIndex(xy, _view.Width)] = Type.eDoor;
+                if (direction == HallDirection.Horizontal)
+                {
+                    _verticalDoors.Add(xy);
+                }
+                else
+                {
+                    _horizontalDoors.Add(xy);
+                }
+            }
             else
+            {
                 _cells[View.XYToIndex(xy, _view.Width)] = Type.eFloor;
+            }
         }
     }
 }

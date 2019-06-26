@@ -4,6 +4,7 @@ using Unity.Tiny.Core2D;
 using Unity.Mathematics;
 using Unity.Tiny.Input;
 using UnityEngine;
+using Color = Unity.Tiny.Core2D.Color;
 using KeyCode = Unity.Tiny.Input.KeyCode;
 using Random = Unity.Mathematics.Random;
 #if !UNITY_WEBGL
@@ -35,6 +36,7 @@ namespace game
         View _view = new View();
         ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        CreatureLibrary _creatureLibrary = new CreatureLibrary();
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
@@ -50,6 +52,7 @@ namespace game
         protected override void OnCreate()
         {
             base.OnCreate();
+            _creatureLibrary.Init(EntityManager);
         }
 
         private bool TryGenerateViewport()
@@ -101,8 +104,24 @@ namespace game
         public void GenerateLevel()
         {
             CleanUpGameWorld(PostUpdateCommands);
-            
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
+
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+
+            // Apply doors
+            foreach (var doorCoord in _dungeon.GetHorizontalDoors())
+            {
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                }
+            }
+            foreach (var doorCoord in _dungeon.GetVerticalDoors())
+            {
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                }
+            }
 
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
@@ -115,14 +134,14 @@ namespace game
 
             var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
-           
+
             GenerateGold();
 
-            var collectibleCoord = new int2(15,12);
+            var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
-  
+
        }
-        
+
         private void ClearView(EntityCommandBuffer ecb)
         {
             Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
@@ -150,6 +169,8 @@ namespace game
         {
             var sprite = Sprite2DRenderer.Default;
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite2 = Sprite2DRenderer.Default;
+            sprite2.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
 
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
@@ -166,21 +187,21 @@ namespace game
                 sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
-            
+
             // Set all door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
-            Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Tile tile) =>
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
+            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
+            Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
-                sprite.color.a = GetAlphaForTile(tile);
-                ecb.SetComponent(e, sprite);
+                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
-            
+
             // Set all closed door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
-            Entities.WithAll<Sprite2DRenderer, Door, BlockMovement>().ForEach((Entity e, ref Tile tile) =>
+            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // horizontal
+            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // vertical
+            Entities.WithAll<Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
-                sprite.color.a = GetAlphaForTile(tile);
-                ecb.SetComponent(e, sprite);
+                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
             
             Entities.WithNone<Player,Tile>().ForEach(
@@ -192,7 +213,11 @@ namespace game
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                    spriteRenderer.color.a = GetAlphaForTile(tile);
+
+                    if (tile.IsSeen)
+                        spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
+                    else
+                        spriteRenderer.color.a = 0f;
                     
                     ecb.SetComponent(e, spriteRenderer);
                 });
@@ -200,16 +225,15 @@ namespace game
 
         void GenerateGold()
        {
-            Random random = new Random((uint)UnityEngine.Time.time);//seed
+            // Saving the num in a variable so it can be used for
+            // the replay system, if need be
+            uint seedNum = (uint)UnityEngine.Time.time;
+
+            Random random = new Random(seedNum);
             int goldPiles = (int)math.floor(random.NextFloat() * 10);
-            for (int i = 0; i < 5; i++) //hard code number of piles for now
+            for (int i = 0; i < goldPiles; i++)
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
-
-                //int randX = (int)math.floor(random.NextFloat()  * (View.Width - 2)); // -2 to avoid borders
-                //int randY = (int)math.floor(random.NextFloat()  * (View.Height - 2));
-                //var goldCoord = new int2(randX+3, randY+3); // +3 to avoid borders
-
                 var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
                 _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
             }
@@ -217,11 +241,18 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
 
-            int2 dummyCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCombatDummy(EntityManager, dummyCoord, _view.ViewCoordToWorldPos(dummyCoord));
-            
+            for (int i = 0; i < 20; i++)
+            {
+                var worldCoord = _dungeon.GetRandomPositionInRandomRoom();
+                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
+                Entity ratEntity = _creatureLibrary.SpawnCreature(EntityManager, ECreatureId.Rat);
+
+                EntityManager.SetComponentData(ratEntity, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
+                EntityManager.SetComponentData(ratEntity, new Translation {Value = viewCoord});
+            }
+
             // Create 'Exit'
             var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
             _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
@@ -232,7 +263,7 @@ namespace game
             // Update the view when we're not in startup
             if(_state != eGameState.Startup)
                 UpdateView(PostUpdateCommands);
-            
+
             switch (_state)
             {
                 case eGameState.Startup:
@@ -263,7 +294,7 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    
+
                 } break;
                 case eGameState.ReadQueuedLog:
                 {
@@ -333,10 +364,10 @@ namespace game
         {
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             log.Clear();
-            
+
             // Clear the screen
             ClearView(cb);
-            
+
             // Clear the dungeon
             _dungeon.ClearDungeon(cb, _view);
 
@@ -363,7 +394,7 @@ namespace game
                 gc.count = 0;
             });
             ClearView(cb);
-            
+
             _view.Blit(cb, new int2(0, 0), "TINY ROGUE");
             _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO BEGIN");
             _view.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
@@ -378,7 +409,7 @@ namespace game
                 CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
 
-            var log = EntityManager.World.GetExistingSystem<LogSystem>();      
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
 
@@ -386,7 +417,7 @@ namespace game
                 pis.StartReplaying();
             else
                 pis.StartRecording();
-            
+
             GenerateLevel();
             tms.ResetTurnCount();
             log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
@@ -394,14 +425,14 @@ namespace game
         }
 
         public void MoveToGameOver(EntityCommandBuffer cb)
-        { 
+        {
             CleanUpGameWorld(cb);
             _view.Blit(cb, new int2(0, 0), "GAME OVER!");
             _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
             _view.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
-        
+
         public void MoveToGameWin(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
@@ -436,7 +467,7 @@ namespace game
         {
             // Clear the screen.
             ClearView(cb);
-            
+
             _view.Blit(cb, new int2(0, 0), "TINY ROGUE (Debug Levels)");
             _view.Blit(cb, new int2(30, 10),"1) Combat Test");
             _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO EXIT");

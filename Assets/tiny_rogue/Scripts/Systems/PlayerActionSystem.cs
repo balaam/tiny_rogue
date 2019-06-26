@@ -98,8 +98,6 @@ namespace game
                         door.Opened = true;
                         commandBuffer.RemoveComponent(doorEntity, typeof(BlockMovement));
                         
-                        // TODO: This also set the door renderer to '\\'
-                        
                         tms.NeedToTickTurn = true;
                     }
                 }
