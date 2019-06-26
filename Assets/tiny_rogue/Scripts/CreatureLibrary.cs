@@ -135,7 +135,7 @@ namespace game
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
-            l.order = 1;
+            l.layer = 2;
             
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, c);
@@ -169,7 +169,7 @@ namespace game
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
-            l.order = 1;
+            l.layer = 2;
             
             cb.SetComponent(entity, s);
             cb.SetComponent(entity, c);
@@ -211,7 +211,7 @@ namespace game
             LayerSorting l = new LayerSorting { order = 2 };
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
-            l.order = 1;
+            l.layer = 2;
             
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, c);
@@ -253,7 +253,7 @@ namespace game
             LayerSorting l = new LayerSorting { order = 2 };
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
-            l.order = 1;
+            l.layer = 2;
             
             cb.SetComponent(player, s);
             cb.SetComponent(player, c);
