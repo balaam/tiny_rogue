@@ -331,12 +331,14 @@ namespace game
                 EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
             }
+            
+            // Cleanup
             pendingMoves.Dispose();
             pendingAttacks.Dispose();
+            pendingWaits.Dispose();
             pendingOpens.Dispose();
+            
             return actionJobHandle;
-
-
         }
     }
 }
