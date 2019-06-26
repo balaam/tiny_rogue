@@ -234,7 +234,7 @@ namespace game
             if (!GlobalGraphicsSettings.ascii)
             {
                 Sprite2DSequencePlayer sequencePlayer = new Sprite2DSequencePlayer();
-                cb.AddComponent(player, sequencePlayer);
+                cb.SetComponent(player, sequencePlayer);
             }
             
             // Only tint sprites if ascii
