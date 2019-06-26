@@ -32,9 +32,9 @@ public class CreatureMovementSystem : ComponentSystem
                     {
                         // TODO currently all monsters are ghosts that travel through walls, this is mostly because the
                         // pathfinding function cannot identify walls so the alternative is monsters mashing their face against the wall
-                        // TODO OH NO!! Need to get tileCoord out somehow
-                        // TODO should be animated too
-//                    EntityManager.SetComponentData(creature, nextStep);
+                        // TODO should be animated
+                        var moveCoord = new WorldCoord {x = nextStep.x, y = nextStep.y};
+                        EntityManager.SetComponentData(creature, moveCoord);
                     }
                 });
             
