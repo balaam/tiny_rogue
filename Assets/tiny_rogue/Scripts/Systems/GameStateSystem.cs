@@ -294,6 +294,9 @@ namespace game
             
             // Clear the screen
             ClearView(cb);
+            
+            // Clear the dungeon
+            _dungeon.ClearDungeon(cb, _view);
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
