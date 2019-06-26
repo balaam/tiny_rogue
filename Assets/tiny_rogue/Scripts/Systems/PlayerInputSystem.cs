@@ -119,12 +119,12 @@ namespace game
 
             if (gss.IsInGame)
             {
-                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Player player, ref WorldCoord coord) =>
+                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Animated animated, ref WorldCoord coord) =>
                 {
                     // In Graphical, you have to wait for the animation of the action to complete first.
                     if (!GlobalGraphicsSettings.ascii)
                     {
-                        var currentAction = EntityManager.GetComponentData<Player>(playerEntity).Action;
+                        var currentAction = animated.Action;
                         if (currentAction != Action.None) return;
                     }
 
@@ -139,7 +139,7 @@ namespace game
                     if (!GlobalGraphicsSettings.ascii)
                     {
                         Debug.Log($"Animate {(int)action} {moved}");
-                        anim.StartAnimation(action, moved);
+                        anim.StartAnimation(playerEntity, action, moved);
                     }
 
                     // Save the action to the action stream if the player has it
