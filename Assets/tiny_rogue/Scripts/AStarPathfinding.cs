@@ -179,7 +179,6 @@ namespace game
         private static List<int2> getWalkableAdjacentSquares(int2 start, View view, EntityManager em)
         {
             List<int2> walkableSquares = new List<int2>();
-            //TODO proper implementation, currently all monsters are either ghosts or idiots since Walkability is not considered
             List<int2>adjacentSquares = new List<int2>()
             {
                 new int2(start.x + 1, start.y),
@@ -192,7 +191,7 @@ namespace game
             {
                 int i = View.XYToIndex(pos, view.Width);
                 Entity e = view.ViewTiles[i];
-                if(!em.HasComponent(e, typeof(BlockMovement)))
+                if(!em.HasComponent(e, typeof(BlockMovement)) && !em.HasComponent(e, typeof(Creature)))
                     walkableSquares.Add(pos);
             }
 
