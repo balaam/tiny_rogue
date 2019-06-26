@@ -46,6 +46,12 @@ namespace game
         public Entity DoorEnt;
         public Entity OpeningEntity;
     }
+
+    public struct PendingInteractions
+    {
+        public uint2 InteractPos;
+        public Entity InteractingEntity;
+    }
     
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public class ActionResolutionSystem : JobComponentSystem
@@ -159,6 +165,7 @@ namespace game
             public NativeQueue<PendingWait> PendingWaits;
             public NativeQueue<PendingAttack> PendingAttacks;
             public NativeQueue<PendingDoorOpen> PendingOpens;
+            public NativeQueue<PendingInteractions> PendingInteractions;
 
             private int GetIndex(uint2 loc)
             {
@@ -224,13 +231,23 @@ namespace game
                                 moveTo.x -= 1;
                                 TryMove(ar.Ent, ar.Loc, moveTo);
                             } break;
-                        
+
                             case Action.MoveRight:
-                            {
-                                uint2 moveTo = ar.Loc;
-                                moveTo.x += 1;
-                                TryMove(ar.Ent, ar.Loc, moveTo);
-                            } break;
+                                {
+                                    uint2 moveTo = ar.Loc;
+                                    moveTo.x += 1;
+                                    TryMove(ar.Ent, ar.Loc, moveTo);
+                                }
+                                break;
+
+                            case Action.Interact:
+                                {
+                                    PendingInteractions.Enqueue(
+                                        new PendingInteractions(){
+                                            InteractingEntity = ar.Ent,
+                                            InteractPos = ar.Loc});
+                                }
+                                break;
                         }
                     }
                 }
@@ -271,6 +288,8 @@ namespace game
             var pendingWaits = new NativeQueue<PendingWait>(Allocator.TempJob);
             var pendingAttacks = new NativeQueue<PendingAttack>(Allocator.TempJob);
             var pendingOpens = new NativeQueue<PendingDoorOpen>(Allocator.TempJob);
+            var pendingInteractions = new NativeQueue<PendingInteractions>(Allocator.TempJob);
+
             var actionJob = new ConsumeActionsJob()
             {
                 MapSize = _cachedMapSize,
@@ -280,7 +299,8 @@ namespace game
                 PendingMoves = pendingMoves,
                 PendingWaits = pendingWaits,
                 PendingAttacks = pendingAttacks,
-                PendingOpens = pendingOpens
+                PendingOpens = pendingOpens,
+                PendingInteractions =  pendingInteractions
             };
             var actionJobHandle =actionJob.Schedule(fillJobHandle);
             
@@ -359,12 +379,36 @@ namespace game
                 EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
             }
+
+            PendingInteractions pi;
+            while (pendingInteractions.TryDequeue(out pi))
+            {
+                using (var entities = EntityManager.GetAllEntities(Allocator.TempJob))
+                {
+                    foreach (Entity e in entities)
+                    {
+                        if (EntityManager.HasComponent(e, typeof(WorldCoord)) &&
+                            EntityManager.HasComponent(e, typeof(Stairway)))
+                        {
+                            WorldCoord coord = EntityManager.GetComponentData<WorldCoord>(e);
+                            int2 ePos = new int2(coord.x, coord.y);
+
+                            if (pi.InteractPos.x == ePos.x && pi.InteractPos.y == ePos.y)
+                            {
+                                if (EntityManager.HasComponent(e, typeof(Stairway)))
+                                    _gss.MoveToNextLevel(new EntityCommandBuffer(Allocator.TempJob));
+                            }
+                        }
+                    }
+                }
+            }
             
             // Cleanup
             pendingMoves.Dispose();
             pendingAttacks.Dispose();
             pendingWaits.Dispose();
             pendingOpens.Dispose();
+            pendingInteractions.Dispose();
             
             return actionJobHandle;
         }
