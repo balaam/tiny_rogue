@@ -173,7 +173,7 @@ namespace game
                 if ((targetFlags & (byte) EInteractionFlags.Blocking) == 0)
                 {
                     PendingMoves.Enqueue(new PendingMove
-                        {Ent = e, Wc = new WorldCoord {x = (int) moveTo.x, y = (int) moveTo.y}});
+                        { Ent = e, Wc = new WorldCoord { x = (int) moveTo.x, y = (int) moveTo.y } });
                     FlagsMap[moveToIdx] = FlagsMap[moveFromIdx];
                     EntityMap[moveToIdx] = EntityMap[moveFromIdx];
                     FlagsMap[moveFromIdx] = 0;
@@ -181,15 +181,15 @@ namespace game
                 }
                 if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
                 {
-                    PendingWaits.Enqueue(new PendingWait {Ent = e}); //Don't move
+                    PendingWaits.Enqueue(new PendingWait { Ent = e }); //Don't move
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
-                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, Defender = EntityMap[moveToIdx]});
+                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, Defender = EntityMap[moveToIdx] });
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
-                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx], OpeningEntity = e});
+                    PendingOpens.Enqueue(new PendingDoorOpen { DoorEnt = EntityMap[moveToIdx], OpeningEntity = e });
                     FlagsMap[moveToIdx] &= (byte)~(EInteractionFlags.Blocking);
                 }
 
@@ -291,10 +291,22 @@ namespace game
             PendingMove pm;
             while (pendingMoves.TryDequeue(out pm))
             {
-                EntityManager.SetComponentData<WorldCoord>(pm.Ent, pm.Wc);
-
+                EntityManager.SetComponentData(pm.Ent, pm.Wc);
+                
                 var trans = _gss.View.ViewCoordToWorldPos(new int2(pm.Wc.x, pm.Wc.y));
-                EntityManager.SetComponentData<Translation>(pm.Ent, new Translation {Value = trans});
+                if (GlobalGraphicsSettings.ascii)
+                {
+                    EntityManager.SetComponentData(pm.Ent, new Translation { Value = trans });
+                }
+                else
+                {
+                    var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
+                    var mobile = EntityManager.GetComponentData<Mobile>(pm.Ent);
+                    mobile.Initial = EntityManager.GetComponentData<Translation>(pm.Ent).Value;
+                    mobile.Destination = trans;
+                    EntityManager.SetComponentData(pm.Ent, mobile);
+                    anim.StartAnimation(pm.Ent, Action.Move, true);
+                }
             }
 
             PendingWait pw;

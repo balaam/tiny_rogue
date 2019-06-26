@@ -16,6 +16,12 @@ public class AnimationSystem : ComponentSystem
         // Keep this exclusively for the graphical version
         if (!GlobalGraphicsSettings.ascii)
         {
+            Entities.WithAll<NeedsAnimationStart>().ForEach((Entity e) =>
+            {
+                StartAnimation(e, Action.None);
+                PostUpdateCommands.RemoveComponent<NeedsAnimationStart>(e);
+            });
+            
             Entities.WithAll<Mobile>().ForEach((Entity e, ref Mobile mobile, ref Translation translation) =>
             {
                 if (mobile.Moving)

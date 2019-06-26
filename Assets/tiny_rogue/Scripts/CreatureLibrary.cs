@@ -93,7 +93,11 @@ namespace game
                 typeof(PatrollingState),
                 typeof(MeleeAttackMovement),
                 typeof(Sight),
-                typeof(Speed)
+                typeof(Speed),
+                typeof(Mobile),
+                typeof(Animated),
+                typeof(Sprite2DSequencePlayer),
+                typeof(NeedsAnimationStart)
             });
             
             _playerArchetype = em.CreateArchetype(new ComponentType[]
@@ -117,7 +121,9 @@ namespace game
                 typeof(Mobile),
                 typeof(Animated),
                 typeof(Sight),
-                typeof(Speed)
+                typeof(Speed),
+                typeof(Sprite2DSequencePlayer),
+                typeof(NeedsAnimationStart)
             });
         }
 
@@ -211,12 +217,6 @@ namespace game
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0, Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
-
-            if (!GlobalGraphicsSettings.ascii)
-            {
-                Sprite2DSequencePlayer sequencePlayer = new Sprite2DSequencePlayer();
-                entityManager.AddComponentData(entity, sequencePlayer);
-            }
             
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
@@ -253,12 +253,6 @@ namespace game
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
-            
-            if (!GlobalGraphicsSettings.ascii)
-            {
-                Sprite2DSequencePlayer sequencePlayer = new Sprite2DSequencePlayer();
-                cb.SetComponent(player, sequencePlayer);
-            }
             
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
