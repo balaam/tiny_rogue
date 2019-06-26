@@ -108,11 +108,17 @@ namespace game
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
             {
-                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                }
             }
             foreach (var doorCoord in _dungeon.GetVerticalDoors())
             {
-                _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                }
             }
 
             // Hard code a couple of spear traps, so the player can die.
@@ -171,7 +177,6 @@ namespace game
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
             Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
-                Debug.Log(door.Horizontal ? "Horizontal" : "Vertical");
                 ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
 
