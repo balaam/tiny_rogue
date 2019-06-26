@@ -72,12 +72,6 @@
             "now": 10,
             "max": 10
         }, {
-            "$type": "game.Player, tiny_rogue",
-            "Direction": 0,
-            "Action": 0,
-            "Initial": {},
-            "Destination": {}
-        }, {
             "$type": "game.WorldCoord, tiny_rogue"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
@@ -154,6 +148,8 @@
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
+        }, {
+            "$type": "game.Player, tiny_rogue"
         }, {
             "$type": "game.PlayerInput, tiny_rogue"
         }]
@@ -295,8 +291,8 @@
             "MaxRoomSize": 10
         }, {
             "$type": "game.Viewport, tiny_rogue",
-            "width": 25,
-            "height": 25
+            "width": 75,
+            "height": 75
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
             "Index": 3
