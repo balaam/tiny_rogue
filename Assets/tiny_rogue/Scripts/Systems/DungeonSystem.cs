@@ -151,11 +151,8 @@ namespace game
                         _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
                         break;
                     case Type.eFloor:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
-                        break;
                     case Type.eDoor:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Door());
-                        _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
                         break;
                     case Type.eEmpty:
                         break;
@@ -290,10 +287,9 @@ namespace game
         private void ClearCurrentLevel()
         {
             // Clear each of our level tile tags
-            Entities.WithAll<Tile,BlockMovement>().ForEach(_ecb.RemoveComponent<BlockMovement>);
-            Entities.WithAll<Tile,Door>().ForEach(_ecb.RemoveComponent<Door>);
-            Entities.WithAll<Tile,Wall>().ForEach(_ecb.RemoveComponent<Wall>);
-            Entities.WithAll<Tile,Floor>().ForEach(_ecb.RemoveComponent<Floor>);
+            Entities.WithAll<Tile,BlockMovement>().ForEach((Entity e) =>_ecb.RemoveComponent<BlockMovement>(e));    
+            Entities.WithAll<Tile,Wall>().ForEach((Entity e) =>_ecb.RemoveComponent<Wall>(e));
+            Entities.WithAll<Tile,Floor>().ForEach((Entity e) =>_ecb.RemoveComponent<Floor>(e));
         }
 
         public int2 GetRandomPositionInRandomRoom()
