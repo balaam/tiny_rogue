@@ -283,7 +283,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
-                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+                        log.AddLog("You descend another floor.");
                         _state = eGameState.InGame;
                     }
                 } break;
@@ -322,6 +322,9 @@ namespace game
             
             // Clear the screen
             ClearView(cb);
+            
+            // Clear the dungeon
+            _dungeon.ClearDungeon(cb, _view);
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
@@ -372,8 +375,7 @@ namespace game
             
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You are in a vast cavern.    Press Space for next log");
-            log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
+            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
         }
 

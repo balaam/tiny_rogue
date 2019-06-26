@@ -69,7 +69,7 @@ namespace game
                     }
                     else
                     {
-                        var player = EntityManager.GetComponentData<Player>(e);
+                        var player = EntityManager.GetComponentData<Mobile>(e);
                         player.Initial = EntityManager.GetComponentData<Translation>(e).Value;
                         player.Destination = tileTrans.Value;
                         EntityManager.SetComponentData(e, player);
