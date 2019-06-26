@@ -151,11 +151,8 @@ namespace game
                         _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
                         break;
                     case Type.eFloor:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
-                        break;
                     case Type.eDoor:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Door());
-                        _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
                         break;
                     case Type.eEmpty:
                         break;
