@@ -38,7 +38,7 @@ namespace game
             Entities.WithAll<PatrollingState>().ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol) =>
             {
                 int2 monsterPos = new int2(coord.x, coord.y);
-                if (patrol.Equals(default(PatrollingState)) || patrol.destination.Equals(monsterPos))
+                if (patrol.destination.Equals(new int2(0,0)) || patrol.destination.Equals(monsterPos))
                 {
                     DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
                     patrol.destination = ds.GetRandomPositionInRandomRoom();
