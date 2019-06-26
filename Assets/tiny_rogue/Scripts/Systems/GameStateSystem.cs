@@ -260,14 +260,14 @@ namespace game
                 (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
-                    
+
                     // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
 
-                    spriteRenderer.color = GetColorForObject(tile);
-                    
+                    spriteRenderer.color.a = tile.IsSeen ? 1 : 0;
+
                     ecb.SetComponent(e, spriteRenderer);
                 });
         }
