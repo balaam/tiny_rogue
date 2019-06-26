@@ -466,6 +466,8 @@ namespace game
 
         public void MoveToTitleScreen(EntityCommandBuffer cb)
         {
+            HideInventory(cb);
+            
             // Clear the screen.
             Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
             {
@@ -508,13 +510,13 @@ namespace game
         
         void MoveToInventoryScreen(EntityCommandBuffer cb)
         {
-            
+            ShowInventory(cb);
             _state = eGameState.Inventory;
         }
 
         void MoveBackToGame(EntityCommandBuffer cb)
         {
-            
+            HideInventory(cb);
             _state = eGameState.InGame;
         }
 
@@ -574,5 +576,24 @@ namespace game
         {
             _state = eGameState.ReadQueuedLog;
         }
+
+        void ShowInventory(EntityCommandBuffer ecb)
+        {
+            Entities.WithAll<Disabled>().ForEach((Entity e) =>
+            {
+                if (EntityManager.HasComponent<InventoryUI>(e))
+                {
+                    ecb.RemoveComponent<Disabled>(e);
+                }
+            });
+
+        }
+        
+        void HideInventory(EntityCommandBuffer ecb)
+        {
+            Entities.WithAll<InventoryUI>().ForEach( e => { ecb.AddComponent<Disabled>(e, new Disabled()); });
+
+        }
+
     }
 }
