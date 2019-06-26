@@ -34,7 +34,9 @@ namespace game
         View _view = new View();
         ScoreManager _scoreManager = new ScoreManager();
         ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
-        DungeonSystem _dungeon;
+        private DungeonSystem _dungeon;
+
+        private uint CurrentSeed = 1;
 
         public View View => _view;
         public bool IsInGame => (_state == eGameState.InGame);
@@ -92,6 +94,8 @@ namespace game
 
         public void GenerateLevel()
         {
+            CleanUpGameWorld(PostUpdateCommands);
+            
             _dungeon.GenerateDungeon(PostUpdateCommands, _view);
 
             // Hard code a couple of spear traps, so the player can die.
@@ -254,6 +258,8 @@ namespace game
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                     {
+                        // Generate a new seed
+                        CurrentSeed = (uint) Guid.NewGuid().GetHashCode();
                         GenerateLevel();
                         log.AddLog("You descend another floor.");
                         _state = eGameState.InGame;
@@ -330,16 +336,16 @@ namespace game
         }
 
         public void MoveToInGame( EntityCommandBuffer cb, bool replay )
-        {                  
-            CleanUpGameWorld(cb);
-            
+        {
+            // Generate a new seed
+            if(!replay)
+                CurrentSeed = (uint) Guid.NewGuid().GetHashCode();
+            RandomRogue.Init(CurrentSeed);
+
             var log = EntityManager.World.GetExistingSystem<LogSystem>();      
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
-            
-            // TODO: Set this properly (make it random the first time, but ditto for the replay case)
-            RandomRogue.Init(1); 
-            
+
             if( replay )
                 pis.StartReplaying();
             else
