@@ -41,6 +41,8 @@ namespace game
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
+        public int CurrentLevel = 1;
+        private int LastDungeonNumber;
 
         private uint MakeNewRandom()
         {
@@ -130,15 +132,23 @@ namespace game
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
             _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
 
-            var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord, _view.ViewCoordToWorldPos(stairwayCoord));
-
-            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            if (CurrentLevel != LastDungeonNumber)
+            {
+                var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord,
+                    _view.ViewCoordToWorldPos(stairwayCoord));
+            }
+            else
+            {
+                var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            }
 
             GenerateGold();
 
             GenerateCollectibles();
+            CurrentLevel++;
+
 
         }
 
@@ -150,9 +160,9 @@ namespace game
                  var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
                  _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
              }
-       }
+        }
 
-        private void ClearView(EntityCommandBuffer ecb)
+        void ClearView(EntityCommandBuffer ecb)
         {
             Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
             {
@@ -163,16 +173,36 @@ namespace game
             });
         }
 
-        private static float GetAlphaForTile(Tile tile)
+        static Unity.Tiny.Core2D.Color GetColorForTile(Tile tile)
         {
-            float alpha = 0;
+            Unity.Tiny.Core2D.Color color = GlobalGraphicsSettings.ascii 
+                ? TinyRogueConstants.DefaultColor : Color.Default;
             
-            if (tile.IsSeen)
-                alpha = TinyRogueConstants.DefaultColor.a;
-            else if (tile.HasBeenRevealed)
-                alpha = TinyRogueConstants.DefaultColor.a / 2;
+            if (!tile.IsSeen && tile.HasBeenRevealed)
+            {
+                color.r /= 2f;
+                color.g /= 2f;
+                color.b /= 2f;
+            }
+            else if (!tile.IsSeen)
+            {
+                color.a = 0f;
+            }
 
-            return alpha;
+            return color;
+        }
+        
+        private static Unity.Tiny.Core2D.Color GetColorForObject(Tile tile)
+        {
+            Unity.Tiny.Core2D.Color color = GlobalGraphicsSettings.ascii 
+                ? TinyRogueConstants.DefaultColor : Color.Default;
+            
+            if (!tile.IsSeen)
+            {
+                color.a = 0f;
+            }
+
+            return color;
         }
 
         private void UpdateView(EntityCommandBuffer ecb)
@@ -181,12 +211,16 @@ namespace game
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
             var sprite2 = Sprite2DRenderer.Default;
             sprite2.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite3 = Sprite2DRenderer.Default;
+            sprite3.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
+            var sprite4 = Sprite2DRenderer.Default;
+            sprite4.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
 
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
             Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
             {
-                sprite.color.a = GetAlphaForTile(tile);
+                sprite.color = GetColorForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
 
@@ -194,40 +228,45 @@ namespace game
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
             Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
             {
-                sprite.color.a = GetAlphaForTile(tile);
+                sprite.color = GetColorForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
 
             // Set all door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
-            Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
-            {
-                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
-            });
-
             // Set all closed door tiles
-            sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // horizontal
-            sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // vertical
-            Entities.WithAll<Door, BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
+            sprite3.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // closed horizontal
+            sprite4.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // closed vertical
+            Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Door door, ref WorldCoord coord) =>
             {
-                ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
+                Sprite2DRenderer spriteRenderer;
+                if (door.Opened)
+                    spriteRenderer = door.Horizontal ? sprite : sprite2;
+                else
+                    spriteRenderer = door.Horizontal ? sprite3 : sprite4;
+                
+                // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
+                int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                Entity tileEntity = _view.ViewTiles[tileIndex];
+                Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                spriteRenderer.color = GetColorForTile(tile);
+                
+                ecb.SetComponent(e, spriteRenderer);
             });
             
-            Entities.WithNone<Player,Tile>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord ) =>
+            // This reads from *before* the above changes, so shouldn't be used on the same entities
+            Entities.WithNone<Player, Tile, Door>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
                     
-                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
 
-                    if (tile.IsSeen)
-                        spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
-                    else
-                        spriteRenderer.color.a = 0f;
+                    spriteRenderer.color = GetColorForObject(tile);
                     
                     ecb.SetComponent(e, spriteRenderer);
                 });
@@ -281,12 +320,16 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
-                            
-                            Entities.WithAll<Player>().ForEach((Entity Player) =>
+                            var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
+                            // Re-parent the camera on graphical to follow the charcter.
+                            if (!GlobalGraphicsSettings.ascii)
                             {
-                                PostUpdateCommands.AddComponent(Player,new Creature {id = (int)ECreatureId.Player});
-                                PostUpdateCommands.AddComponent(Player,new AttackStat {range = CreatureLibrary.CreatureDescriptions[(int)ECreatureId.Player].attackRange});
-                            });
+                                Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
+                                {
+                                    parent.Value = playerEntity;
+                                });
+                            }
+
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
                         }
@@ -334,7 +377,7 @@ namespace game
                     if (log.HasQueuedLogs())
                     {
                         if (input.GetKeyDown(KeyCode.Space))
-                            log.ShowNextLog();
+                            log.ShowNextLog(PostUpdateCommands);
                     }
                     else
                     {
@@ -401,6 +444,12 @@ namespace game
 
             // Clear the dungeon
             _dungeon.ClearDungeon(cb, _view);
+            
+            // Clear all Tile data
+            Entities.WithAll<Tile>().ForEach((Entity e) =>
+            {
+                cb.SetComponent(e, new Tile());
+            });
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
@@ -435,10 +484,12 @@ namespace game
 
         public void MoveToInGame( EntityCommandBuffer cb, bool replay )
         {
+            
             // Generate a new seed
             if(!replay)
                 CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
+            LastDungeonNumber = RandomRogue.Next(2, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();

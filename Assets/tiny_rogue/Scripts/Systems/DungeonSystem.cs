@@ -52,11 +52,8 @@ namespace game
         }
 
         // Storage for created rooms
-        private List<Room> _rooms = new List<Room>();
-
-        // Storage for all cells
         private Type[] _cells = new Type[0];
-
+        private List<Room> _rooms = new List<Room>();
         private List<int2> _verticalDoors = new List<int2>();
         private List<int2> _horizontalDoors = new List<int2>();
         
@@ -80,6 +77,8 @@ namespace game
             _view = view;
 
             _rooms.Clear();
+            _verticalDoors.Clear();
+            _horizontalDoors.Clear();
             for (var i = 0; i < _cells.Length; i++)
                 _cells[i] = Type.eEmpty;
 
@@ -150,26 +149,19 @@ namespace game
 
                 _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
                 _ecb.SetComponent(cr, new Translation {Value = viewCoord});
+                _ecb.SetComponent(cr, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
             }
         }
 
         private void PlacePlayer()
         {
             // Place the player
-            Entities.WithAll<PlayerInput>().ForEach((Entity player, ref WorldCoord coord, ref Translation translation, ref HealthPoints hp, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<PlayerInput>().ForEach((Entity player) =>
             {
                 int2 randomStartPosition = GetPlayerStartPosition();
-
-                coord.x = randomStartPosition.x;
-                coord.y = randomStartPosition.y;
-                translation.Value = _view.ViewCoordToWorldPos(new int2(coord.x, coord.y));
-
-                hp.max = TinyRogueConstants.StartPlayerHealth;
-                hp.now = hp.max;
-
-                // Only tint the player if ascii
-                if (GlobalGraphicsSettings.ascii)
-                    renderer.color = TinyRogueConstants.DefaultColor;
+                WorldCoord worldCoord = new WorldCoord {x = randomStartPosition.x, y = randomStartPosition.y};
+                Translation translation = new Translation {Value = _view.ViewCoordToWorldPos(randomStartPosition)};
+                _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
             });
         }
 

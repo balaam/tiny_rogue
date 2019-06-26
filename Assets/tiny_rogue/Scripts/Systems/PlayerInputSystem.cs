@@ -13,32 +13,26 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 
 namespace game
 {
-    struct TimedAction
-    {
-        public Action action;
-        public float time;
-    }
-
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
         private bool Replaying = false;
-        private float StartTime;
         private int ReplayPosition = 0;
+        
+        private static float ReplaySpeed = 0.125f;
+        private static float LastTime = 0.0f;
 
-        private List<TimedAction> ActionStream = new List<TimedAction>();
+        private List<Action> ActionStream = new List<Action>();
 
         public void StartRecording()
         {
             Replaying = false;
-            StartTime = Time.time;
             ActionStream.Clear();
         }
 
         public void StartReplaying()
         {
             Replaying = true;
-            StartTime = Time.time;
             ReplayPosition = 0;
         }
 
@@ -60,8 +54,6 @@ namespace game
             if (input.GetKeyDown(KeyCode.Space))
                 return Action.Wait;
 
-
-
             return Action.None;
         }
 
@@ -74,11 +66,13 @@ namespace game
             var action = ActionStream[ReplayPosition];
 
             // Don't run if we've not reached the right time yet
-            if (time < action.time)
+            if (time < LastTime + ReplaySpeed)
                 return Action.None;
-
+            
             ReplayPosition++;
-            return action.action;
+            LastTime = time;
+            return action;
+
         }
 
         protected override void OnUpdate()
@@ -87,7 +81,7 @@ namespace game
             var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
 
-            var time = Time.time - StartTime;
+            var time = Time.time;
             tms.CleanActionQueue();
 
             if (gss.IsInGame)
@@ -117,13 +111,7 @@ namespace game
 
                     // Save the action to the action stream if the player has it
                     if (!Replaying)
-                    {
-                        ActionStream.Add(new TimedAction()
-                        {
-                            action = action,
-                            time = time
-                        });
-                    }
+                        ActionStream.Add(action);
                 });
             }
         }

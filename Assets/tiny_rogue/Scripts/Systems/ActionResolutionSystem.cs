@@ -44,6 +44,7 @@ namespace game
     public struct PendingDoorOpen
     {
         public Entity DoorEnt;
+        public Entity OpeningEntity;
     }
     
     [UpdateInGroup(typeof(TurnSystemGroup))]
@@ -188,7 +189,7 @@ namespace game
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
-                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx]});
+                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx], OpeningEntity = e});
                     FlagsMap[moveToIdx] &= (byte)~(EInteractionFlags.Blocking);
                 }
 
@@ -299,7 +300,10 @@ namespace game
             PendingWait pw;
             while (pendingWaits.TryDequeue(out pw))
             {
-                log.AddLog("You bumped into a wall. Ouch.");
+                if (EntityManager.HasComponent<Player>(pw.Ent))
+                {
+                    log.AddLog("You bumped into a wall. Ouch.");
+                }
             }
 
             PendingAttack pa;
@@ -311,10 +315,31 @@ namespace game
                 Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
                 int dmg = RandomRogue.Next(att.range.x, att.range.y);
                 hp.now -= dmg;
-                string logStr = string.Format("{0} attacks the {1} for {2} damage!",
-                    CreatureLibrary.CreatureDescriptions[attacker.id].name,
-                    CreatureLibrary.CreatureDescriptions[defender.id].name,
-                    dmg);
+
+                string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
+                string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
+                string logStr;
+                if(attackerName == "Player")
+                {
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(
+                                    "You hit the ",
+                                    defenderName),
+                                    " for "),
+                                    dmg.ToString()),
+                                    " damage!");
+                }
+                else
+                {
+                	if(defenderName == "Player")
+                        defenderName = "you";
+                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
+                                    attackerName, 
+                                    " hits "),
+                                    defenderName),
+                                    " for "),
+                                    dmg.ToString()),
+                                    " damage!");
+                }
                 log.AddLog(logStr);
                 EntityManager.SetComponentData(pa.Defender, hp);
             }
@@ -322,20 +347,26 @@ namespace game
             PendingDoorOpen pd;
             while (pendingOpens.TryDequeue(out pd))
             {
-                log.AddLog("You opened a door.");
+                if (EntityManager.HasComponent<Player>(pd.OpeningEntity))
+                {
+                    log.AddLog("You opened a door.");
+                }
                 Sprite2DRenderer s = EntityManager.GetComponentData<Sprite2DRenderer>(pd.DoorEnt);
                 var door = EntityManager.GetComponentData<Door>(pd.DoorEnt);
                 door.Locked = false;
+                door.Opened = true;
                 EntityManager.RemoveComponent(pd.DoorEnt, typeof(BlockMovement));
                 EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
             }
+            
+            // Cleanup
             pendingMoves.Dispose();
             pendingAttacks.Dispose();
+            pendingWaits.Dispose();
             pendingOpens.Dispose();
+            
             return actionJobHandle;
-
-
         }
     }
 }
