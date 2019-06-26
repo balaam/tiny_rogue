@@ -169,8 +169,9 @@ namespace game
             // Set all door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; // horizontal
             sprite2.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')]; // vertical
-            Entities.WithAll<Door>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Door>().WithNone<BlockMovement>().ForEach((Entity e, ref Door door, ref Sprite2DRenderer renderer) =>
             {
+                Debug.Log(door.Horizontal ? "Horizontal" : "Vertical");
                 ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
             });
 

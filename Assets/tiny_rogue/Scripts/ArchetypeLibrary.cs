@@ -240,8 +240,8 @@ namespace game
                 : Color.Default;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(horizontal ? '\\' : '/')];
-            // Have to draw above character
-            l.order = 3;
+            // Have to draw above character in graphical
+            l.order = (short)(GlobalGraphicsSettings.ascii ? 1 : 3);
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
