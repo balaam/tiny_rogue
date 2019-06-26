@@ -367,6 +367,8 @@
             "Direction": 0,
             "Action": 0
         }, {
+            "$type": "game.GoldCount, tiny_rogue"
+        }, {
             "$type": "game.HealthPoints, tiny_rogue",
             "now": 10,
             "max": 10
@@ -452,9 +454,13 @@
                 "StableTypeHash": 7211316427830589168
             }, {
                 "StableTypeHash": 10856357832024813640
+            }, {
+                "StableTypeHash": 10723762297176986422
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
+        }, {
+            "$type": "game.BlockMovement, tiny_rogue"
         }, {
             "$type": "game.Player, tiny_rogue"
         }, {

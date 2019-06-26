@@ -288,9 +288,6 @@
             "Initial": {},
             "Destination": {}
         }, {
-            "$type": "game.Sight, tiny_rogue",
-            "SightRadius": 4
-        }, {
             "$type": "game.WorldCoord, tiny_rogue",
             "x": 10,
             "y": 10
