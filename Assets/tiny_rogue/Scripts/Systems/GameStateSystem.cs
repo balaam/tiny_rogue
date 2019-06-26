@@ -129,34 +129,6 @@ namespace game
             var sprite = Sprite2DRenderer.Default;
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
 
-            Entities.WithAll<Sprite2DRenderer>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
-                {
-                    if (IsInGame)
-                    {
-                        //Sprite2DRenderer spriteRenderer = renderer;
-
-                        if (EntityManager.HasComponent(e, typeof(Player)))
-                            sprite.color.a = TinyRogueConstants.DefaultColor.a;
-                        else
-                        {
-                            //Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
-                            int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
-                            Entity tileEntity = _view.ViewTiles[tileIndex];
-                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                            if (tile.IsSeen)
-                                sprite.color.a = TinyRogueConstants.DefaultColor.a;
-                            else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
-                                sprite.color.a = TinyRogueConstants.DefaultColor.a / 2;
-                            else
-                                sprite.color.a = 0;
-                        }
-
-                        //ecb.SetComponent(e, spriteRenderer);
-                    }
-                });
-
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
             Entities.WithAll<Tile, Floor>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
@@ -184,9 +156,41 @@ namespace game
             {
                 ecb.SetComponent(e, sprite);
             });
+
+            Entities.WithAll<Sprite2DRenderer>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
+                {
+                    if (IsInGame)
+                    {
+                        Sprite2DRenderer spriteRenderer = Sprite2DRenderer.Default;
+                        spriteRenderer.sprite = renderer.sprite;
+                        spriteRenderer.color = renderer.color;
+
+                        if (EntityManager.HasComponent(e, typeof(Player)))
+                            spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
+                        else
+                        {
+                            //Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                            int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                            Entity tileEntity = _view.ViewTiles[tileIndex];
+                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                            Console.WriteLine("Tile seen: " + tile.IsSeen);
+
+                            if (tile.IsSeen)
+                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
+                            else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
+                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a / 2;
+                            else
+                                spriteRenderer.color.a = 0;
+                        }
+
+                        ecb.SetComponent(e, spriteRenderer);
+                    }
+                });
         }
 
-       void GenerateGold()
+        void GenerateGold()
        {
             Random random = new Random((uint)UnityEngine.Time.time);//seed
             int goldPiles = (int)math.floor(random.NextFloat() * 10);
