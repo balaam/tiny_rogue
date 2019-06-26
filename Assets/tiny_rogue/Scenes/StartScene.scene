@@ -3,18 +3,17 @@
     "Guid": "d75674839da241a6881c083341b4a3b1",
     "SerializedVersion": 1,
     "AssetReferences": [
-        { "Guid": "4ea24a4622f0e7840ba6f82dcc6c0bde", "FileId": 11400000, "Type": 2},
+        { "Guid": "4a485c5932e283a4d8f9b04717171ef1", "FileId": 11400000, "Type": 2},
         { "Guid": "8723433851837134780540eaea4e93ae", "FileId": 21300000, "Type": 3},
-        { "Guid": "32ef6f69bfa4288438fff34c56eb96ab", "FileId": 11400000, "Type": 2},
         { "Guid": "32d136d3bafbdca40a691f66b20d1a7a", "FileId": 21300000, "Type": 3},
-        { "Guid": "0227686857630ef4fa6cac8c5852d990", "FileId": 11400000, "Type": 2}],
+        { "Guid": "11d4cd1f8f67a044aaf2df44bbff0f71", "FileId": 11400000, "Type": 2}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "226b248d7d0d41a694a8e555b24a3688"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "151d93e9a2d4478fbdd113635526c9e6",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -329,10 +328,10 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "226b248d7d0d41a694a8e555b24a3688"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "2923f5c5661b4b1c9a8a42fcce25b208",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -521,10 +520,10 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "9e8b9845e7966fec4507e19e0524a877"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "3c3dd6e55acc416485a5ed62a94aa728",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -692,7 +691,6 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Audio.AudioSource, Unity.Tiny.Audio",
-            "clip": "4b12204a24140b3ba7ca1e9634ebd314",
             "volume": 1,
             "loop": true
         }, {
@@ -750,10 +748,10 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "226b248d7d0d41a694a8e555b24a3688"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "5a8fba2b2ada4f1199893a10c6ec030b",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -1097,10 +1095,10 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "9e8b9845e7966fec4507e19e0524a877"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "65f83fa47de2452d8ade94088c09cb07",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -1213,10 +1211,10 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "226b248d7d0d41a694a8e555b24a3688"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "73b1958e0d78495a9e82dd4fba5e8698",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -1720,10 +1718,10 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "9e8b9845e7966fec4507e19e0524a877"
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",
+            "style": "ddc328455e5b49ac9d0f58dac075e6ee",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -1837,7 +1835,7 @@
     }, {
         "Components": [{
             "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
-            "font": "f9e64790239ee015187a3f0d1c162d29"
+            "font": "36e03e71f3c780fb97ac1cf954d721e2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
             "style": "fbd51c513d5c48b1ad461fa4eb7ee8fa",

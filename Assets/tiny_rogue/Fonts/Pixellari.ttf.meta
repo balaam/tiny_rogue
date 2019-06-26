@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cf6dc81acd6b48346863b72a52a9e86e
+guid: e71f061492b258a4da8ba5850be3fb95
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,10 +8,11 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Pixel Operator 8
+  fontName: Pixellari
   fontNames:
-  - Pixel Operator 8
-  fallbackFontReferences: []
+  - Pixellari
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: a31e47128b5b8284aab0ee7c97fa549b, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
