@@ -882,7 +882,6 @@
             },
             "blending": 0
         }, {
-<<<<<<< HEAD
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "e8815d25b39b432489fb105bdb452004"
         }, {
@@ -1058,8 +1057,8 @@
             "MaxRoomSize": 10
         }, {
             "$type": "game.Viewport, tiny_rogue",
-            "width": 25,
-            "height": 25
+            "width": 75,
+            "height": 75
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
             "Index": 3
@@ -3768,11 +3767,6 @@
                     "w": 1
                 }
             }
-=======
-            "$type": "game.Viewport, tiny_rogue",
-            "width": 75,
-            "height": 75
->>>>>>> master
         }, {
             "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
             "Value": {
@@ -4660,9 +4654,7 @@
             "b": 9980302302876657290
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
-            "Value": {
-                "y": 69
-            }
+            "Value": {}
         }, {
             "$type": "Unity.Tiny.Core2D.Rotation, Unity.Tiny.Core2D",
             "Value": {
