@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -42,9 +43,24 @@ namespace game
             }
         }
 
-        List<Room> _rooms = new List<Room>();
-        Entity _dungeonViewEntity;
-        View _view;
+        enum Type
+        {
+            eEmpty,
+            eWall,
+            eFloor,
+            eDoor,
+        }
+
+        // Storage for created rooms
+        private List<Room> _rooms = new List<Room>();
+        
+        // Storage for all cells
+        private Type[] _cells;
+
+        private Entity _dungeonViewEntity;
+        private View _view;
+
+        private EntityCommandBuffer _ecb;
         
         protected override void OnUpdate() {}
 
@@ -52,8 +68,13 @@ namespace game
         {
             if (!SpriteSystem.Loaded)
                 return;
+            
+            _rooms.Clear();
 
+            _ecb = cb;
             _view = view;
+            
+            _cells = new Type[_view.ViewTiles.Length];
 
             int maxRoom = 0;
             int maxRoomSize = 0;
@@ -64,7 +85,6 @@ namespace game
                 maxRoom = gen.MaxNumberOfRooms;
                 maxRoomSize = gen.MaxRoomSize;
                 minRoomSize = gen.MinRoomSize;
-
             });
 
             for (int i = 0; i < maxRoom; i++)
@@ -77,31 +97,21 @@ namespace game
 
 
                 Room newRoom = new Room(newX, newY, newWidth, newHeight);
-                if (!RoomIntersectExisitngRooms(newRoom))
+                if (!RoomIntersectExistingRooms(newRoom))
                     _rooms.Add(newRoom);
             }
 
-            ClearCurrentLevel(cb);
+            ClearCurrentLevel();
+            
+            // Create the rooms, and then the hallways
             CreateRooms();
             CreateHallways();
 
-            //Add loot
-            //Add monsters
+            // Add loot
+            // Add monsters
 
+            PlaceDungeon();
             PlacePlayer();
-            
-            // Update the tiles
-            Entities.WithAll<Tile>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
-            {
-                if (renderer.sprite == SpriteSystem.IndexSprites['|'])
-                {
-                    cb.AddComponent<Door>(e, new Door() {Opened = false});
-                    cb.AddComponent<BlockMovement>(e, new BlockMovement());
-                }
-
-                if (renderer.sprite == SpriteSystem.IndexSprites['#'])
-                    cb.AddComponent<BlockMovement>(e, new BlockMovement());
-            });
         }
 
         private void PlacePlayer()
@@ -118,8 +128,34 @@ namespace game
                 hp.max = TinyRogueConstants.StartPlayerHealth;
                 hp.now = hp.max;
 
-                renderer.color = TinyRogueConstants.DefaultColor;
+                if (GlobalGraphicsSettings.ascii)
+                    renderer.color = TinyRogueConstants.DefaultColor;
             });
+        }
+
+        private void PlaceDungeon()
+        {
+            for (var i = 0; i < _cells.Length; i++)
+            {
+                switch (_cells[i])
+                {
+                    case Type.eWall:
+                        _ecb.AddComponent(_view.ViewTiles[i], new Wall());
+                        _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
+                        break;
+                    case Type.eFloor:
+                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
+                        break;
+                    case Type.eDoor:
+                        _ecb.AddComponent(_view.ViewTiles[i], new Door());
+                        _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
+                        break;
+                    case Type.eEmpty:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("Placing unknown type");
+                }
+            }
         }
 
         private void CreateRooms()
@@ -132,23 +168,16 @@ namespace game
                     {
                         int2 xy = new int2(i, j);
                         int tileIndex = View.XYToIndex(xy, _view.Width);
-                        Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-
+                        
                         bool isWall = (i == room.startX
                             || i == room.startX + room.width - 1
                             || j == room.startY
                             || j == room.startY + room.height - 1);
 
-                        if (isWall)
-                        {
-                            renderer.sprite = SpriteSystem.IndexSprites['#'];
-                        }
+                        if(isWall)
+                            _cells[tileIndex] = Type.eWall;
                         else
-                        {
-                            renderer.sprite = SpriteSystem.IndexSprites['.'];
-                        }
-
-                        EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
+                            _cells[tileIndex] = Type.eFloor;
                     }
                 }
             }
@@ -172,109 +201,70 @@ namespace game
                 //start horizontal
                 if (initialHallwayDirection == 0)
                 {
-                    CreateHorizontalHall(room1Pos.y, room1Pos.x, room2Pos.x);
+                    CreateHorizontalHallway(room1Pos.y, room1Pos.x, room2Pos.x);
                     CreateVerticalHallway(room2Pos.x, room1Pos.y, room2Pos.y);
                 }
                 //start vertical
                 else
                 {
                     CreateVerticalHallway(room1Pos.x, room1Pos.y, room2Pos.y);
-                    CreateHorizontalHall(room2Pos.y, room1Pos.x, room2Pos.x);
+                    CreateHorizontalHallway(room2Pos.y, room1Pos.x, room2Pos.x);
                 }
             }
         }
 
-        private void CreateHorizontalHall(int y, int from, int to)
+        private void CreateHorizontalHallway(int y, int _from, int _to)
         {
+            var from = Math.Min(_from, _to);
+            var to = Math.Max(_from, _to);
             int currentX = from;
-            if (currentX < to)
+            
+            while (currentX < to)
             {
-                while (currentX < to)
-                {
-                    int2 xy = new int2(currentX, y);
-                    CreateHallwayTile(xy, HallDirection.Horizontal);
-                    CreateWallsIfEmpty(
-                        new int2(currentX, y + 1),
-                        new int2(currentX, y - 1),
-                        new int2(currentX + 1, y + 1),
-                        new int2(currentX - 1, y - 1),
-                        new int2(currentX + 1, y - 1),
-                        new int2(currentX - 1, y + 1));
-                    currentX++;
-                }
-            }
-            else
-            {
-                while (currentX > to)
-                {
-                    int2 xy = new int2(currentX, y);
-                    CreateHallwayTile(xy, HallDirection.Horizontal);
-                    CreateWallsIfEmpty(
-                        new int2(currentX, y + 1),
-                        new int2(currentX, y - 1),
-                        new int2(currentX + 1, y + 1),
-                        new int2(currentX - 1, y - 1),
-                        new int2(currentX + 1, y - 1),
-                        new int2(currentX - 1, y + 1));
-                    currentX--;
-                }
+                var xy = new int2(currentX, y);
+                CreateHallwayTile(xy, HallDirection.Horizontal);
+                CreateWallsIfEmpty(
+                    new int2(currentX, y + 1),
+                    new int2(currentX, y - 1),
+                    new int2(currentX + 1, y + 1),
+                    new int2(currentX - 1, y - 1),
+                    new int2(currentX + 1, y - 1),
+                    new int2(currentX - 1, y + 1));
+                currentX++;
             }
         }
 
-        private void CreateVerticalHallway(int x, int from, int to)
+        private void CreateVerticalHallway(int x, int _from, int _to)
         {
+            var from = Math.Min(_from, _to);
+            var to = Math.Max(_from, _to);
             int currentY = from;
-            if (currentY < to)
+            while (currentY < to)
             {
-                while (currentY < to)
-                {
-                    int2 xy = new int2(x, currentY);
-                    CreateHallwayTile(xy, HallDirection.Vertical);
-                    CreateWallsIfEmpty(
-                        new int2(x + 1, currentY), 
-                        new int2(x - 1, currentY), 
-                        new int2(x + 1, currentY + 1), 
-                        new int2(x - 1, currentY - 1),
-                        new int2(x + 1, currentY - 1),
-                        new int2(x - 1, currentY + 1));
-                    currentY++;
-                }
-            }
-            else
-            {
-                while (currentY > to)
-                {
-                    int2 xy = new int2(x, currentY);
-                    CreateHallwayTile(xy, HallDirection.Vertical);
-                    CreateWallsIfEmpty(
-                       new int2(x + 1, currentY),
-                       new int2(x - 1, currentY),
-                       new int2(x + 1, currentY + 1),
-                       new int2(x - 1, currentY - 1),
-                       new int2(x + 1, currentY - 1),
-                       new int2(x - 1, currentY + 1));
-                    currentY--;
-                }
+                var xy = new int2(x, currentY);
+                CreateHallwayTile(xy, HallDirection.Vertical);
+                CreateWallsIfEmpty(
+                    new int2(x + 1, currentY), 
+                    new int2(x - 1, currentY), 
+                    new int2(x + 1, currentY + 1), 
+                    new int2(x - 1, currentY - 1),
+                    new int2(x + 1, currentY - 1),
+                    new int2(x - 1, currentY + 1));
+                currentY++;
             }
         }
 
         private void CreateWallsIfEmpty(params int2[] positions)
         {
-            foreach(int2 pos in positions)
+            foreach (var pos in positions)
             {
-                int tileIndex = View.XYToIndex(pos, _view.Width);
-                Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-                
-                //only add if the space is blank
-                if (renderer.sprite == SpriteSystem.IndexSprites[' '])
-                {
-                    renderer.sprite = SpriteSystem.IndexSprites['#'];
-                    EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
-                }
+                var tileIndex = View.XYToIndex(pos, _view.Width);
+                if (_cells[tileIndex] == Type.eEmpty)
+                    _cells[tileIndex] = Type.eWall;
             }
         }
 
-        private bool RoomIntersectExisitngRooms(Room roomToAdd)
+        private bool RoomIntersectExistingRooms(Room roomToAdd)
         {
             foreach (Room createdRoom in _rooms)
             {
@@ -290,19 +280,13 @@ namespace game
             return false;
         }
 
-        private void ClearCurrentLevel(EntityCommandBuffer cb)
+        private void ClearCurrentLevel()
         {
-            //Clear the map
-            Entities.WithAll<Tile>().ForEach((Entity entity, ref Sprite2DRenderer renderer) =>
-            {
-                renderer.sprite = SpriteSystem.IndexSprites[' '];
-            });
-
-            //Clear all walls
-            Entities.WithAll<BlockMovement, Tile>().ForEach((Entity entity) =>
-            {
-                cb.RemoveComponent(entity, typeof(BlockMovement));
-            });
+            // Clear each of our level tile tags
+            Entities.WithAll<Tile,BlockMovement>().ForEach(_ecb.RemoveComponent<BlockMovement>);
+            Entities.WithAll<Tile,Door>().ForEach(_ecb.RemoveComponent<Door>);
+            Entities.WithAll<Tile,Wall>().ForEach(_ecb.RemoveComponent<Door>);
+            Entities.WithAll<Tile,Floor>().ForEach(_ecb.RemoveComponent<Door>);
         }
 
         public int2 GetRandomPositionInRandomRoom()
@@ -310,18 +294,10 @@ namespace game
             Room room = _rooms[RandomRogue.Next(0, _rooms.Count)];
             return room.GetRandomTile();
         }
-
-        private void SetTileToChar(int2 pos, char c)
-        {
-            int tileIndex = View.XYToIndex(pos, _view.Width);
-            Sprite2DRenderer renderer = EntityManager.GetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex]);
-            renderer.sprite = SpriteSystem.IndexSprites[c];
-            EntityManager.SetComponentData<Sprite2DRenderer>(_view.ViewTiles[tileIndex], renderer);
-        }
-
+        
         private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
-            var entity = _view.ViewTiles[View.XYToIndex(xy, _view.Width)];
+            var curent = _cells[View.XYToIndex(xy, _view.Width)];
 
             int2 neighbor1 = xy;
             int2 neighbor2 = xy;
@@ -337,17 +313,13 @@ namespace game
                 neighbor2.x -= 1;
             }
 
-            var neighborEntityOne = _view.ViewTiles[View.XYToIndex(neighbor1, _view.Width)];
-            var neighborEntityTwo = _view.ViewTiles[View.XYToIndex(neighbor2, _view.Width)];
+            var neighborEntityOne = _cells[View.XYToIndex(neighbor1, _view.Width)];
+            var neighborEntityTwo = _cells[View.XYToIndex(neighbor2, _view.Width)];
 
-            bool tileIsWall = EntityManager.GetComponentData<Sprite2DRenderer>(entity).sprite == SpriteSystem.IndexSprites['#'];
-            bool neighbor1IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityOne).sprite == SpriteSystem.IndexSprites['#'];
-            bool neighbor2IsWall = EntityManager.GetComponentData<Sprite2DRenderer>(neighborEntityTwo).sprite == SpriteSystem.IndexSprites['#'];
-
-            if(tileIsWall && neighbor1IsWall && neighbor2IsWall)
-                SetTileToChar(xy, '|');
+            if (curent == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
+                _cells[View.XYToIndex(xy, _view.Width)] = Type.eDoor;
             else
-                SetTileToChar(xy, '.');
+                _cells[View.XYToIndex(xy, _view.Width)] = Type.eFloor;
         }
     }
 }

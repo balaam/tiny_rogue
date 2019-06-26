@@ -82,7 +82,8 @@ namespace game
                 typeof(LayerSorting),  
                 typeof(HealthPoints),
                 typeof(BlockMovement),
-                typeof(Creature)
+                typeof(tag_Creature),
+                typeof(tag_Hostile)
             });
 
             Gold = em.CreateArchetype(new ComponentType[] //trying
@@ -109,8 +110,18 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = TinyRogueConstants.DefaultColor;
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? ' ' : 0];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = TinyRogueConstants.DefaultColor;
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
@@ -132,8 +143,17 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = TinyRogueConstants.DefaultColor;
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '^' : 1];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = TinyRogueConstants.DefaultColor;
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -156,8 +176,17 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 127 : 3];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 127 )];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -180,8 +209,17 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(18/255.0f, 222/255.0f, 23.0f/255.0f);
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 'Z' : 3];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f);
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -206,9 +244,17 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
 
-            s.color = new Unity.Tiny.Core2D.Color(1, 1, 1);
-            // TODO: need to figure out collectible tile
-            s.sprite = SpriteSystem.IndexSprites[4];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = new Unity.Tiny.Core2D.Color(1, 1, 1);
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
             l.order = 1;
 
             p.appearance.sprite = s.sprite;
@@ -239,8 +285,17 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
             
-            s.color = new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f);
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 236 : 3];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f);
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
             l.order = 1;
             
             entityManager.SetComponentData(entity, s);
@@ -265,8 +320,17 @@ namespace game
             c.x = xy.x;
             c.y = xy.y;
             
-            s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 'd' : 3];
+            // Only tint sprites if ascii
+            if (GlobalGraphicsSettings.ascii)
+            {
+                s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
+            }
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('d')];
             l.order = 2;
             hp.max = hp.now = 1000000;
             
