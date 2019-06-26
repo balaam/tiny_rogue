@@ -326,6 +326,7 @@ namespace game
                 Sprite2DRenderer s = EntityManager.GetComponentData<Sprite2DRenderer>(pd.DoorEnt);
                 var door = EntityManager.GetComponentData<Door>(pd.DoorEnt);
                 door.Locked = false;
+                door.Opened = true;
                 EntityManager.RemoveComponent(pd.DoorEnt, typeof(BlockMovement));
                 EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
