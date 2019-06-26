@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.Collections;
+using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
 
@@ -45,7 +46,7 @@ namespace game
             return _newLogs.Count > 0;
         }
 
-        public void ShowNextLog()
+        public void ShowNextLog(EntityCommandBuffer cb)
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             View view = gss.View;
@@ -56,14 +57,14 @@ namespace game
                 LogEntry topLog =  _newLogs[0];
                 _newLogs.RemoveAt(0);
                 _oldLogs.Add(topLog);
-                view.ClearLine(PostUpdateCommands, 0, ' ');
-                view.Blit(PostUpdateCommands, new int2(0,0), topLog.text);
+                view.ClearLine(cb, 0, ' ');
+                view.Blit(cb, new int2(0,0), topLog.text);
 
                 if (HasQueuedLogs())
                 {
                     string pageMsg = "(cont)";
                     var pageXY = new int2(view.Width - pageMsg.Length, 0);
-                    view.Blit(PostUpdateCommands, pageXY, pageMsg, new Color(1,1,1,1));
+                    view.Blit(cb, pageXY, pageMsg, new Color(1,1,1,1));
                     gss.MoveToReadQueuedLog();
                 }
 
@@ -72,12 +73,12 @@ namespace game
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
             else if(gss.IsInGame)
-                view.ClearLine(PostUpdateCommands, 0, ' ');
+                view.ClearLine(cb, 0, ' ');
         }
         
         protected override void OnUpdate()
         {
-            ShowNextLog();
+            ShowNextLog(PostUpdateCommands);
         }
     }
 }
