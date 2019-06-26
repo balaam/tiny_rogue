@@ -14,9 +14,10 @@ namespace game
         public EntityArchetype Tile { get; private set; }
         public EntityArchetype SpearTrap { get; private set; }
         public EntityArchetype Crown { get; private set; }
-        public EntityArchetype  Stairway { get; private set; }
+        public EntityArchetype Stairway { get; private set; }
+        public EntityArchetype Doorway { get; private set; }
         public EntityArchetype Collectible { get; private set; }
-        public EntityArchetype  Gold { get; private set; }
+        public EntityArchetype Gold { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -59,6 +60,17 @@ namespace game
                 typeof(LayerSorting),
                 typeof(Stairway)
             });
+            
+            Doorway = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord), // should be view coord?
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),
+                typeof(BlockMovement),
+                typeof(Door)
+            });
 
            Collectible = em.CreateArchetype(new ComponentType[]
             {
@@ -96,14 +108,7 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = TinyRogueConstants.DefaultColor;
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
+            s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
 
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
@@ -112,6 +117,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, p);
             entityManager.SetComponentData(entity, c);
+            
             return entity;
         }
 
@@ -129,14 +135,7 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = TinyRogueConstants.DefaultColor;
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
+            s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
             l.order = 1;
@@ -145,6 +144,7 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
+            
             return entity;
         }
 
@@ -162,14 +162,9 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f);
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
+            s.color = GlobalGraphicsSettings.ascii 
+                ? new Unity.Tiny.Core2D.Color(0.925f, 0.662f, 0.196f) 
+                : Color.Default;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 127 )];
             l.order = 1;
@@ -178,13 +173,13 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
+            
             return entity;
         }
         
         public Entity CreateStairway(EntityManager entityManager, int2 xy, float3 pos)
         {
             Entity entity = entityManager.CreateEntity(Stairway);
-
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
             WorldCoord c = new WorldCoord();
@@ -195,14 +190,9 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f);
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
+            s.color = GlobalGraphicsSettings.ascii 
+                ? new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f) 
+                : Color.Default;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
             l.order = 1;
@@ -211,6 +201,39 @@ namespace game
             entityManager.SetComponentData(entity, t);
             entityManager.SetComponentData(entity, c);
             entityManager.SetComponentData(entity, l);
+
+            return entity;
+        }
+        
+        public Entity CreateDoorway(EntityManager entityManager, int2 xy, float3 pos, bool horizontal)
+        {
+            Entity entity = entityManager.CreateEntity(Doorway);
+
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            Door d = new Door();
+            d.Horizontal = horizontal;
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+
+            // Only tint sprites if ascii
+            s.color = GlobalGraphicsSettings.ascii 
+                ? new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f) 
+                : Color.Default;
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(horizontal ? '\\' : '/')];
+            // Have to draw above character
+            l.order = 3;
+
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            entityManager.SetComponentData(entity, d);
 
             return entity;
         }
@@ -230,14 +253,9 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = new Unity.Tiny.Core2D.Color(1, 1, 1);
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
+            s.color = GlobalGraphicsSettings.ascii 
+                ? new Unity.Tiny.Core2D.Color(1, 1, 1) 
+                : Color.Default;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
             l.order = 1;
@@ -271,14 +289,9 @@ namespace game
             c.y = xy.y;
             
             // Only tint sprites if ascii
-            if (GlobalGraphicsSettings.ascii)
-            {
-                s.color = new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f);
-            }
-            else
-            {
-                s.color = Color.Default;
-            }
+            s.color = GlobalGraphicsSettings.ascii 
+                ? new Unity.Tiny.Core2D.Color(1, 0.5f, 0.2f) 
+                : Color.Default;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
             l.order = 1;
