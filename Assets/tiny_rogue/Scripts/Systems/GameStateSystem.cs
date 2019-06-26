@@ -336,7 +336,7 @@ namespace game
                     if (log.HasQueuedLogs())
                     {
                         if (input.GetKeyDown(KeyCode.Space))
-                            log.ShowNextLog();
+                            log.ShowNextLog(PostUpdateCommands);
                     }
                     else
                     {
