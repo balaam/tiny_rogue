@@ -260,14 +260,14 @@ namespace game
                 (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
-                    
+
                     // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                     int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
                     Entity tileEntity = _view.ViewTiles[tileIndex];
                     Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
 
-                    spriteRenderer.color = GetColorForObject(tile);
-                    
+                    spriteRenderer.color.a = tile.IsSeen ? 1 : 0;
+
                     ecb.SetComponent(e, spriteRenderer);
                 });
         }
@@ -393,14 +393,13 @@ namespace game
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                    if (input.GetKeyDown(KeyCode.Space))
-                    {
-                        // Generate a new seed
-                        CurrentSeed = MakeNewRandom();
-                        GenerateLevel();
-                        log.AddLog("You descend another floor.");
-                        _state = eGameState.InGame;
-                    }
+
+                    // Generate a new seed
+                    CurrentSeed = MakeNewRandom();
+                    GenerateLevel();
+                    log.AddLog("You descend another floor.");
+                    log.ShowNextLog(PostUpdateCommands); 
+                    _state = eGameState.InGame;
                 } break;
                 case eGameState.DebugLevelSelect:
                 {
@@ -486,7 +485,7 @@ namespace game
             if(!replay)
                 CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
-            LastDungeonNumber = RandomRogue.Next(2, 10);
+            LastDungeonNumber = RandomRogue.Next(5, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
