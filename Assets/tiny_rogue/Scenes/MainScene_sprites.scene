@@ -377,6 +377,9 @@
             "Initial": {},
             "Destination": {}
         }, {
+            "$type": "game.Sight, tiny_rogue",
+            "SightRadius": 4
+        }, {
             "$type": "game.WorldCoord, tiny_rogue"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
@@ -456,6 +459,8 @@
                 "StableTypeHash": 10856357832024813640
             }, {
                 "StableTypeHash": 10723762297176986422
+            }, {
+                "StableTypeHash": 6622059105241414304
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
