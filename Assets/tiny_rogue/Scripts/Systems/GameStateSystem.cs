@@ -198,16 +198,26 @@ namespace game
             // Set all closed door tiles
             sprite3.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]; // closed horizontal
             sprite4.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')]; // closed vertical
-            Entities.WithAll<Door>().ForEach((Entity e, ref Door door) =>
+            Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Door door, ref WorldCoord coord) =>
             {
+                Sprite2DRenderer spriteRenderer;
                 if (door.Opened)
-                    ecb.SetComponent(e, door.Horizontal ? sprite : sprite2);
+                    spriteRenderer = door.Horizontal ? sprite : sprite2;
                 else
-                    ecb.SetComponent(e, door.Horizontal ? sprite3 : sprite4);
+                    spriteRenderer = door.Horizontal ? sprite3 : sprite4;
+                
+                // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
+                int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                Entity tileEntity = _view.ViewTiles[tileIndex];
+                Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                spriteRenderer.color.a = GetAlphaForTile(tile);
+                
+                ecb.SetComponent(e, spriteRenderer);
             });
             
-            Entities.WithNone<Player, Tile>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord ) =>
+            // This reads from *before* the above changes, so shouldn't be used on the same entities
+            Entities.WithNone<Player, Tile, Door>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     Sprite2DRenderer spriteRenderer = renderer;
                     
