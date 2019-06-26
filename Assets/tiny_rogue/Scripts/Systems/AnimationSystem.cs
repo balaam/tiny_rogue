@@ -7,7 +7,7 @@ using Unity.Tiny.Core2D;
 using UnityEngine;
 using Action = game.Action;
 
-public class PlayerAnimationSystem : ComponentSystem
+public class AnimationSystem : ComponentSystem
 {
     protected override void OnUpdate()
     {
@@ -60,7 +60,7 @@ public class PlayerAnimationSystem : ComponentSystem
     /// </summary>
     /// <param name="e">Entity to animate. Looks for (Sprite2DSequencePlayer AND Animated) and/or Mobile component(s).</param>
     /// <param name="action">Action to map to animation. Avoid sending None.</param>
-    /// <param name="moved">Whether or not the character can move.</param>
+    /// <param name="moved">Whether or not the character can move. False if cannot move or unable to move (for example wall is in the way).</param>
     public void StartAnimation(Entity e, Action action, bool moved = false)
     {
         // Keep this exclusively for the graphical version
@@ -149,7 +149,7 @@ public class PlayerAnimationSystem : ComponentSystem
         }
     }
 
-    public void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
+    void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
     {
         var direction = (int)animated.Direction;
         var action = (int)animated.Action;

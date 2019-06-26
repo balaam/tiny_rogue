@@ -84,7 +84,7 @@ namespace game
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-            var anim = EntityManager.World.GetExistingSystem<PlayerAnimationSystem>();
+            var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
 
             var time = Time.time - StartTime;
