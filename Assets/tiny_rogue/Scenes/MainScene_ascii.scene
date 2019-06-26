@@ -269,6 +269,10 @@
             },
             "blending": 0
         }, {
+            "$type": "game.Animated, tiny_rogue",
+            "Direction": 0,
+            "Action": 0
+        }, {
             "$type": "game.ExperiencePoints, tiny_rogue"
         }, {
             "$type": "game.GoldCount, tiny_rogue"
@@ -280,9 +284,7 @@
             "$type": "game.Level, tiny_rogue",
             "level": 1
         }, {
-            "$type": "game.Player, tiny_rogue",
-            "Direction": 0,
-            "Action": 0,
+            "$type": "game.Mobile, tiny_rogue",
             "Initial": {},
             "Destination": {}
         }, {
@@ -368,12 +370,16 @@
             }, {
                 "StableTypeHash": 4301058344883206118
             }, {
-                "StableTypeHash": 6622059105241414304
+                "StableTypeHash": 10856357832024813640
+            }, {
+                "StableTypeHash": 7211316427830589168
             }]
         }, {
             "$type": "InventoryComponent, tiny_rogue"
         }, {
             "$type": "game.BlockMovement, tiny_rogue"
+        }, {
+            "$type": "game.Player, tiny_rogue"
         }, {
             "$type": "game.PlayerInput, tiny_rogue"
         }]

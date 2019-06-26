@@ -128,7 +128,35 @@ namespace game
         {
             var sprite = Sprite2DRenderer.Default;
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
-            
+
+            Entities.WithAll<Sprite2DRenderer>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
+                {
+                    if (IsInGame)
+                    {
+                        //Sprite2DRenderer spriteRenderer = renderer;
+
+                        if (EntityManager.HasComponent(e, typeof(Player)))
+                            sprite.color.a = TinyRogueConstants.DefaultColor.a;
+                        else
+                        {
+                            //Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                            int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                            Entity tileEntity = _view.ViewTiles[tileIndex];
+                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+
+                            if (tile.IsSeen)
+                                sprite.color.a = TinyRogueConstants.DefaultColor.a;
+                            else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
+                                sprite.color.a = TinyRogueConstants.DefaultColor.a / 2;
+                            else
+                                sprite.color.a = 0;
+                        }
+
+                        //ecb.SetComponent(e, spriteRenderer);
+                    }
+                });
+
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
             Entities.WithAll<Tile, Floor>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
@@ -156,34 +184,6 @@ namespace game
             {
                 ecb.SetComponent(e, sprite);
             });
-
-            Entities.WithAll<Sprite2DRenderer>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
-                {
-                    if (IsInGame)
-                    {
-                        Sprite2DRenderer spriteRenderer = renderer;
-
-                        if (EntityManager.HasComponent(e, typeof(Player)))
-                            renderer.color.a = TinyRogueConstants.DefaultColor.a;
-                        else
-                        {
-                            //Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
-                            int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
-                            Entity tileEntity = _view.ViewTiles[tileIndex];
-                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                            if (tile.IsSeen)
-                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
-                            else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
-                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a / 2;
-                            else
-                                spriteRenderer.color.a = 0;
-                        }
-
-                        ecb.SetComponent(e, spriteRenderer);
-                    }
-                });
         }
 
        void GenerateGold()
@@ -283,7 +283,7 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                     {
                         GenerateLevel();
-                        log.AddLog("You are in a vast cavern.    Use the arrow keys to explore!");
+                        log.AddLog("You descend another floor.");
                         _state = eGameState.InGame;
                     }
                 } break;
@@ -322,6 +322,9 @@ namespace game
             
             // Clear the screen
             ClearView(cb);
+            
+            // Clear the dungeon
+            _dungeon.ClearDungeon(cb, _view);
 
             // Destroy everything that's not a tile or the player.
             Entities.WithNone<Tile, Player>().WithAll<WorldCoord>().ForEach((Entity entity, ref Translation t) =>
@@ -372,8 +375,7 @@ namespace game
             
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You are in a vast cavern.    Press Space for next log");
-            log.AddLog("HAPPY HACKWEEK!    Use the arrow keys to explore!");
+            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
         }
 

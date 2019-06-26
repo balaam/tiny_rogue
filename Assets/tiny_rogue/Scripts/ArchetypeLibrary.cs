@@ -82,7 +82,8 @@ namespace game
                 typeof(LayerSorting),  
                 typeof(HealthPoints),
                 typeof(BlockMovement),
-                typeof(Creature)
+                typeof(tag_Creature),
+                typeof(tag_Hostile)
             });
 
             Gold = em.CreateArchetype(new ComponentType[] //trying
@@ -115,6 +116,11 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
+            else
+            {
+                s.color = Color.Default;
+            }
+
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')];
 
@@ -144,7 +150,12 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? '^' : 1];
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -173,7 +184,12 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 127 : 3];
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 127 )];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -202,7 +218,12 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 'Z' : 3];
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
             l.order = 1;
 
             entityManager.SetComponentData(entity, s);
@@ -233,8 +254,12 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
-            // TODO: need to figure out collectible tile
-            s.sprite = SpriteSystem.IndexSprites[4];
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
             l.order = 1;
 
             p.appearance.sprite = s.sprite;
@@ -271,7 +296,12 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 236 : 3];
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
             l.order = 1;
             
             entityManager.SetComponentData(entity, s);
@@ -302,7 +332,12 @@ namespace game
                 s.color = TinyRogueConstants.DefaultColor;
                 s.color.a = 0;
             }
-            s.sprite = SpriteSystem.IndexSprites[GlobalGraphicsSettings.ascii ? 'd' : 3];
+            else
+            {
+                s.color = Color.Default;
+            }
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('d')];
             l.order = 2;
             hp.max = hp.now = 1000000;
             
