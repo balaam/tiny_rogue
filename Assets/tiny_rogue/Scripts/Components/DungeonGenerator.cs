@@ -7,5 +7,6 @@ namespace game
         public int MaxNumberOfRooms;
         public int MinRoomSize;
         public int MaxRoomSize;
+        public int NumberOfCollectibles;
     }
 }

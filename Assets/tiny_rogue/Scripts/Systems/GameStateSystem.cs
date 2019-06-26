@@ -30,6 +30,7 @@ namespace game
             NextLevel,
             DebugLevelSelect,
             HiScores,
+            Inventory,
         }
 
         eGameState _state = eGameState.Startup;
@@ -107,7 +108,7 @@ namespace game
         {
             CleanUpGameWorld(PostUpdateCommands);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
 
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
@@ -145,9 +146,20 @@ namespace game
 
             GenerateGold();
 
-            var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+            GenerateCollectibles();
             CurrentLevel++;
+
+
+        }
+
+        void GenerateCollectibles()
+        {
+            for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
+             {
+                 //TODO: figure out how it can know to avoid tiles that already have an entity
+                 var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
+                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+             }
         }
 
         void ClearView(EntityCommandBuffer ecb)
@@ -278,7 +290,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
 
             for (int i = 0; i < 20; i++)
             {
@@ -341,6 +353,20 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.I))
+                    {
+                        MoveToInventoryScreen(PostUpdateCommands);
+                    }
+
+                } break;
+                case eGameState.Inventory:
+                {
+                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (input.GetKeyDown(KeyCode.Escape))
+                    {
+                        MoveBackToGame(PostUpdateCommands);
+                    }
 
                 } break;
                 case eGameState.ReadQueuedLog:
@@ -406,6 +432,7 @@ namespace game
                 } break;
             }
         }
+
 
         private void CleanUpGameWorld(EntityCommandBuffer cb)
         {
@@ -478,6 +505,20 @@ namespace game
             log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
         }
+        
+        void MoveToInventoryScreen(EntityCommandBuffer cb)
+        {
+            
+            _state = eGameState.Inventory;
+        }
+
+        void MoveBackToGame(EntityCommandBuffer cb)
+        {
+            
+            _state = eGameState.InGame;
+        }
+
+
 
         public void MoveToGameOver(EntityCommandBuffer cb)
         {
