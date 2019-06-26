@@ -234,6 +234,12 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
+                            
+                            Entities.WithAll<Player>().ForEach((Entity Player) =>
+                            {
+                                PostUpdateCommands.AddComponent(Player,new Creature {id = (int)ECreatureId.Player});
+                                PostUpdateCommands.AddComponent(Player,new AttackStat {range = CreatureLibrary.CreatureDescriptions[(int)ECreatureId.Player].attackRange});
+                            });
                             _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
                             MoveToTitleScreen(PostUpdateCommands);
                         }

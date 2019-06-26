@@ -286,8 +286,18 @@ namespace game
             PendingAttack pa;
             while (pendingAttacks.TryDequeue(out pa))
             {
-                log.AddLog("Attack!!!!!!!!!");
-                EntityManager.SetComponentData(pa.Defender, new HealthPoints {max = 1, now = 0});
+                AttackStat att = EntityManager.GetComponentData<AttackStat>(pa.Attacker);
+                Creature attacker = EntityManager.GetComponentData<Creature>(pa.Attacker);
+                HealthPoints hp = EntityManager.GetComponentData<HealthPoints>(pa.Defender);
+                Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
+                int dmg = RandomRogue.Next(att.range.x, att.range.y);
+                hp.now -= dmg;
+                string logStr = string.Format("{0} attacks the {1} for {2} damage!",
+                    CreatureLibrary.CreatureDescriptions[attacker.id].name,
+                    CreatureLibrary.CreatureDescriptions[defender.id].name,
+                    dmg);
+                log.AddLog(logStr);
+                EntityManager.SetComponentData(pa.Defender, hp);
             }
 
             PendingDoorOpen pd;
