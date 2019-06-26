@@ -132,7 +132,7 @@ namespace game
             int maxCreatureCount = 12;
             
             int creatureCount = RandomRogue.Next(minCreatureCount, maxCreatureCount);
-            int creatureTypeCount = CreatureLibrary.CreatureDescriptions.Length;
+            int creatureTypeCount = (int)ECreatureId.SpawnableCount;
             for (int i = 0; i < creatureCount; i++)
             {
                 int creatureId = RandomRogue.Next(0, creatureTypeCount);
