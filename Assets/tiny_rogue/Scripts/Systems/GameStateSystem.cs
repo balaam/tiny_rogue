@@ -308,15 +308,13 @@ namespace game
                         bool done = TryGenerateViewport();
                         if (done)
                         {
-                            if (GlobalGraphicsSettings.ascii)
+                            var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
+                            // Re-parent the camera on graphical to follow the charcter.
+                            if (!GlobalGraphicsSettings.ascii)
                             {
-                                _creatureLibrary.SpawnPlayer(EntityManager);
-                            }
-                            else
-                            {
-                                Entities.WithAll<Player>().ForEach((Entity player) =>
+                                Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
                                 {
-                                    _creatureLibrary.FixupSpritePlayer(PostUpdateCommands, player);
+                                    parent.Value = playerEntity;
                                 });
                             }
 
