@@ -64,6 +64,11 @@ namespace game
         
         protected override void OnUpdate() {}
 
+        int numberOfCollectibles = 0;
+
+        public int NumberOfCollectibles => numberOfCollectibles;
+
+
         public void GenerateDungeon(EntityCommandBuffer cb, View view)
         {
             if (!SpriteSystem.Loaded)
@@ -85,6 +90,7 @@ namespace game
                 maxRoom = gen.MaxNumberOfRooms;
                 maxRoomSize = gen.MaxRoomSize;
                 minRoomSize = gen.MinRoomSize;
+                numberOfCollectibles = gen.NumberOfCollectibles;
             });
 
             for (int i = 0; i < maxRoom; i++)

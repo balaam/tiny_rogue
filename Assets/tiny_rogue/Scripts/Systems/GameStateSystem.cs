@@ -109,10 +109,12 @@ namespace game
            
             GenerateGold();
 
-            var collectibleCoord = new int2(15,12);
-            _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
-  
-       }
+            for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
+            {
+                var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+            }
+        }
         
         private void ClearView(EntityCommandBuffer ecb)
         {
@@ -234,7 +236,7 @@ namespace game
                 case eGameState.Inventory:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.I))
+                    if (input.GetKeyDown(KeyCode.Escape))
                     {
                         MoveBackToGame(PostUpdateCommands);
                     }
@@ -368,11 +370,13 @@ namespace game
         void MoveToInventoryScreen(EntityCommandBuffer cb)
         {
             
+            _state = eGameState.Inventory;
         }
 
         void MoveBackToGame(EntityCommandBuffer cb)
         {
             
+            _state = eGameState.InGame;
         }
 
 

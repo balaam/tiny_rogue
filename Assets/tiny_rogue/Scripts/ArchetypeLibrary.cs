@@ -254,14 +254,17 @@ namespace game
                 s.color = Color.Default;
             }
 
-            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];
             l.order = 1;
 
-            p.appearance.sprite = s.sprite;
             p.appearance.color = s.color;
+            p.appearance.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('S')];   //defaults
+          
+            p.name = new NativeString64("unknown pickup");
+            p.description = new NativeString64("Check collectible gen");
             
-            p.name = new NativeString64("sword");
-            p.description = new NativeString64("Sword of Damocles");
+            var collectibleGenSystem = entityManager.World.GetExistingSystem<CollectibleGenSystem>();
+            collectibleGenSystem.GetRandomCollectible(ref entity, ref p);
+            s.sprite = p.appearance.sprite;
 
             entityManager.SetComponentData(entity, s);
             entityManager.SetComponentData(entity, t);
