@@ -2,41 +2,89 @@ using game;
 using Unity.Entities;
 using Unity.Mathematics;
 
-[UpdateBefore(typeof(TurnManagementSystem))]
-public class CreatureMovementSystem : ComponentSystem
+namespace game
 {
-    protected override void OnUpdate()
+    [UpdateInGroup(typeof(TurnSystemGroup))]
+    [UpdateBefore(typeof(ActionResolutionSystem))]
+    public class CreatureMovementSystem : ComponentSystem
     {
-        var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
-        if (tms.NeedToTickTurn) // Don't always be moving!
-        {
-            // Find player to navigate towards
-            int2 playerPos = int2.zero;
-            Entities.WithAll<Player>().ForEach((Entity player, ref WorldCoord coord) =>
-            {
-                playerPos.x = coord.x;
-                playerPos.y = coord.y;
-            });
+        private uint lastTurn = 0;
 
-            // Move all creatures towards Player
-            Entities.WithNone<PatrollingCreature>().WithAll<MeleeAttackMovement>()
-                .ForEach((Entity creature, ref WorldCoord coord) =>
+        protected override void OnUpdate()
+        {
+            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
+            if (lastTurn != tms.TurnCount) // Don't always be moving!
+            {
+                lastTurn = tms.TurnCount;
+                // Find player to navigate towards
+                int2 playerPos = int2.zero;
+                Entities.WithAll<Player>().ForEach((Entity player, ref WorldCoord coord) =>
                 {
-                    int2 creaturePos = new int2(coord.x, coord.y);
-                    int2 nextStep = AStarPathfinding.getNextStep(creaturePos, playerPos);
-                    if (math.all(creaturePos == playerPos))
-                    {
-                        // TODO deal damage to player
-                    }
-                    else
-                    {
-                        // TODO currently all monsters are ghosts that travel through walls, this is mostly because the
-                        // pathfinding function cannot identify walls so the alternative is monsters mashing their face against the wall
-                        // TODO OH NO!! Need to get tileCoord out somehow
-                        // TODO should be animated too
-//                    EntityManager.SetComponentData(creature, nextStep);
-                    }
+                    playerPos.x = coord.x;
+                    playerPos.y = coord.y;
                 });
+
+                // Move all creatures towards Player
+                Entities.WithNone<PatrollingState>().WithAll<MeleeAttackMovement>()
+                    .ForEach((Entity creature, ref WorldCoord coord, ref Speed speed) =>
+                    {
+                        if (lastTurn % speed.SpeedRate == 0)
+                        {
+                            int2 creaturePos = new int2(coord.x, coord.y);
+                            int2 nextPos = AStarPathfinding.getNextStep(creaturePos, playerPos, gss.View, EntityManager);
+                            Action movement = getDirection(creaturePos, nextPos);
+                            tms.AddDelayedAction(movement, creature, coord);
+                        }
+                    });
+
+                Entities.WithAll<PatrollingState>().ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed) =>
+            {
+                if (lastTurn%speed.SpeedRate == 0)
+                
+                {
+                    int2 monsterPos = new int2(coord.x, coord.y);
+                    if (patrol.Equals(default(PatrollingState)) || patrol.destination.Equals(monsterPos))
+                    {
+                        DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                        patrol.destination = ds.GetRandomPositionInRandomRoom();
+                    }
+
+                    EntityManager.SetComponentData(creature, patrol);
+
+                    // Follow defined path now that we have ensured that one exists
+                    int2 nextPos =
+                        AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
+                    Action movement = getDirection(monsterPos, nextPos);
+                    tms.AddDelayedAction(movement, creature, coord);
+                }
+            });
+            }
+        }
+
+        private Action getDirection(int2 current, int2 target)
+        {
+            if (current.y < target.y)
+            {
+                return Action.MoveDown;
+            }
+
+            if (current.y > target.y)
+            {
+                return Action.MoveUp;
+            }
+
+            if (current.x > target.x)
+            {
+                return Action.MoveLeft;
+            }
+
+            if (current.x < target.x)
+            {
+                return Action.MoveRight;
+            }
+
+            return Action.None;
         }
     }
 }

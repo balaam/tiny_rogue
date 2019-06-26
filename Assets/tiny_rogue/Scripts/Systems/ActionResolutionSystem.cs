@@ -27,6 +27,12 @@ namespace game
         public Entity Ent;
         public WorldCoord Wc;
     }
+
+    public struct PendingWait
+    {
+        public Entity Ent;
+        //public WorldCoord Wc;
+    }
     
     
     public struct PendingAttack
@@ -38,6 +44,7 @@ namespace game
     public struct PendingDoorOpen
     {
         public Entity DoorEnt;
+        public Entity OpeningEntity;
     }
     
     [UpdateInGroup(typeof(TurnSystemGroup))]
@@ -65,7 +72,13 @@ namespace game
             
             _mapFillQuery = GetEntityQuery(query);
         }
-        
+
+        protected override void OnDestroy()
+        {
+            if (_entityMap.IsCreated) { _entityMap.Dispose();}
+            if (_flagMap.IsCreated) { _flagMap.Dispose();}
+            base.OnDestroy();
+        }
 
         private void ResizeMaps(int width, int height)
         {
@@ -110,7 +123,7 @@ namespace game
             [ReadOnly] public ArchetypeChunkComponentType<WorldCoord> WorldCoordType;
             [ReadOnly] public ArchetypeChunkComponentType<BlockMovement> BlockedMovementType;
             [ReadOnly] public ArchetypeChunkComponentType<Door> DoorType;
-            [ReadOnly] public ArchetypeChunkComponentType<tag_Hostile> HostileType;
+            [ReadOnly] public ArchetypeChunkComponentType<tag_Attackable> HostileType;
             [ReadOnly] public ArchetypeChunkComponentType<Player> PlayerType;
 
             public void Execute(ArchetypeChunk chunk, int chunkIndex, int firstEntityIndex)
@@ -120,7 +133,7 @@ namespace game
                 byte flags = (byte)EInteractionFlags.None;
                 flags |= (byte)(chunk.Has<BlockMovement>(BlockedMovementType) ? EInteractionFlags.Blocking : EInteractionFlags.None);
                 flags |= (byte)(chunk.Has<Door>(DoorType) ? EInteractionFlags.Door : EInteractionFlags.None);
-                flags |= (byte)(chunk.Has<tag_Hostile>(HostileType) ? EInteractionFlags.Hostile : EInteractionFlags.None);
+                flags |= (byte)(chunk.Has<tag_Attackable>(HostileType) ? EInteractionFlags.Hostile : EInteractionFlags.None);
                 flags |= (byte)(chunk.Has<Player>(PlayerType) ? EInteractionFlags.Player : EInteractionFlags.None);
                 
                 for (var i = 0; i < chunk.Count; i++)
@@ -143,6 +156,7 @@ namespace game
             public NativeArray<byte> FlagsMap;
             public NativeArray<Entity> EntityMap;
             public NativeQueue<PendingMove> PendingMoves;
+            public NativeQueue<PendingWait> PendingWaits;
             public NativeQueue<PendingAttack> PendingAttacks;
             public NativeQueue<PendingDoorOpen> PendingOpens;
 
@@ -165,13 +179,17 @@ namespace game
                     FlagsMap[moveFromIdx] = 0;
                     EntityMap[moveFromIdx] = Entity.Null;
                 }
+                if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
+                {
+                    PendingWaits.Enqueue(new PendingWait {Ent = e}); //Don't move
+                }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
                     PendingAttacks.Enqueue(new PendingAttack { Attacker = e, Defender = EntityMap[moveToIdx]});
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
-                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx]});
+                    PendingOpens.Enqueue(new PendingDoorOpen {DoorEnt = EntityMap[moveToIdx], OpeningEntity = e});
                     FlagsMap[moveToIdx] &= (byte)~(EInteractionFlags.Blocking);
                 }
 
@@ -244,12 +262,13 @@ namespace game
                 WorldCoordType = GetArchetypeChunkComponentType<WorldCoord>(true),
                 BlockedMovementType = GetArchetypeChunkComponentType<BlockMovement>(true),
                 DoorType = GetArchetypeChunkComponentType<Door>(true),
-                HostileType = GetArchetypeChunkComponentType<tag_Hostile>(true),
+                HostileType = GetArchetypeChunkComponentType<tag_Attackable>(true),
                 PlayerType = GetArchetypeChunkComponentType<Player>(true)
             };
             var fillJobHandle = fillJob.Schedule(_mapFillQuery, clearJobHandle);
             
             var pendingMoves = new NativeQueue<PendingMove>(Allocator.TempJob);
+            var pendingWaits = new NativeQueue<PendingWait>(Allocator.TempJob);
             var pendingAttacks = new NativeQueue<PendingAttack>(Allocator.TempJob);
             var pendingOpens = new NativeQueue<PendingDoorOpen>(Allocator.TempJob);
             var actionJob = new ConsumeActionsJob()
@@ -259,6 +278,7 @@ namespace game
                 FlagsMap = _flagMap,
                 EntityMap = _entityMap,
                 PendingMoves = pendingMoves,
+                PendingWaits = pendingWaits,
                 PendingAttacks = pendingAttacks,
                 PendingOpens = pendingOpens
             };
@@ -277,29 +297,73 @@ namespace game
                 EntityManager.SetComponentData<Translation>(pm.Ent, new Translation {Value = trans});
             }
 
+            PendingWait pw;
+            while (pendingWaits.TryDequeue(out pw))
+            {
+                if (EntityManager.HasComponent<Player>(pw.Ent))
+                {
+                    log.AddLog("You bumped into a wall. Ouch.");
+                }
+            }
+
             PendingAttack pa;
             while (pendingAttacks.TryDequeue(out pa))
             {
-                log.AddLog("Attack!!!!!!!!!");
-                EntityManager.SetComponentData(pa.Defender, new HealthPoints {max = 1, now = 0});
+                AttackStat att = EntityManager.GetComponentData<AttackStat>(pa.Attacker);
+                Creature attacker = EntityManager.GetComponentData<Creature>(pa.Attacker);
+                HealthPoints hp = EntityManager.GetComponentData<HealthPoints>(pa.Defender);
+                Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
+                int dmg = RandomRogue.Next(att.range.x, att.range.y);
+                hp.now -= dmg;
+
+                string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
+                string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
+
+                string logStr = "";
+                if(attackerName == "Player")
+                {
+                    logStr = string.Format("You hit the {0} for {1} damage!",
+                        defenderName,
+                        dmg);
+                }
+                else 
+                {
+                    if(defenderName == "Player")
+                        defenderName = "you";
+
+                    logStr = string.Format("{0} hits {1} for {2} damage!",
+                        attackerName,
+                        defenderName,
+                        dmg);
+                }
+
+                log.AddLog(logStr);
+                EntityManager.SetComponentData(pa.Defender, hp);
             }
 
             PendingDoorOpen pd;
             while (pendingOpens.TryDequeue(out pd))
             {
-                log.AddLog("You opened a door.");
+                if (EntityManager.HasComponent<Player>(pd.OpeningEntity))
+                {
+                    log.AddLog("You opened a door.");
+                }
                 Sprite2DRenderer s = EntityManager.GetComponentData<Sprite2DRenderer>(pd.DoorEnt);
-                s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
+                var door = EntityManager.GetComponentData<Door>(pd.DoorEnt);
+                door.Locked = false;
+                door.Opened = true;
                 EntityManager.RemoveComponent(pd.DoorEnt, typeof(BlockMovement));
-                EntityManager.SetComponentData(pd.DoorEnt, new Door {Locked = false});
+                EntityManager.SetComponentData(pd.DoorEnt, door);
                 EntityManager.SetComponentData(pd.DoorEnt, s);
             }
+            
+            // Cleanup
             pendingMoves.Dispose();
             pendingAttacks.Dispose();
+            pendingWaits.Dispose();
             pendingOpens.Dispose();
+            
             return actionJobHandle;
-
-
         }
     }
 }
