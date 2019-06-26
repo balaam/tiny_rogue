@@ -40,7 +40,7 @@ namespace game
                 });
 
             // Determine whether tile is visible to Player
-            Entities.WithAll<Tile>().ForEach((Entity e, ref Tile tile, ref WorldCoord coord) =>
+            Entities.ForEach((Entity e, ref Tile tile, ref WorldCoord coord) =>
             {
                 int2 pos = new int2(coord.x, coord.y);
                 float totalDistance = math.sqrt(math.pow(math.distance(playerPos.x, pos.x), 2) +

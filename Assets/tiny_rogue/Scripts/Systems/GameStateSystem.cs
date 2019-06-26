@@ -134,67 +134,67 @@ namespace game
             });
         }
 
+        private static float GetAlphaForTile(Tile tile)
+        {
+            float alpha = 0;
+            
+            if (tile.IsSeen)
+                alpha = TinyRogueConstants.DefaultColor.a;
+            else if (tile.HasBeenRevealed)
+                alpha = TinyRogueConstants.DefaultColor.a / 2;
+
+            return alpha;
+        }
+
         private void UpdateView(EntityCommandBuffer ecb)
         {
             var sprite = Sprite2DRenderer.Default;
             sprite.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Unity.Tiny.Core2D.Color.Default;
-            
+
             // Set all floor tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
-            Entities.WithAll<Tile, Floor>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
             {
+                sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
-            
+
             // Default all block tiles to a wall
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
-            Entities.WithAll<Tile, Wall>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
             {
+                sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
             
             // Set all door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
-            Entities.WithAll<Tile, Door>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Tile tile) =>
             {
+                sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
             
             // Set all closed door tiles
             sprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
-            Entities.WithAll<Tile, Door, BlockMovement>().ForEach((Entity e, ref Sprite2DRenderer renderer) =>
+            Entities.WithAll<Sprite2DRenderer, Door, BlockMovement>().ForEach((Entity e, ref Tile tile) =>
             {
+                sprite.color.a = GetAlphaForTile(tile);
                 ecb.SetComponent(e, sprite);
             });
-
-            Entities.WithAll<Sprite2DRenderer>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
+            
+            Entities.WithNone<Player,Tile>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord ) =>
                 {
-                    if (IsInGame)
-                    {
-                        Sprite2DRenderer spriteRenderer = Sprite2DRenderer.Default;
-                        spriteRenderer.sprite = renderer.sprite;
-                        spriteRenderer.color = renderer.color;
-
-                        if (EntityManager.HasComponent(e, typeof(Player)))
-                            spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
-                        else
-                        {
-                            //Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
-                            int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
-                            Entity tileEntity = _view.ViewTiles[tileIndex];
-                            Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                            if (tile.IsSeen)
-                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a;
-                            else if (tile.HasBeenRevealed && EntityManager.HasComponent(e, typeof(Tile)))
-                                spriteRenderer.color.a = TinyRogueConstants.DefaultColor.a / 2;
-                            else
-                                spriteRenderer.color.a = 0;
-                        }
-
-                        ecb.SetComponent(e, spriteRenderer);
-                    }
+                    Sprite2DRenderer spriteRenderer = renderer;
+                    
+                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visable or not
+                    int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
+                    Entity tileEntity = _view.ViewTiles[tileIndex];
+                    Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                    spriteRenderer.color.a = GetAlphaForTile(tile);
+                    
+                    ecb.SetComponent(e, spriteRenderer);
                 });
         }
 
