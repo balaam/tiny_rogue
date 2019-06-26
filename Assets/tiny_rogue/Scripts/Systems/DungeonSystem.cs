@@ -52,11 +52,8 @@ namespace game
         }
 
         // Storage for created rooms
-        private List<Room> _rooms = new List<Room>();
-
-        // Storage for all cells
         private Type[] _cells = new Type[0];
-
+        private List<Room> _rooms = new List<Room>();
         private List<int2> _verticalDoors = new List<int2>();
         private List<int2> _horizontalDoors = new List<int2>();
 
@@ -74,6 +71,8 @@ namespace game
             _view = view;
 
             _rooms.Clear();
+            _verticalDoors.Clear();
+            _horizontalDoors.Clear();
             for (var i = 0; i < _cells.Length; i++)
                 _cells[i] = Type.eEmpty;
 
