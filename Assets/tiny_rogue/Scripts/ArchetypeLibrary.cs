@@ -108,7 +108,7 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            s.color = TinyRogueConstants.DefaultColor;
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
 
@@ -136,7 +136,7 @@ namespace game
             c.y = xy.y;
 
             // Only tint sprites if ascii
-            s.color = GlobalGraphicsSettings.ascii ? TinyRogueConstants.DefaultColor : Color.Default;
+            s.color = TinyRogueConstants.DefaultColor;
             if(GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];

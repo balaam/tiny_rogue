@@ -10,7 +10,12 @@ namespace game
         /// </summary>
         public const int DoorProbability = 5;
         public const int StartPlayerHealth = 10;
-        public static float3 OffViewport = new float3(-9999, -9999, 0);
-        public static Color DefaultColor = new Color(168.0f/255.0f, 168.0f/255.0f,168.0f/255.0f);
+        public const float OffViewport = -9999;
+        public const float DefaultColorBase = 168.0f/255.0f;
+
+        public static Unity.Tiny.Core2D.Color DefaultColor =>
+            GlobalGraphicsSettings.ascii
+                ? new Unity.Tiny.Core2D.Color(TinyRogueConstants.DefaultColorBase, TinyRogueConstants.DefaultColorBase, TinyRogueConstants.DefaultColorBase)
+                : Unity.Tiny.Core2D.Color.Default;
     }
 }
