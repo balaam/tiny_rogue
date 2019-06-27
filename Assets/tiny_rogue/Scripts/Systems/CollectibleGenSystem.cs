@@ -1,11 +1,49 @@
+using System.Collections.Generic;
 using game;
 using Unity.Entities;
 
 public class CollectibleGenSystem : ComponentSystem
 {
-    public void GetRandomCollectible(EntityManager entityManager, Entity entity, CanBePickedUp c, HealthBonus hb )
+    List<CollectibleEntry> collectiblesList;
+    bool _isLoaded;
+    
+    protected override void OnCreate()
     {
-        CollectibleEntry colEntry = new CollectibleEntry();
+
+    }
+    
+    public void GetRandomCollectible(EntityCommandBuffer ecb, Entity entity, CanBePickedUp c, HealthBonus hb )
+    {
+        if (collectiblesList.Count <= 0)
+            return;
+        
+        var colEntry = collectiblesList[RandomRogue.Next(0, collectiblesList.Count)];
+        c.appearance.sprite = GlobalGraphicsSettings.ascii ? colEntry.spriteAscii : colEntry.spriteGraphics;
+        c.description = colEntry.description;
+        c.name = colEntry.name;
+
+        ecb.SetComponent(entity, c);
+        
+        if (colEntry.healthBonus != 0)
+        {
+            hb.healthAdded = colEntry.healthBonus;
+            
+            //TODO: fix this
+            //entityManager.SetComponentData(entity, hb);
+            ecb.SetComponent(entity, hb);
+
+        }
+
+
+    }
+
+    protected override void OnUpdate()
+    {
+        if (_isLoaded) 
+            return;
+        
+        
+        collectiblesList = new List<CollectibleEntry>();
         
         Entities.WithAll<CollectibleLookup>().ForEach((lookup) =>
         {
@@ -14,30 +52,15 @@ public class CollectibleGenSystem : ComponentSystem
         
             if (collectibles.Length == 0)
                 return;
-        
-            colEntry = collectibles[RandomRogue.Next(0, collectibles.Length)];
-            c.appearance.sprite = GlobalGraphicsSettings.ascii ? colEntry.spriteAscii : colEntry.spriteGraphics;
-            c.description = colEntry.description;
-            c.name = colEntry.name;
 
-            entityManager.SetComponentData(entity, c);
-        
-            if (colEntry.healthBonus != 0)
+            for (int i= 0; i < collectibles.Length; i++)
             {
-                hb.healthAdded = colEntry.healthBonus;
-            
-                //TODO: fix this
-                //entityManager.SetComponentData(entity, hb);
+                collectiblesList.Add(collectibles[i]);
             }
 
-
+            _isLoaded = true;
         });
-        
 
-    }
-
-    protected override void OnUpdate()
-    {
         
     }
 }

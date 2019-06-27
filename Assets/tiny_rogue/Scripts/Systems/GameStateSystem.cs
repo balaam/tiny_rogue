@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
+using Unity.Tiny.Core;
 using Unity.Tiny.Input;
 using UnityEngine;
 using Color = Unity.Tiny.Core2D.Color;
@@ -44,6 +46,10 @@ namespace game
         private uint CurrentSeed = 1;
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
+        
+        List<Sprite2DRenderer> spriteRenderers = new List<Sprite2DRenderer>();
+        bool populateInventory = false;
+
 
         private uint MakeNewRandom()
         {
@@ -109,58 +115,9 @@ namespace game
         {
             CurrentLevel++;
             CleanUpGameWorld(PostUpdateCommands);
+            bool finalLevel = CurrentLevel == LastDungeonNumber;
+            _dungeon.GenerateDungeon(PostUpdateCommands, GameView, _creatureLibrary, _archetypeLibrary, CurrentLevel, finalLevel);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, GameView, _creatureLibrary, _archetypeLibrary, CurrentLevel);
-
-            // Apply doors
-            foreach (var doorCoord in _dungeon.GetHorizontalDoors())
-            {
-                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
-                {
-                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, GameView.ViewCoordToWorldPos(doorCoord), true);
-                }
-            }
-            foreach (var doorCoord in _dungeon.GetVerticalDoors())
-            {
-                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
-                {
-                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, GameView.ViewCoordToWorldPos(doorCoord), false);
-                }
-            }
-
-            // Hard code a couple of spear traps, so the player can die.
-            var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
-            var trap2Coord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, GameView.ViewCoordToWorldPos(trap1Coord));
-            _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, GameView.ViewCoordToWorldPos(trap2Coord));
-
-            if (CurrentLevel != LastDungeonNumber)
-            {
-                var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord,
-                    GameView.ViewCoordToWorldPos(stairwayCoord));
-            }
-            else
-            {
-                var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateCrown(EntityManager, crownCoord, GameView.ViewCoordToWorldPos(crownCoord));
-            }
-
-            GenerateGold();
-
-            GenerateCollectibles();
-
-            GenerateHealingItems();
-        }
-
-        void GenerateCollectibles()
-        {
-            for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
-             {
-                 //TODO: figure out how it can know to avoid tiles that already have an entity
-                 var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
-                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, GameView.ViewCoordToWorldPos(collectibleCoord));
-             }
         }
 
         void ClearView(EntityCommandBuffer ecb)
@@ -172,30 +129,6 @@ namespace game
                     sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(' ')]
                 });
             });
-        }
-
-        void GenerateGold()
-       {
-            // Saving the num in a variable so it can be used for
-            // the replay system, if need be
-            int goldPiles = RandomRogue.Next(10);
-            for (int i = 0; i < goldPiles; i++)
-            {
-                //TODO: figure out how it can know to avoid tiles that already have an entity
-                var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateGold(EntityManager, goldCoord, GameView.ViewCoordToWorldPos(goldCoord));
-            }
-       }
-
-        void GenerateHealingItems()
-        {
-            int healingItems = RandomRogue.Next(0, 5);
-            for (int i = 0; i < healingItems; i++)
-            {
-                var healCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateHealingItem(EntityManager, healCoord, GameView.ViewCoordToWorldPos(healCoord),
-                    RandomRogue.Next(-2, 6));
-            }
         }
 
         protected override void OnUpdate()
@@ -246,6 +179,10 @@ namespace game
                 case eGameState.Inventory:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (populateInventory)
+                    {
+                        PopulateInventory();
+                    }
                     if (input.GetKeyDown(KeyCode.Escape))
                     {
                         MoveBackToGame(PostUpdateCommands);
@@ -361,7 +298,7 @@ namespace game
 
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
+            log.AddLog("Welcome! Use the arrow keys to explore, z to interact and x to wait.");
             _state = eGameState.InGame;
 
             // Update the view
@@ -447,6 +384,24 @@ namespace game
                     ecb.RemoveComponent<Disabled>(e);
                 }
             });
+
+            populateInventory = true;
+        }
+
+        void PopulateInventory()
+        {
+
+            spriteRenderers.Clear();
+            
+            Entities.WithAll<InventoryItemUI>().ForEach((Entity e, ref Sprite2DRenderer spr) =>
+            {
+                spriteRenderers.Add(spr);
+            });
+
+            var invSys = EntityManager.World.GetExistingSystem<InventorySystem>();
+            invSys.RenderInventoryItems(spriteRenderers);
+            
+            populateInventory = false;
 
         }
 

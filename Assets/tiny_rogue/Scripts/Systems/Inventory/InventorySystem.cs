@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
@@ -11,12 +12,15 @@ namespace game
     public class InventorySystem : ComponentSystem
     {
         Entity inventoryEntity;
-        int2 lastPosition;            
+        int2 lastPosition;
+        LogSystem logSystem;
+        
 
         protected override void OnCreate()
         {
             inventoryEntity = EntityManager.CreateEntity();
             EntityManager.AddBuffer<InventoryItem>(inventoryEntity);
+            logSystem = EntityManager.World.GetOrCreateSystem<LogSystem>();
         }
 
         protected override void OnDestroy()
@@ -28,8 +32,18 @@ namespace game
         {
             
         }
-        
-        
+
+        public void RenderInventoryItems(List<Sprite2DRenderer> spriteRenderers)
+        {
+            var Items = EntityManager.GetBuffer<InventoryItem>(inventoryEntity);
+            int loopLength = math.min(spriteRenderers.Count, Items.Length);
+            for (int i = 0; i < loopLength; i++)
+            {
+                var renderer = spriteRenderers[i]; 
+                renderer.sprite = Items[i].appearance.sprite;
+            }
+           
+        }
 
         public void LogItemsAt(WorldCoord playerCoord)
         {
@@ -40,27 +54,24 @@ namespace game
                 {
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                        log.AddLog("You found a " + pickable.name);
+                        logSystem.AddLog("You found a " + pickable.name);
                     }
                 });
         }
 
-        public void CollectItemsAt(WorldCoord playerCoord)
+        public void CollectItemsAt(EntityCommandBuffer ecb, WorldCoord playerCoord)
         {
             int2 playerPos = new int2(playerCoord.x, playerCoord.y);
-            var log = EntityManager.World.GetExistingSystem<LogSystem>();
-            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
 
             Entities.WithAll<Collectible>().ForEach(
                 (Entity item, ref WorldCoord itemCoord, ref CanBePickedUp pickable) =>
                 {
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        log.AddLog("You picked up a " + pickable.name);
+                        logSystem.AddLog("You picked up a " + pickable.name);
                         AddItem(pickable);
                         
-                        pis.PostUpdateCommands.DestroyEntity(item);
+                        ecb.DestroyEntity(item);
                     }
                 });
         }
