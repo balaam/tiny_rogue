@@ -54,7 +54,7 @@ namespace game
                 {
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        logSystem.AddLog("You found a " + pickable.name);
+                        logSystem.AddLog("You found a " + pickable.name.ToString());
                     }
                 });
         }
