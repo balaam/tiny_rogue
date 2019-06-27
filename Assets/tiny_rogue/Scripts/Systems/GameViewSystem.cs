@@ -52,17 +52,18 @@ namespace game
             tileSprite.color = TinyRogueConstants.DefaultColor;
 
             // Set all floor tiles
-            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
-            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
+            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile, ref Floor floor) =>
             {
+                tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.', floor.TileOffset)];
                 tileSprite.color.a = GetAlphaForStaticTile(tile);
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });
 
             // Default all block tiles to a wall
-            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
-            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
+            
+            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile, ref Wall wall) =>
             {
+                tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#', wall.TileOffset)];
                 tileSprite.color.a = GetAlphaForStaticTile(tile);
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });

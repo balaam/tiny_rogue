@@ -36,7 +36,7 @@ namespace game
             get { return _loaded; }
         }
 
-        public static char ConvertToGraphics(char c)
+        public static char ConvertToGraphics(char c, int offset = 0)
         {
             char result = c;
 
@@ -80,10 +80,10 @@ namespace game
                     result = (char) SpriteEnum.ClosedHorizontalDoor;
                     break;
                 case '#':
-                    result = (char) SpriteEnum.Wall;
+                    result = (char) (SpriteEnum.Wall /*+ offset*/);
                     break;
                 case '.':
-                    result = (char) SpriteEnum.Floor;
+                    result = (char) (SpriteEnum.Floor + offset);
                     break;
             }
 
