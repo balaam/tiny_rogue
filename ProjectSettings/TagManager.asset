@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Interactables
+    uniqueID: 4224661955
+    locked: 0
+  - name: Characters
+    uniqueID: 232955027
+    locked: 0
+  - name: Doors
+    uniqueID: 2382977427
+    locked: 0
+  - name: UI
+    uniqueID: 3324589271
+    locked: 0
+  - name: New Layer
+    uniqueID: 1991525531
+    locked: 0
