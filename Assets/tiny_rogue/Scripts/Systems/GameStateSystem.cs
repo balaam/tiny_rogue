@@ -243,7 +243,7 @@ namespace game
                     {
                         MoveToHiScores(PostUpdateCommands);
                     }
-                    else if (input.GetKeyUp(KeyCode.Space))
+                    else if (input.GetKeyDown(KeyCode.Space))
                     {
                         MoveToInGame(PostUpdateCommands, false);
                     }
@@ -284,9 +284,9 @@ namespace game
                 case eGameState.GameOver:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyUp(KeyCode.Space))
+                    if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen(PostUpdateCommands);
-                    else if (input.GetKeyUp(KeyCode.R))
+                    else if (input.GetKeyDown(KeyCode.R))
                         MoveToInGame(PostUpdateCommands, true);
                 } break;
                 case eGameState.NextLevel:
@@ -315,7 +315,7 @@ namespace game
                         log.AddLog("Move to the crown to exit");
                         _state = eGameState.InGame;
                     }
-                    else if (input.GetKeyUp(KeyCode.Space))
+                    else if (input.GetKeyDown(KeyCode.Space))
                     {
                         MoveToTitleScreen(PostUpdateCommands);
                     }
@@ -323,7 +323,7 @@ namespace game
                 case eGameState.HiScores:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyUp(KeyCode.Space))
+                    if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen(PostUpdateCommands);
                 } break;
             }
