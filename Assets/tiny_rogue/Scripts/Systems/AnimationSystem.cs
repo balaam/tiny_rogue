@@ -134,8 +134,7 @@ public class AnimationSystem : ComponentSystem
                         animated.AnimationTime = 0.25f;
                         break;
                     case Action.Move:
-                        sequencePlayer.speed = 1.5f;
-                        animated.AnimationTime = 0.25f;
+                        animated.AnimationTime = 0.375f;
                         break;
                 }
                 SetAnimation(ref animated, ref sequencePlayer);
