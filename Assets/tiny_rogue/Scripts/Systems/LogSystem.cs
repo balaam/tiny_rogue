@@ -111,17 +111,26 @@ namespace game
                 else
                 {
                     var gLog = EntityManager.World.GetOrCreateSystem<GraphicalLogSystem>();
+                    // Calculate if too many log lines
                     var tooManyLines = _newLogs.Count > GraphicalLogSystem.MaxNumberOfLines;
+                    
                     for (int i = 0; i < GraphicalLogSystem.MaxNumberOfLines; i++)
                     {
+                        // Stop when we run out
+                        if (_newLogs.Count == 0) break;
+                        
+                        // Get entry
                         LogEntry topLog =  _newLogs[0];
                         _newLogs.RemoveAt(0);
                         _oldLogs.Add(topLog);
+                        
+                        // Set log to be displayed
                         var needsSpace = tooManyLines && i == GraphicalLogSystem.MaxNumberOfLines 
                             ? $" {pageMsg}" : "";
                         gLog.AddToLog($"{topLog.text}{needsSpace}");
                     }
                     
+                    // Freeze if too many logs available
                     if (tooManyLines)
                     {
                         gss.MoveToReadQueuedLog();
