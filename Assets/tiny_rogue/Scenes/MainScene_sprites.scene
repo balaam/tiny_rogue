@@ -17,6 +17,7 @@
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": -4545966818087984541, "Type": 3},
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 9192807146851360899, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -6397690473321333150, "Type": 3},
+        { "Guid": "4a485c5932e283a4d8f9b04717171ef1", "FileId": 11400000, "Type": 2},
         { "Guid": "94e7e28a0a80d6e48b06cfed2ba79c64", "FileId": 21300000, "Type": 3},
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": 1337337633081462466, "Type": 3},
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -5332357784958868068, "Type": 3},
@@ -53,6 +54,7 @@
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5276079933208924874, "Type": 3},
         { "Guid": "3190c26c81738c54ea3a0213350b9e00", "FileId": 21300000, "Type": 3},
         { "Guid": "52cb17a44201e914295c92336a633447", "FileId": 21300000, "Type": 3},
+        { "Guid": "11d4cd1f8f67a044aaf2df44bbff0f71", "FileId": 11400000, "Type": 2},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 1899901556599167055, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 6399280041854345734, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 820585990694486454, "Type": 3},
@@ -358,7 +360,7 @@
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {
-                "x": 0.25
+                "x": 0.3
             },
             "anchorMax": {
                 "x": 0.5,
@@ -649,10 +651,11 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text"
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fd1678de05f34a4aadd22fc99828d9c1",
+            "style": "28b4d5b9099d42cba0416aa8c54a3e4d",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -784,10 +787,11 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text"
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fd1678de05f34a4aadd22fc99828d9c1",
+            "style": "33b36ab6e4da437b958c5ef9e1e5cb65",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -1395,7 +1399,7 @@
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {},
             "anchorMax": {
-                "x": 0.25,
+                "x": 0.3,
                 "y": 1
             },
             "sizeDelta": {},
@@ -1744,7 +1748,7 @@
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {
-                "x": 0.4
+                "x": 0.5
             },
             "anchorMax": {
                 "x": 1,
@@ -1840,7 +1844,7 @@
             "b": 13384110438909731321
         }, {
             "$type": "Unity.Tiny.Core2D.Camera2D, Unity.Tiny.Core2D",
-            "halfVerticalSize": 4,
+            "halfVerticalSize": 6,
             "rect": {
                 "width": 1,
                 "height": 1
@@ -2858,6 +2862,234 @@
             }]
         }, {
             "$type": "game.InventoryUI, tiny_rogue"
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
+        }, {
+            "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
+            "style": "8b31ed646d3a4e34be4f8133b6ad7817",
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blending": 0
+        }, {
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
+            "Value": "f35e8402a9934d8dbb3eca002528935e"
+        }, {
+            "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
+            "color": {
+                "r": 1,
+                "g": 1,
+                "b": 1,
+                "a": 1
+            },
+            "size": 18
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 2
+        }, {
+            "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
+            "anchorMin": {
+                "y": 0.15
+            },
+            "anchorMax": {
+                "x": 1,
+                "y": 0.5
+            },
+            "sizeDelta": {},
+            "anchoredPosition": {},
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 10030058860715855412,
+            "b": 13713321449474586647
+        }, {
+            "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
+            "Value": {
+                "y": 74
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.Rotation, Unity.Tiny.Core2D",
+            "Value": {
+                "value": {
+                    "w": 1
+                }
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
+            "Value": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
+            "layer": 4,
+            "order": 30,
+            "id": -970378025
+        }, {
+            "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
+            "Elements": [{
+                "c": "Y"
+            }, {
+                "c": "o"
+            }, {
+                "c": "u"
+            }, {
+                "c": " "
+            }, {
+                "c": "e"
+            }, {
+                "c": "n"
+            }, {
+                "c": "t"
+            }, {
+                "c": "e"
+            }, {
+                "c": "r"
+            }, {
+                "c": " "
+            }, {
+                "c": "t"
+            }, {
+                "c": "h"
+            }, {
+                "c": "e"
+            }, {
+                "c": " "
+            }, {
+                "c": "d"
+            }, {
+                "c": "u"
+            }, {
+                "c": "n"
+            }, {
+                "c": "g"
+            }, {
+                "c": "e"
+            }, {
+                "c": "o"
+            }, {
+                "c": "n"
+            }, {
+                "c": "."
+            }, {
+                "c": " "
+            }, {
+                "c": "U"
+            }, {
+                "c": "s"
+            }, {
+                "c": "e"
+            }, {
+                "c": " "
+            }, {
+                "c": "a"
+            }, {
+                "c": "r"
+            }, {
+                "c": "r"
+            }, {
+                "c": "o"
+            }, {
+                "c": "w"
+            }, {
+                "c": " "
+            }, {
+                "c": "k"
+            }, {
+                "c": "e"
+            }, {
+                "c": "y"
+            }, {
+                "c": "s"
+            }, {
+                "c": " "
+            }, {
+                "c": "t"
+            }, {
+                "c": "o"
+            }, {
+                "c": " "
+            }, {
+                "c": "e"
+            }, {
+                "c": "x"
+            }, {
+                "c": "p"
+            }, {
+                "c": "l"
+            }, {
+                "c": "o"
+            }, {
+                "c": "r"
+            }, {
+                "c": "e"
+            }, {
+                "c": "!"
+            }]
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "L"
+            }, {
+                "c": "o"
+            }, {
+                "c": "g"
+            }, {
+                "c": " "
+            }, {
+                "c": "T"
+            }, {
+                "c": "e"
+            }, {
+                "c": "x"
+            }, {
+                "c": "t"
+            }, {
+                "c": " "
+            }, {
+                "c": "("
+            }, {
+                "c": "1"
+            }, {
+                "c": ")"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 266869500686333426
+            }, {
+                "StableTypeHash": 9104342357061045742
+            }, {
+                "StableTypeHash": 17378348762221180850
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 11301794271907081408
+            }, {
+                "StableTypeHash": 5953061511517805254
+            }, {
+                "StableTypeHash": 15392216118221209652
+            }, {
+                "StableTypeHash": 1511947279668656474
+            }, {
+                "StableTypeHash": 17649336122499667438
+            }, {
+                "StableTypeHash": 16791256614846730296
+            }]
         }]
     }, {
         "Components": [{
@@ -4943,10 +5175,11 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text"
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fd1678de05f34a4aadd22fc99828d9c1",
+            "style": "e8e748d8d6bb44eda9c9cf12d4ab1026",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -5396,9 +5629,11 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text"
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "36e03e71f3c780fb97ac1cf954d721e2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
+            "style": "f14870b5d05b4231a0b085b61c3d973b",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -5557,8 +5792,8 @@
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {},
             "anchorMax": {
-                "x": 0.4,
-                "y": 0.2
+                "x": 0.5,
+                "y": 0.15
             },
             "sizeDelta": {},
             "anchoredPosition": {},
@@ -5758,10 +5993,11 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text"
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
-            "style": "fd1678de05f34a4aadd22fc99828d9c1",
+            "style": "f69058a937f2481aa5990a0135c34ec2",
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -6175,7 +6411,8 @@
         }]
     }, {
         "Components": [{
-            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text"
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
         }, {
             "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
             "style": "fd1678de05f34a4aadd22fc99828d9c1",
@@ -6201,10 +6438,12 @@
             "Index": 1
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
-            "anchorMin": {},
+            "anchorMin": {
+                "y": 0.5
+            },
             "anchorMax": {
                 "x": 1,
-                "y": 1
+                "y": 0.85
             },
             "sizeDelta": {},
             "anchoredPosition": {},
@@ -6249,51 +6488,95 @@
             }, {
                 "c": " "
             }, {
-                "c": "a"
-            }, {
-                "c": "r"
-            }, {
                 "c": "e"
             }, {
-                "c": " "
-            }, {
-                "c": "i"
-            }, {
                 "c": "n"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": " "
-            }, {
-                "c": "v"
-            }, {
-                "c": "a"
-            }, {
-                "c": "s"
             }, {
                 "c": "t"
             }, {
-                "c": " "
-            }, {
-                "c": "c"
-            }, {
-                "c": "a"
-            }, {
-                "c": "v"
-            }, {
                 "c": "e"
             }, {
                 "c": "r"
+            }, {
+                "c": " "
+            }, {
+                "c": "t"
+            }, {
+                "c": "h"
+            }, {
+                "c": "e"
+            }, {
+                "c": " "
+            }, {
+                "c": "d"
+            }, {
+                "c": "u"
+            }, {
+                "c": "n"
+            }, {
+                "c": "g"
+            }, {
+                "c": "e"
+            }, {
+                "c": "o"
             }, {
                 "c": "n"
             }, {
                 "c": "."
             }, {
-                "c": "."
+                "c": " "
             }, {
-                "c": "."
+                "c": "U"
+            }, {
+                "c": "s"
+            }, {
+                "c": "e"
+            }, {
+                "c": " "
+            }, {
+                "c": "a"
+            }, {
+                "c": "r"
+            }, {
+                "c": "r"
+            }, {
+                "c": "o"
+            }, {
+                "c": "w"
+            }, {
+                "c": " "
+            }, {
+                "c": "k"
+            }, {
+                "c": "e"
+            }, {
+                "c": "y"
+            }, {
+                "c": "s"
+            }, {
+                "c": " "
+            }, {
+                "c": "t"
+            }, {
+                "c": "o"
+            }, {
+                "c": " "
+            }, {
+                "c": "e"
+            }, {
+                "c": "x"
+            }, {
+                "c": "p"
+            }, {
+                "c": "l"
+            }, {
+                "c": "o"
+            }, {
+                "c": "r"
+            }, {
+                "c": "e"
+            }, {
+                "c": "!"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -6313,6 +6596,14 @@
                 "c": "x"
             }, {
                 "c": "t"
+            }, {
+                "c": " "
+            }, {
+                "c": "("
+            }, {
+                "c": "0"
+            }, {
+                "c": ")"
             }]
         }, {
             "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
