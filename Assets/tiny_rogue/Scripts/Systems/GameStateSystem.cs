@@ -41,7 +41,7 @@ namespace game
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
-        public int CurrentLevel = 1;
+        public int CurrentLevel = 0;
         private int LastDungeonNumber;
 
         private uint MakeNewRandom()
@@ -106,9 +106,10 @@ namespace game
 
         public void GenerateLevel()
         {
+            CurrentLevel++;
             CleanUpGameWorld(PostUpdateCommands);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary, CurrentLevel);
 
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
@@ -147,7 +148,6 @@ namespace game
             GenerateGold();
 
             GenerateCollectibles();
-            CurrentLevel++;
 
 
         }
@@ -287,7 +287,7 @@ namespace game
 
         public void GenerateCombatTestLevel()
         {
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary);
+            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary, 1);
 
             for (int i = 0; i < 20; i++)
             {
@@ -335,6 +335,7 @@ namespace game
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    CurrentLevel = 0;
                     if (input.GetKeyDown(KeyCode.D))
                     {
                         MoveToDebugLevelSelect(PostUpdateCommands);
