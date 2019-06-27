@@ -46,7 +46,7 @@ namespace game
                     var hpMaxAsStr = hp.max.ToString();
                     var lvlAsStr = CopyFromEnd(level.level.ToString(), 3);
                     var xpNowAsStr = CopyFromEnd(xp.now.ToString(), 3);
-                    var xpMaxAsStr = "???";
+                    var xpMaxAsStr = CopyFromEnd(xp.next.ToString(), 3);
                     var gpAsStr = CopyFromEnd(gp.count.ToString(), 4, '0');
                     var flAsStr = CopyFromEnd(gss.CurrentLevel.ToString(), 2, '0');
 
