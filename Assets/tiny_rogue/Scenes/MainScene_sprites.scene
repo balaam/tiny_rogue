@@ -23,6 +23,7 @@
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 5288823807249927487, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 2719343640401242082, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -615346627500165536, "Type": 3},
+        { "Guid": "329edf0b8a92d3c458c0dc2f7087410e", "FileId": 21300000, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": 5468823273806312931, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": -2889467469415547705, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": -1450111586348494558, "Type": 3},
@@ -563,6 +564,8 @@
                 "sprite": "a4d83ca06a75dbfdd103d72c935d65dd"
             }, {
                 "sprite": "69ccfa309a3ecb3522834a00283242b3"
+            }, {
+                "sprite": "3d2da7ef9d6d53183eab77b6a4c827b9"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
