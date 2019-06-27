@@ -133,10 +133,7 @@ namespace game
                 _turnCount++;
 
             if (shouldTickSystems)
-            {
                 _turnCount++;
-                Debug.Log($"New Turn {_turnCount}");
-            }
             NeedToTickTurn = false;
         }
 
