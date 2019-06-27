@@ -85,7 +85,7 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level)
         {
             _ecb = cb;
             _view = view;
@@ -130,7 +130,7 @@ namespace game
             PlaceCreatures();
 
             PlaceDungeon();
-            PlacePlayer();
+            PlacePlayer(level == 1);
         }
 
         private void PlaceCreatures()
@@ -153,7 +153,7 @@ namespace game
             }
         }
 
-        private void PlacePlayer()
+        private void PlacePlayer(bool reset)
         {
             // Place the player
             Entities.WithAll<PlayerInput>().ForEach((Entity player) =>
@@ -161,7 +161,15 @@ namespace game
                 int2 randomStartPosition = GetPlayerStartPosition();
                 WorldCoord worldCoord = new WorldCoord {x = randomStartPosition.x, y = randomStartPosition.y};
                 Translation translation = new Translation {Value = _view.ViewCoordToWorldPos(randomStartPosition)};
-                _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
+                if (reset)
+                {
+                    _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
+                }
+                else
+                {
+                    _ecb.SetComponent(player, worldCoord);
+                    _ecb.SetComponent(player, translation);
+                }
             });
         }
 
