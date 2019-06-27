@@ -51,7 +51,7 @@ namespace game
                 return Action.MoveLeft;
             if (input.GetKeyDown(KeyCode.Z))
                 return Action.Interact;
-            if (input.GetKeyDown(KeyCode.Space))
+            if (input.GetKeyDown(KeyCode.X))
                 return Action.Wait;
 
             return Action.None;
