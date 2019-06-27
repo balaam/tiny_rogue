@@ -123,7 +123,8 @@ namespace game
                 typeof(Sight),
                 typeof(Speed),
                 typeof(Sprite2DSequencePlayer),
-                typeof(NeedsAnimationStart)
+                typeof(NeedsAnimationStart),
+                typeof(LastMove)
             });
         }
 
@@ -217,6 +218,7 @@ namespace game
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0, Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
+            LastMove lm = new LastMove { wasOnStairs = false };
             
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
@@ -236,6 +238,7 @@ namespace game
             entityManager.SetComponentData(entity, mobile);
             entityManager.SetComponentData(entity, animated);
             entityManager.SetComponentData(entity, sight);
+            entityManager.SetComponentData(entity, lm);
             
             return entity;
         }
@@ -253,6 +256,7 @@ namespace game
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
+            LastMove lm = new LastMove { wasOnStairs = false };
             
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
@@ -274,6 +278,7 @@ namespace game
             cb.SetComponent(player, sight);
             cb.SetComponent(player, worldCoord);
             cb.SetComponent(player, translation);
+            cb.SetComponent(player, lm);
         }
         
     }
