@@ -37,8 +37,8 @@ namespace game
                             Parent parent = new Parent();
                             Translation trans = pos;
                             Sprite2DRenderer deathRenderer = new Sprite2DRenderer { color = TinyRogueConstants.DefaultColor };
-                            Sprite2DSequencePlayer deathPlayer = new Sprite2DSequencePlayer { speed = 0.5f };
-                            Animated deathAnimated = new Animated { Id = animated.Id, Direction = Direction.Right, Action = Action.Die, AnimationTime = 0.5f, AnimationTrigger = true };
+                            Sprite2DSequencePlayer deathPlayer = new Sprite2DSequencePlayer { speed = 0.25f };
+                            Animated deathAnimated = new Animated { Id = animated.Id, Direction = Direction.Right, Action = Action.Die, AnimationTime = 1f, AnimationTrigger = true };
                             LayerSorting layerSorting = new LayerSorting { layer = 2 };
                             var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
                             anim.SetAnimation(ref deathAnimated, ref deathPlayer);

@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Tiny.Core2D;
+using UnityEngine;
+using Color = Unity.Tiny.Core2D.Color;
 
 namespace game
 {
@@ -33,7 +34,7 @@ namespace game
         /// <param name="log">The log line. Max length is View.Width (Default 80)</param>
         public void AddLog(string log)
         {
-            var entry = new LogEntry { loc = DefaultLocation, text= log };
+            var entry = new LogEntry { loc = DefaultLocation, text = log };
             _newLogs.Add(entry);
         }
 
@@ -76,20 +77,26 @@ namespace game
 
             if (_newLogs.Count > 0)
             {
-                
+                var gLog = EntityManager.World.GetOrCreateSystem<GraphicalLogSystem>();
                 // Write the new log line out, remove it from the new list and add it to the old list.
                 LogEntry topLog =  _newLogs[0];
                 _newLogs.RemoveAt(0);
                 _oldLogs.Add(topLog);
-                view.ClearLine(cb, 0, ' ');
-                view.Blit(cb, new int2(0,0), topLog.text);
+                if (GlobalGraphicsSettings.ascii)
+                {
+                    view.ClearLine(cb, 0, ' ');
+                    view.Blit(cb, new int2(0, 0), topLog.text);
+                }
+                else
+                {
+                    gLog.AddToLog(topLog.text);
+                }
 
                 int blitEnd = topLog.text.Length + 1; // + 1 for the space
                 
                 string pageMsg = "[space]";
                 if (HasQueuedLogs())
                 {
-                    var gLog = EntityManager.World.GetOrCreateSystem<GraphicalLogSystem>();
                     LogEntry nextTopLog = _newLogs[0];
 
                     if (GlobalGraphicsSettings.ascii)
@@ -114,13 +121,17 @@ namespace game
                         _oldLogs.Add(nextTopLog);
                         var needsSpace = _newLogs.Count != 0 ? $" {pageMsg}" : "";
                         gLog.AddToLog($"{nextTopLog.text}{needsSpace}");
+                        if (_newLogs.Count > 0)
+                        {
+                            gss.MoveToReadQueuedLog();
+                        }
                     }
                 }
 
-                while(_oldLogs.Count > MaxLogHistory)
+                while (_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
             }
-            else if(gss.IsInGame)
+            else if (gss.IsInGame)
                 view.ClearLine(cb, 0, ' ');
         }
         
