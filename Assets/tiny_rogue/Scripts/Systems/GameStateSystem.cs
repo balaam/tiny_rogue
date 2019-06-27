@@ -354,6 +354,9 @@ namespace game
             tms.ResetTurnCount();
             log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
+            
+            // Update the view
+            GameViewSystem.UpdateViewNeeded = true;
         }
         
         void MoveToInventoryScreen(EntityCommandBuffer cb)
