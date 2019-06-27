@@ -67,36 +67,24 @@ namespace game
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });
             
-            
-            var horizontalDoorOpen = Sprite2DRenderer.Default;
-            horizontalDoorOpen.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; 
-
-            var verticalDoorOpen = Sprite2DRenderer.Default;
-            verticalDoorOpen.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
-            
-            var horizontalDoorClosed = Sprite2DRenderer.Default;
-            horizontalDoorClosed.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')];
-            
-            var verticalDoorClosed = Sprite2DRenderer.Default;
-            verticalDoorClosed.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
-            
             // Set all door tiles// horizontal // vertical
             // Set all closed door tiles // closed horizontal // closed vertical
+            var doorSprite = Sprite2DRenderer.Default;
+            doorSprite.color = TinyRogueConstants.DefaultColor;
             Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Door door, ref WorldCoord coord) =>
             {
-                Sprite2DRenderer spriteRenderer;
                 if (door.Opened)
-                    spriteRenderer = door.Horizontal ? horizontalDoorOpen : verticalDoorOpen;
+                    doorSprite.sprite = door.Horizontal ? SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')] : SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
                 else
-                    spriteRenderer = door.Horizontal ? horizontalDoorClosed : verticalDoorClosed;
+                    doorSprite.sprite = door.Horizontal ? SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')]: SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
                 
                 // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
                 var tileIndex = View.XYToIndex(new int2(coord.x, coord.y), GameStateSystem.GameView.Width);
                 var tileEntity = GameStateSystem.GameView.ViewTiles[tileIndex];
                 var tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                spriteRenderer.color.a = GetAlphaForStaticTile(tile);
+                doorSprite.color.a = GetAlphaForStaticTile(tile);
                 
-                PostUpdateCommands.SetComponent(e, spriteRenderer);
+                PostUpdateCommands.SetComponent(e, doorSprite);
             });
             
             // All remaining static entities can be updated but need to keep their colour
