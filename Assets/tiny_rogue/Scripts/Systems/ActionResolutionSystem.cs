@@ -352,6 +352,8 @@ namespace game
                 HealthPoints hp = EntityManager.GetComponentData<HealthPoints>(pa.Defender);
                 Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
                 HealthPoints attackerHp = EntityManager.GetComponentData<HealthPoints>(pa.Attacker);
+                ExperiencePoints attackerXp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
+                ExperiencePoints defenderXp = EntityManager.GetComponentData<ExperiencePoints>(pa.Defender);
 
                 if (attackerHp.now <= 0) // don't let the dead attack, is this hack? Maybe.
                     continue;
@@ -376,6 +378,7 @@ namespace game
                 {
                     logStr = string.Concat("You destroy the ", defenderName);
                     logStr = string.Concat(logStr, ".");
+                    attackerXp.now += 5;
                 }
                 else if (playerAttack)
                 {
@@ -388,6 +391,7 @@ namespace game
 
                     if(killHit)
                         logStr = string.Concat(logStr, " Killing it.");
+                        attackerXp.now += 5;
                 }
                 else
                 {
