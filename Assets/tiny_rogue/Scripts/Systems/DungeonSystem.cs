@@ -9,12 +9,6 @@ namespace game
     [AlwaysUpdateSystem]
     public class DungeonSystem : ComponentSystem
     {
-        private enum HallDirection
-        {
-            Horizontal,
-            Vertical
-        }
-
         private struct Room
         {
             public int startX;
