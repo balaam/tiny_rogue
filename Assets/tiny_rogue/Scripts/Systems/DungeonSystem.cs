@@ -80,7 +80,7 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level, bool lastLevel)
         {
             _ecb = cb;
             _view = view;
@@ -121,12 +121,32 @@ namespace game
             CreateRooms();
             CreateHallways();
             CreateDoors();
+            CreateTraps();
+            CreateGold();
+            CreateCollectibles();
+            CreateHealingItems();
 
             // TODO: Add loot - this is added in GenerateCollectible in GameSystem
             PlaceCreatures();
 
             PlaceDungeon();
             PlacePlayer(level == 1);
+            PlaceExit(lastLevel);
+        }
+
+        private void PlaceExit(bool lastLevel)
+        {
+            if (lastLevel)
+            {
+                var crownCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCrown(_ecb, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            }
+            else
+            {
+                var stairwayCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateStairway(_ecb, stairwayCoord,
+                    _view.ViewCoordToWorldPos(stairwayCoord));
+            }
         }
 
         private void PlaceCreatures()
@@ -190,6 +210,50 @@ namespace game
                         throw new ArgumentOutOfRangeException("Placing unknown type");
                 }
             }
+        }
+        
+        void CreateHealingItems()
+        {
+            int healingItems = RandomRogue.Next(0, 5);
+            for (int i = 0; i < healingItems; i++)
+            {
+                var healCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateHealingItem(_ecb, healCoord, _view.ViewCoordToWorldPos(healCoord),
+                    RandomRogue.Next(-2, 6));
+            }
+        }
+        
+        void CreateCollectibles()
+        { 
+            for (int i = 0; i < NumberOfCollectibles; i++)
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+                var collectibleCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCollectible(_ecb, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+            }
+        }
+
+        private void CreateGold()
+        {
+            // Saving the num in a variable so it can be used for
+            // the replay system, if need be
+            int goldPiles = RandomRogue.Next(10);
+            for (int i = 0; i < goldPiles; i++)
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+                var goldCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateGold(_ecb, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+            }
+        }
+
+        private void CreateTraps()
+        {
+            
+            // Hard code a couple of spear traps, so the player can die.
+            var trap1Coord = GetRandomPositionInRandomRoom();
+            var trap2Coord = GetRandomPositionInRandomRoom();
+            _archetypeLibrary.CreateSpearTrap(_ecb, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
+            _archetypeLibrary.CreateSpearTrap(_ecb, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
         }
 
         private void CreateRooms()
@@ -417,6 +481,22 @@ namespace game
                 if (horizontal)
                 {
                     _verticalDoors.Add(xy);
+                }
+            }
+            
+            // Apply doors
+            foreach (var doorCoord in _horizontalDoors)
+            {
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(_ecb, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                }
+            }
+            foreach (var doorCoord in _verticalDoors)
+            {
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(_ecb, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
                 }
             }
         }

@@ -3,7 +3,7 @@ using Unity.Entities;
 
 public class CollectibleGenSystem : ComponentSystem
 {
-    public void GetRandomCollectible(EntityManager entityManager, Entity entity, CanBePickedUp c, HealthBonus hb )
+    public void GetRandomCollectible(EntityCommandBuffer ecb, Entity entity, CanBePickedUp c, HealthBonus hb )
     {
         CollectibleEntry colEntry = new CollectibleEntry();
         
@@ -20,14 +20,14 @@ public class CollectibleGenSystem : ComponentSystem
             c.description = colEntry.description;
             c.name = colEntry.name;
 
-            entityManager.SetComponentData(entity, c);
+            ecb.SetComponent(entity, c);
         
             if (colEntry.healthBonus != 0)
             {
                 hb.healthAdded = colEntry.healthBonus;
             
                 //TODO: fix this
-                //entityManager.SetComponentData(entity, hb);
+                //ecb.SetComponent(entity, hb);
             }
 
 
