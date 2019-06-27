@@ -39,7 +39,7 @@ namespace game
                         }
                     });
 
-                Entities.WithAll<PatrollingState>().ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed, ref Animated animated) =>
+                Entities.ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed, ref Animated animated) =>
                 {
                     if (lastTurn%speed.SpeedRate == 0)
                     {
