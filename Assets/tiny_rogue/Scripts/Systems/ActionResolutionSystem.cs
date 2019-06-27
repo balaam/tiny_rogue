@@ -457,8 +457,12 @@ namespace game
                         }
                         else
                         {
+                            bool playerHit = false;
                             if (defenderName == "Player")
+                            {
                                 defenderName = "you";
+                                playerHit = true;
+                            }
 
                             logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
                                                 attackerName,
@@ -467,6 +471,9 @@ namespace game
                                         " for "),
                                     dmg.ToString()),
                                 " damage!");
+
+                            if (playerHit)
+                                _gss.LastPlayerHurtLog = logStr;
                         }
 
                         log.AddLog(logStr);
