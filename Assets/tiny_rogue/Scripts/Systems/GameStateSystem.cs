@@ -289,7 +289,7 @@ namespace game
 
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("Welcome! Use the arrow key to explore, z to interact and x to wait.");
+            log.AddLog("Welcome! Use the arrow keys to explore, z to interact and x to wait.");
             _state = eGameState.InGame;
 
             // Update the view
