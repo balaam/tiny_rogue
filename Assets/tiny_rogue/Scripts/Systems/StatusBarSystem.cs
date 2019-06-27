@@ -37,7 +37,7 @@ namespace game
             var gss = World.GetOrCreateSystem<GameStateSystem>();
             if (gss.IsInGame)
             {
-                Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level,
+                Entities.WithAll<Player>().ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level,
                     ref GoldCount gp) =>
                 {
                     View view = gss.View;
@@ -46,8 +46,9 @@ namespace game
                     var hpMaxAsStr = hp.max.ToString();
                     var lvlAsStr = CopyFromEnd(level.level.ToString(), 3);
                     var xpNowAsStr = CopyFromEnd(xp.now.ToString(), 3);
-                    var xpMaxAsStr = "???";
+                    var xpMaxAsStr = CopyFromEnd(xp.next.ToString(), 3);
                     var gpAsStr = CopyFromEnd(gp.count.ToString(), 4, '0');
+                    var flAsStr = CopyFromEnd(gss.CurrentLevel.ToString(), 2, '0');
 
                     // Let's start with these
                     // HP:000(000)  11 chars
@@ -57,6 +58,8 @@ namespace game
                     // Exp:000/000  11 chars    38
                     // 4 space      4           42
                     // Gold:000     8 chars     50
+                    // 4 space      4           54
+                    // FLOOR:
 
                     // If you have two strings interpolations it doesn't work
                     int yPos = view.Height - 1;
@@ -74,6 +77,9 @@ namespace game
 
                     string gpStr = $"GOLD:{gpAsStr}";
                     view.Blit(PostUpdateCommands, new int2(42, yPos), gpStr);
+
+                    string flStr = $"FLOOR:{flAsStr}";
+                    view.Blit(PostUpdateCommands, new int2(54, yPos), flStr);
 
                 });
             }

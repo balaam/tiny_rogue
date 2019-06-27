@@ -18,6 +18,7 @@ namespace game
         public EntityArchetype Doorway { get; private set; }
         public EntityArchetype Collectible { get; private set; }
         public EntityArchetype Gold { get; private set; }
+        public EntityArchetype HealingPotion { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -92,6 +93,16 @@ namespace game
                 typeof(LayerSorting),                     //hopefully
                 typeof(Gold)
             });
+
+            HealingPotion = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord),
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),
+                typeof(HealItem)
+            });
         }
 
         public Entity CreateTile(EntityManager entityManager, int2 xy, float3 pos, Entity parent)
@@ -122,9 +133,9 @@ namespace game
             return entity;
         }
 
-        public Entity CreateSpearTrap(EntityManager entityManager, int2 xy, float3 pos)
+        public Entity CreateSpearTrap(EntityCommandBuffer ecb, int2 xy, float3 pos)
         {
-            Entity entity = entityManager.CreateEntity(SpearTrap);
+            Entity entity = ecb.CreateEntity(SpearTrap);
 
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
@@ -142,17 +153,17 @@ namespace game
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('^' )];
             l.order = 1;
 
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
             
             return entity;
         }
 
-        public Entity CreateCrown(EntityManager entityManager, int2 xy, float3 pos)
+        public Entity CreateCrown(EntityCommandBuffer ecb, int2 xy, float3 pos)
         {
-            Entity entity = entityManager.CreateEntity(Crown);
+            Entity entity = ecb.CreateEntity(Crown);
 
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
@@ -173,17 +184,17 @@ namespace game
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 127 )];
             l.order = 1;
 
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
             
             return entity;
         }
         
-        public Entity CreateStairway(EntityManager entityManager, int2 xy, float3 pos)
+        public Entity CreateStairway(EntityCommandBuffer ecb, int2 xy, float3 pos)
         {
-            Entity entity = entityManager.CreateEntity(Stairway);
+            Entity entity = ecb.CreateEntity(Stairway);
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
             WorldCoord c = new WorldCoord();
@@ -203,17 +214,17 @@ namespace game
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('Z')];
             l.layer = 1;
 
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
 
             return entity;
         }
         
-        public Entity CreateDoorway(EntityManager entityManager, int2 xy, float3 pos, bool horizontal)
+        public Entity CreateDoorway(EntityCommandBuffer ecb, int2 xy, float3 pos, bool horizontal)
         {
-            Entity entity = entityManager.CreateEntity(Doorway);
+            Entity entity = ecb.CreateEntity(Doorway);
 
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
@@ -237,18 +248,18 @@ namespace game
             // Have to draw above character in graphical
             l.layer = (short)(GlobalGraphicsSettings.ascii ? 1 : 3);
 
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
-            entityManager.SetComponentData(entity, d);
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
+            ecb.SetComponent(entity, d);
 
             return entity;
         }
         
-        public void CreateCollectible(EntityManager entityManager, int2 xy, float3 pos)
+        public void CreateCollectible(EntityCommandBuffer ecb, int2 xy, float3 pos)
         {
-            Entity entity = entityManager.CreateEntity(Collectible);
+            Entity entity = ecb.CreateEntity(Collectible);
 
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
@@ -278,20 +289,20 @@ namespace game
 
             var collectibleGenSystem = World.Active.GetOrCreateSystem<CollectibleGenSystem>();
             
-            collectibleGenSystem.GetRandomCollectible(entityManager, entity, p, hb);
+            collectibleGenSystem.GetRandomCollectible(ecb, entity, p, hb);
             s.sprite = p.appearance.sprite;
 
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
-            entityManager.SetComponentData(entity, p);
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
+            ecb.SetComponent(entity, p);
 
         }
 
-        public Entity CreateGold(EntityManager entityManager, int2 xy, float3 pos)
+        public Entity CreateGold(EntityCommandBuffer ecb, int2 xy, float3 pos)
         {
-            Entity entity = entityManager.CreateEntity(Gold);
+            Entity entity = ecb.CreateEntity(Gold);
             
             Sprite2DRenderer s = new Sprite2DRenderer();
             Translation t = new Translation();
@@ -312,13 +323,47 @@ namespace game
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char) 236)];
             l.layer = 1;
             
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, t);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
             
             return entity;
         }
 
+        public Entity CreateHealingItem(EntityCommandBuffer ecb, int2 xy, float3 pos, int healAmount)
+        {
+            Entity entity = ecb.CreateEntity(HealingPotion);
+
+            HealItem heal = new HealItem();
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+
+            // Only tint sprites if ascii
+            s.color = GlobalGraphicsSettings.ascii
+                ? new Unity.Tiny.Core2D.Color(1.0f, 0.26f, 0.23f)
+                : Color.Default;
+            if (GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char)235)];
+            l.layer = 1;
+
+            heal.HealAmount = healAmount;
+
+            ecb.SetComponent(entity, s);
+            ecb.SetComponent(entity, t);
+            ecb.SetComponent(entity, c);
+            ecb.SetComponent(entity, l);
+            ecb.SetComponent(entity, heal);
+
+            return entity;
+        }
     }
 }

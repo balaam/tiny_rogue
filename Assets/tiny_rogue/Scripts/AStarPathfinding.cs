@@ -89,6 +89,8 @@ namespace game
             var closedList = new List<Path>();
             var openList = new List<Path>();
             var travelDistance = 0;
+            
+            var locations = em.World.GetExistingSystem<CreatureTrackingSystem>().Locations; 
 
             openList.Add(startLoc);
             while (openList.Count > 0)
@@ -98,7 +100,7 @@ namespace game
                 closedList.Add(current);
                 // Did we just find the end square? If so then we're finished!
                 if (current.location.x == end.x && current.location.y == end.y) break;
-                var adjacentSquares = getWalkableAdjacentSquares(current.location, view, em);
+                var adjacentSquares = getWalkableAdjacentSquares(current.location, locations, view, em);
                 travelDistance++;
                 foreach (var adjacentSquare in adjacentSquares)
                 {
@@ -176,7 +178,7 @@ namespace game
             return found;
         }
 
-        private static List<int2> getWalkableAdjacentSquares(int2 start, View view, EntityManager em)
+        private static List<int2> getWalkableAdjacentSquares(int2 start, List<int2> locations, View view, EntityManager em)
         {
             List<int2> walkableSquares = new List<int2>();
             List<int2>adjacentSquares = new List<int2>()
@@ -191,8 +193,11 @@ namespace game
             {
                 int i = View.XYToIndex(pos, view.Width);
                 Entity e = view.ViewTiles[i];
-                if(!em.HasComponent(e, typeof(BlockMovement)))
-                    walkableSquares.Add(pos);
+
+                if (locations.Contains(pos)) continue;
+                if (em.HasComponent(e, typeof(BlockMovement))) continue;
+                   
+                walkableSquares.Add(pos);
             }
 
             return walkableSquares;

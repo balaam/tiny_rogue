@@ -12,15 +12,17 @@ public class CollectibleGenSystem : ComponentSystem
 
     }
     
-    public void GetRandomCollectible(EntityManager entityManager, Entity entity, CanBePickedUp c, HealthBonus hb )
+    public void GetRandomCollectible(EntityCommandBuffer ecb, Entity entity, CanBePickedUp c, HealthBonus hb )
     {
+        if (collectiblesList.Count <= 0)
+            return;
         
         var colEntry = collectiblesList[RandomRogue.Next(0, collectiblesList.Count)];
         c.appearance.sprite = GlobalGraphicsSettings.ascii ? colEntry.spriteAscii : colEntry.spriteGraphics;
         c.description = colEntry.description;
         c.name = colEntry.name;
 
-        entityManager.SetComponentData(entity, c);
+        ecb.SetComponent(entity, c);
         
         if (colEntry.healthBonus != 0)
         {
@@ -28,6 +30,8 @@ public class CollectibleGenSystem : ComponentSystem
             
             //TODO: fix this
             //entityManager.SetComponentData(entity, hb);
+            ecb.SetComponent(entity, hb);
+
         }
 
 

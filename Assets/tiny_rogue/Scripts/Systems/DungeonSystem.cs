@@ -9,12 +9,6 @@ namespace game
     [AlwaysUpdateSystem]
     public class DungeonSystem : ComponentSystem
     {
-        private enum HallDirection
-        {
-            Horizontal,
-            Vertical
-        }
-
         private struct Room
         {
             public int startX;
@@ -48,6 +42,7 @@ namespace game
             eEmpty,
             eWall,
             eFloor,
+            eHallway,
             eDoor
         }
 
@@ -85,7 +80,7 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level, bool lastLevel)
         {
             _ecb = cb;
             _view = view;
@@ -125,12 +120,33 @@ namespace game
             // Create the rooms, and then the hallways
             CreateRooms();
             CreateHallways();
+            CreateDoors();
+            CreateTraps();
+            CreateGold();
+            CreateCollectibles();
+            CreateHealingItems();
 
             // TODO: Add loot - this is added in GenerateCollectible in GameSystem
             PlaceCreatures();
 
             PlaceDungeon();
-            PlacePlayer();
+            PlacePlayer(level == 1);
+            PlaceExit(lastLevel);
+        }
+
+        private void PlaceExit(bool lastLevel)
+        {
+            if (lastLevel)
+            {
+                var crownCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCrown(_ecb, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+            }
+            else
+            {
+                var stairwayCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateStairway(_ecb, stairwayCoord,
+                    _view.ViewCoordToWorldPos(stairwayCoord));
+            }
         }
 
         private void PlaceCreatures()
@@ -153,7 +169,7 @@ namespace game
             }
         }
 
-        private void PlacePlayer()
+        private void PlacePlayer(bool reset)
         {
             // Place the player
             Entities.WithAll<PlayerInput>().ForEach((Entity player) =>
@@ -161,7 +177,15 @@ namespace game
                 int2 randomStartPosition = GetPlayerStartPosition();
                 WorldCoord worldCoord = new WorldCoord {x = randomStartPosition.x, y = randomStartPosition.y};
                 Translation translation = new Translation {Value = _view.ViewCoordToWorldPos(randomStartPosition)};
-                _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
+                if (reset)
+                {
+                    _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
+                }
+                else
+                {
+                    _ecb.SetComponent(player, worldCoord);
+                    _ecb.SetComponent(player, translation);
+                }
             });
         }
 
@@ -175,6 +199,7 @@ namespace game
                         _ecb.AddComponent(_view.ViewTiles[i], new Wall());
                         _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
                         break;
+                    case Type.eHallway:
                     case Type.eFloor:
                     case Type.eDoor:
                         _ecb.AddComponent(_view.ViewTiles[i], new Floor());
@@ -185,6 +210,50 @@ namespace game
                         throw new ArgumentOutOfRangeException("Placing unknown type");
                 }
             }
+        }
+        
+        void CreateHealingItems()
+        {
+            int healingItems = RandomRogue.Next(0, 5);
+            for (int i = 0; i < healingItems; i++)
+            {
+                var healCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateHealingItem(_ecb, healCoord, _view.ViewCoordToWorldPos(healCoord),
+                    RandomRogue.Next(-2, 6));
+            }
+        }
+        
+        void CreateCollectibles()
+        { 
+            for (int i = 0; i < NumberOfCollectibles; i++)
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+                var collectibleCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCollectible(_ecb, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+            }
+        }
+
+        private void CreateGold()
+        {
+            // Saving the num in a variable so it can be used for
+            // the replay system, if need be
+            int goldPiles = RandomRogue.Next(10);
+            for (int i = 0; i < goldPiles; i++)
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+                var goldCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateGold(_ecb, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+            }
+        }
+
+        private void CreateTraps()
+        {
+            
+            // Hard code a couple of spear traps, so the player can die.
+            var trap1Coord = GetRandomPositionInRandomRoom();
+            var trap2Coord = GetRandomPositionInRandomRoom();
+            _archetypeLibrary.CreateSpearTrap(_ecb, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
+            _archetypeLibrary.CreateSpearTrap(_ecb, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
         }
 
         private void CreateRooms()
@@ -247,11 +316,10 @@ namespace game
             var from = Math.Min(_from, _to);
             var to = Math.Max(_from, _to);
             int currentX = from;
-
-            while (currentX < to)
+            while (currentX <= to)
             {
                 var xy = new int2(currentX, y);
-                CreateHallwayTile(xy, HallDirection.Horizontal);
+                CreateHallwayTile(xy);
                 CreateWallsIfEmpty(
                     new int2(currentX, y + 1),
                     new int2(currentX, y - 1),
@@ -268,10 +336,10 @@ namespace game
             var from = Math.Min(_from, _to);
             var to = Math.Max(_from, _to);
             int currentY = from;
-            while (currentY < to)
+            while (currentY <= to)
             {
                 var xy = new int2(x, currentY);
-                CreateHallwayTile(xy, HallDirection.Vertical);
+                CreateHallwayTile(xy);
                 CreateWallsIfEmpty(
                     new int2(x + 1, currentY),
                     new int2(x - 1, currentY),
@@ -333,42 +401,108 @@ namespace game
             return _verticalDoors;
         }
 
-        private void CreateHallwayTile(int2 xy, HallDirection direction)
+        private void CreateHallwayTile(int2 xy)
         {
             var current = _cells[View.XYToIndex(xy, _view.Width)];
 
-            int2 neighbor1 = xy;
-            int2 neighbor2 = xy;
-
-            if (direction == HallDirection.Horizontal)
+            if (current != Type.eFloor)
             {
-                neighbor1.y += 1;
-                neighbor2.y -= 1;
+                _cells[View.XYToIndex(xy, _view.Width)] = Type.eHallway;
             }
-            else
-            {
-                neighbor1.x += 1;
-                neighbor2.x -= 1;
-            }
+        }
 
-            var neighborEntityOne = _cells[View.XYToIndex(neighbor1, _view.Width)];
-            var neighborEntityTwo = _cells[View.XYToIndex(neighbor2, _view.Width)];
-
-            if (current == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
+        void CreateDoors()
+        {
+            // Check all hallway tiles to see if we can sdd a door.
+            for (var i = 0; i < _cells.Length; i++)
             {
-                _cells[View.XYToIndex(xy, _view.Width)] = Type.eDoor;
-                if (direction == HallDirection.Horizontal)
+                var current = _cells[i];
+                if (current != Type.eHallway) continue;
+                
+                var xy = View.IndexToXY(i, _view.Width);
+
+                var neighbourUpXy = xy;
+                neighbourUpXy.y--;
+                var neighbourUp = _cells[View.XYToIndex(neighbourUpXy, _view.Width)];
+                
+                var neighbourDownXy = xy;
+                neighbourDownXy.y++;
+                var neighbourDown = _cells[View.XYToIndex(neighbourDownXy, _view.Width)];
+                
+                var neighbourRightXy = xy;
+                neighbourRightXy.x++;
+                var neighbourRight = _cells[View.XYToIndex(neighbourRightXy, _view.Width)];
+                
+                var neighbourLeftXy = xy;
+                neighbourLeftXy.x--;
+                var neighbourLeft = _cells[View.XYToIndex(neighbourLeftXy, _view.Width)];
+                
+                var horizontal = false;
+                var vertical = false;
+                
+                // Check if doors can be made
+                if (neighbourLeft == Type.eHallway && 
+                    neighbourRight == Type.eFloor &&
+                    neighbourUp == Type.eWall &&
+                    neighbourDown == Type.eWall)
                 {
-                    _verticalDoors.Add(xy);
+                    horizontal = true;
                 }
-                else
+                if (neighbourRight == Type.eHallway && 
+                    neighbourLeft == Type.eFloor &&
+                    neighbourUp == Type.eWall &&
+                    neighbourDown == Type.eWall)
                 {
+                    horizontal = true;
+                }
+                if (neighbourUp == Type.eHallway && 
+                    neighbourDown == Type.eFloor &&
+                    neighbourRight == Type.eWall &&
+                    neighbourLeft == Type.eWall)
+                {
+                    vertical = true;
+                }
+                if (neighbourDown == Type.eHallway && 
+                    neighbourUp == Type.eFloor &&
+                    neighbourRight == Type.eWall &&
+                    neighbourLeft == Type.eWall)
+                {
+                    vertical = true;
+                }
+
+                // Set as door if door possible
+                if (horizontal || vertical)
+                {
+                    _cells[i] = Type.eDoor;
+                }
+
+                if (vertical)
+                {
+                    // Horizontal doors fit in vertical openings
                     _horizontalDoors.Add(xy);
                 }
+
+                if (horizontal)
+                {
+                    // Vertical doors fit in horizontal openings
+                    _verticalDoors.Add(xy);
+                }
             }
-            else
+            
+            // Apply doors
+            foreach (var doorCoord in _horizontalDoors)
             {
-                _cells[View.XYToIndex(xy, _view.Width)] = Type.eFloor;
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(_ecb, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                }
+            }
+            foreach (var doorCoord in _verticalDoors)
+            {
+                if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
+                {
+                    _archetypeLibrary.CreateDoorway(_ecb, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                }
             }
         }
     }

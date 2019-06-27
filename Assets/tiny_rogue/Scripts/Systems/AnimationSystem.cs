@@ -26,8 +26,8 @@ public class AnimationSystem : ComponentSystem
             {
                 if (mobile.Moving)
                 {
-                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
-                    // Double frame time, so the move takes 0.25 of a second
+                    var frameTime = World.TinyEnvironment().frameDeltaTime;
+                    // Double frame time, so the move takes 0.25 of a second    
                     mobile.MoveTime += frameTime * 4;
                     translation.Value = math.lerp(mobile.Initial, mobile.Destination, mobile.MoveTime);
                     // Ensure player is left in correct position
@@ -35,7 +35,6 @@ public class AnimationSystem : ComponentSystem
                     {
                         mobile.Moving = false;
                         translation.Value = mobile.Destination;
-                        EntityManager.SetComponentData(e, new WorldCoord { x = mobile.DestPos.x, y = mobile.DestPos.y });
                     }
                 }
             });
@@ -46,7 +45,7 @@ public class AnimationSystem : ComponentSystem
                 if (animated.AnimationTrigger)
                 {
                     // Count down one-off animation/action
-                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
+                    var frameTime = World.TinyEnvironment().frameDeltaTime;
                     animated.AnimationTime -= frameTime;
 
                     if (animated.AnimationTime <= 0f)
@@ -108,17 +107,18 @@ public class AnimationSystem : ComponentSystem
                 {
                     animated.AnimationTrigger = true;
                     animated.AnimationTime = 0.5f;
+                    sequencePlayer.speed = 0.5f;
                 }
 
                 switch (animated.Action)
                 {
+                    case Action.Bump:
                     case Action.None:
                     case Action.Wait:
                     case Action.Interact:
-                        sequencePlayer.speed = 0.5f;
+                        // Default from above
                         break;
                     case Action.Attack:
-                        sequencePlayer.speed = 0.5f;
                         animated.AnimationTime = 0.25f;
                         break;
                     case Action.Move:
@@ -137,8 +137,15 @@ public class AnimationSystem : ComponentSystem
 
     void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
     {
+        var animAction = animated.Action;
+        // Bump has no animation, so map to idle
+        if (animAction == Action.Bump)
+        {
+            animAction = Action.None;
+        }
+        
         var direction = (int)animated.Direction;
-        var action = (int)animated.Action;
+        var action = (int)animAction;
         var id = animated.Id;
         Debug.Log($"Try set animation: {direction} {action}");
 
