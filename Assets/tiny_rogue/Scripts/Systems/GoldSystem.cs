@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace game
 {
-    // Notes:
-    // - 
+    [UpdateBefore(typeof(LogSystem))]
     public class GoldSystem : TurnSystem
     {
         protected override void OnUpdate()

@@ -4,8 +4,7 @@ using UnityEngine;
 
 namespace game
 {
-
-
+    [UpdateBefore(typeof(LogSystem))]
     public class HealthItemsSystem : TurnSystem
     {
         protected override void OnUpdate()
