@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace game
 {
@@ -29,9 +30,9 @@ namespace game
                     HealItem heal = EntityManager.GetComponentData<HealItem>(healingItems[i]);
 
                     if (hp.now + heal.HealAmount > hp.max)
-                        hp.now = hp.max;
-                    else
-                        hp.now += heal.HealAmount;
+                        heal.HealAmount = (hp.max - hp.now);
+
+                    hp.now += heal.HealAmount;
 
                     if (heal.HealAmount > 0)
                         log.AddLog("Healed for " + heal.HealAmount.ToString() + " points.");
