@@ -7,9 +7,11 @@ namespace game
 {
     public class GraphicalLogSystem : ComponentSystem
     {
+        public const int MaxNumberOfLines = 3;
         bool _dirty = true;
         string _logString;
         string _oldLogString;
+        string _evenOlderString;
         
         protected override void OnUpdate()
         {
@@ -19,7 +21,11 @@ namespace game
                 _dirty = false;
                 Entities.WithAll<LogEntry>().ForEach((Entity e, ref LogEntry entry) =>
                 {
-                    EntityManager.SetBufferFromString<TextString>(e, entry.Line == 1 ? _logString : _oldLogString);
+                    EntityManager.SetBufferFromString<TextString>(e, entry.Line == 1 
+                        ? _logString 
+                        : entry.Line == 2 
+                            ? _oldLogString 
+                            : _evenOlderString);
                 });
             }
         }
@@ -27,6 +33,7 @@ namespace game
         public void AddToLog(string log)
         {
             _dirty = true;
+            _evenOlderString = _oldLogString;
             _oldLogString = _logString;
             _logString = log;
         }

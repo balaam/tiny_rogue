@@ -77,30 +77,22 @@ namespace game
 
             if (_newLogs.Count > 0)
             {
-                var gLog = EntityManager.World.GetOrCreateSystem<GraphicalLogSystem>();
-                // Write the new log line out, remove it from the new list and add it to the old list.
-                LogEntry topLog =  _newLogs[0];
-                _newLogs.RemoveAt(0);
-                _oldLogs.Add(topLog);
+                string pageMsg = "[space]";
                 if (GlobalGraphicsSettings.ascii)
                 {
+                    // Write the new log line out, remove it from the new list and add it to the old list.
+                    LogEntry topLog =  _newLogs[0];
+                    _newLogs.RemoveAt(0);
+                    _oldLogs.Add(topLog);
                     view.ClearLine(cb, 0, ' ');
                     view.Blit(cb, new int2(0, 0), topLog.text);
-                }
-                else
-                {
-                    gLog.AddToLog(topLog.text);
-                }
 
-                int blitEnd = topLog.text.Length + 1; // + 1 for the space
+                    int blitEnd = topLog.text.Length + 1; // + 1 for the space
                 
-                string pageMsg = "[space]";
-                if (HasQueuedLogs())
-                {
-                    LogEntry nextTopLog = _newLogs[0];
-
-                    if (GlobalGraphicsSettings.ascii)
+                
+                    if (HasQueuedLogs())
                     {
+                        LogEntry nextTopLog = _newLogs[0];
                         if ((blitEnd + nextTopLog.text.Length) < (view.Width - pageMsg.Length))
                         {
                             _newLogs.RemoveAt(0);
@@ -115,16 +107,24 @@ namespace game
                             gss.MoveToReadQueuedLog();
                         }
                     }
-                    else
+                }
+                else
+                {
+                    var gLog = EntityManager.World.GetOrCreateSystem<GraphicalLogSystem>();
+                    var tooManyLines = _newLogs.Count > GraphicalLogSystem.MaxNumberOfLines;
+                    for (int i = 0; i < GraphicalLogSystem.MaxNumberOfLines; i++)
                     {
+                        LogEntry topLog =  _newLogs[0];
                         _newLogs.RemoveAt(0);
-                        _oldLogs.Add(nextTopLog);
-                        var needsSpace = _newLogs.Count != 0 ? $" {pageMsg}" : "";
-                        gLog.AddToLog($"{nextTopLog.text}{needsSpace}");
-                        if (_newLogs.Count > 0)
-                        {
-                            gss.MoveToReadQueuedLog();
-                        }
+                        _oldLogs.Add(topLog);
+                        var needsSpace = tooManyLines && i == GraphicalLogSystem.MaxNumberOfLines 
+                            ? $" {pageMsg}" : "";
+                        gLog.AddToLog($"{topLog.text}{needsSpace}");
+                    }
+                    
+                    if (tooManyLines)
+                    {
+                        gss.MoveToReadQueuedLog();
                     }
                 }
 
