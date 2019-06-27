@@ -16,16 +16,10 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 namespace game
 {
     // GameState drives the other systems.
-    [UpdateAfter(typeof(ActionResolutionSystem))]
     [UpdateAfter(typeof(FogOfWarSystem))]
-    public class GameViewSystem : TurnSystem
+    [UpdateInGroup(typeof(DisplaySystemGroup))]
+    public class GameViewSystem : ComponentSystem
     {
-        protected override void OnCreate()
-        {
-            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
-            tms.RegisterTurnSystem(this);
-            base.OnCreate();
-        }
         
         static float GetAlphaForStaticTile(Tile tile)
         {

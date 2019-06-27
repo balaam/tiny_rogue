@@ -4,15 +4,9 @@ using UnityEngine;
 
 namespace game
 {
-    [UpdateBefore(typeof(ActionResolutionSystem))]
-    public class FogOfWarSystem : TurnSystem
+    [UpdateInGroup(typeof(DisplaySystemGroup))]
+    public class FogOfWarSystem : ComponentSystem
     {
-        protected override void OnCreate()
-        {
-            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
-            tms.RegisterTurnSystem(this);
-            base.OnCreate();
-        }
         
         protected override void OnUpdate()
         {

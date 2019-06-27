@@ -7,7 +7,8 @@ namespace game
 {
     // Notes:
     // - 
-    public class GoldSystem : TurnSystem
+    [UpdateInGroup(typeof(TurnSystemGroup))]
+    public class GoldSystem : ComponentSystem
     {
         protected override void OnUpdate()
         {

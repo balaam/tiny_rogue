@@ -12,7 +12,9 @@ namespace game
     /// Logs should be queued if more than one is generated in turn
     /// A history of all messages shown should be possible.
     /// </summary>
-    public class LogSystem : TurnSystem
+    /// 
+    [UpdateInGroup(typeof(DisplaySystemGroup))]
+    public class LogSystem : ComponentSystem
     {
         class LogEntry
         {
