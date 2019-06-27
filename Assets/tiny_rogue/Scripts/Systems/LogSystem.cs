@@ -116,7 +116,7 @@ namespace game
                     // Calculate if too many log lines
                     var tooManyLines = _newLogs.Count > GraphicalLogSystem.MaxNumberOfLines;
                     
-                    for (int i = 0; i < GraphicalLogSystem.MaxNumberOfLines; i++)
+                    for (var i = 0; i < GraphicalLogSystem.MaxNumberOfLines; i++)
                     {
                         // Stop when we run out
                         if (_newLogs.Count == 0) break;
@@ -127,9 +127,9 @@ namespace game
                         _oldLogs.Add(topLog);
                         
                         // Set log to be displayed
-                        var needsSpace = tooManyLines && i == GraphicalLogSystem.MaxNumberOfLines 
-                            ? $" {pageMsg}" : "";
-                        gLog.AddToLog($"{topLog.text}{needsSpace}");
+                        var needsSpace = tooManyLines && i == (GraphicalLogSystem.MaxNumberOfLines - 1) 
+                            ? " " + pageMsg : "";
+                        gLog.AddToLog(topLog.text + needsSpace);
                     }
                     
                     // Freeze if too many logs available
