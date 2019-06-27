@@ -114,14 +114,13 @@
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 6399280041854345734, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 820585990694486454, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": -2457906793250956708, "Type": 3},
-        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 5080525497150260364, "Type": 3},
+        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 1401537174331165813, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 8799743602586295264, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 7062645298493904822, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": -1440287764009404396, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 6129151483037699693, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 3953798185892045511, "Type": 3},
-        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 4241232142142336541, "Type": 3},
-        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 1401537174331165813, "Type": 3}],
+        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 4241232142142336541, "Type": 3}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
@@ -5660,7 +5659,7 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "7e1dfe78b82e59f18d6f4ad3cd353e6f"
+                "e": "c576566ed57f29a4379abf26b0d09320"
             }, {
                 "e": "00c5ec0cc12dcfc098899a0a2c33d074"
             }, {
