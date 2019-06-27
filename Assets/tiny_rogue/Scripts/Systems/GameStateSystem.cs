@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
@@ -45,6 +46,10 @@ namespace game
         private uint CurrentSeed = 1;
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
+        
+        List<Sprite2DRenderer> spriteRenderers = new List<Sprite2DRenderer>();
+        bool populateInventory = false;
+
 
         private uint MakeNewRandom()
         {
@@ -174,6 +179,10 @@ namespace game
                 case eGameState.Inventory:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (populateInventory)
+                    {
+                        PopulateInventory();
+                    }
                     if (input.GetKeyDown(KeyCode.Escape))
                     {
                         MoveBackToGame(PostUpdateCommands);
@@ -289,7 +298,7 @@ namespace game
 
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
+            log.AddLog("Welcome! Use the arrow keys to explore, z to interact and x to wait.");
             _state = eGameState.InGame;
 
             // Update the view
@@ -375,6 +384,24 @@ namespace game
                     ecb.RemoveComponent<Disabled>(e);
                 }
             });
+
+            populateInventory = true;
+        }
+
+        void PopulateInventory()
+        {
+
+            spriteRenderers.Clear();
+            
+            Entities.WithAll<InventoryItemUI>().ForEach((Entity e, ref Sprite2DRenderer spr) =>
+            {
+                spriteRenderers.Add(spr);
+            });
+
+            var invSys = EntityManager.World.GetExistingSystem<InventorySystem>();
+            invSys.RenderInventoryItems(spriteRenderers);
+            
+            populateInventory = false;
 
         }
 
