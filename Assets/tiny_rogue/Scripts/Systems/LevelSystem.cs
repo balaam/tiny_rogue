@@ -10,6 +10,11 @@ namespace game
     public class LevelSystem : ComponentSystem
     {
 
+        static public int GetXPRequiredForLevel(int level)
+        {
+            return (int)(5 * (math.pow(level, 2)) - (5 * level)) + 10;
+        }
+
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
@@ -19,9 +24,10 @@ namespace game
             {
                 Entities.ForEach((Entity player, ref ExperiencePoints xp, ref Level level) =>
                 {
-                    if (xp.now > (5 * (math.pow(level.level, 2)) - (5 * level.level)))
+                    if (xp.now >= GetXPRequiredForLevel(level.level))
                     {
                         level.level++;
+                        xp.next = GetXPRequiredForLevel(level.level);
                         log.AddLog("You leveled up! New level: " + level.level.ToString());
                     }
                 });

@@ -5,5 +5,6 @@ namespace game
     public struct ExperiencePoints : IComponentData 
     {
     	public int now;
+    	public int next;
     }
 }
