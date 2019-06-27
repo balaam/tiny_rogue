@@ -83,12 +83,13 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level, bool lastLevel)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level, bool isFinalLevel)
         {
             _ecb = cb;
             _view = view;
             _creatureLibrary = cl;
             _archetypeLibrary = al;
+            _dungeonGenParams = DungeonLibrary.GetDungeonParams(level, isFinalLevel);
 
             ClearDungeon(cb, view);
             
@@ -134,7 +135,7 @@ namespace game
 
             PlaceDungeon();
             PlacePlayer(level == 1);
-            PlaceExit(lastLevel);
+            PlaceExit(isFinalLevel);
         }
 
         private void PlaceExit(bool lastLevel)
@@ -154,21 +155,21 @@ namespace game
 
         private void PlaceCreatures()
         {
-            int minCreatureCount = 4;
-            int maxCreatureCount = 12;
-            
-            int creatureCount = RandomRogue.Next(minCreatureCount, maxCreatureCount);
-            int creatureTypeCount = (int)ECreatureId.SpawnableCount;
-            for (int i = 0; i < creatureCount; i++)
+            for (int i = 0; i < _dungeonGenParams.CreatureSpawns.Length; i++)
             {
-                int creatureId = RandomRogue.Next(0, creatureTypeCount);
-                var worldCoord = GetRandomPositionInRandomRoom();
-                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
-                Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId);
-
-                _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
-                _ecb.SetComponent(cr, new Translation {Value = viewCoord});
-                _ecb.SetComponent(cr, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
+                CreatureSpawnParams spawnParams = _dungeonGenParams.CreatureSpawns[i];
+                
+                int creatureCount = RandomRogue.Next(spawnParams.SpawnMin, spawnParams.SpawnMax+1);
+                for (int j = 0; j < creatureCount; j++)
+                {
+                    int cIdx = RandomRogue.Next(1, spawnParams.Creatures.Length);
+                    var worldCoord = GetRandomPositionInRandomRoom();
+                    var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
+                    Entity cEntity = _creatureLibrary.SpawnCreature(_ecb, spawnParams.Creatures[cIdx]);
+                    _ecb.SetComponent(cEntity, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
+                    _ecb.SetComponent(cEntity, new Translation {Value = viewCoord});
+                    _ecb.SetComponent(cEntity, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
+                }
             }
         }
 
