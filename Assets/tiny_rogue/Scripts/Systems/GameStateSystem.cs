@@ -289,7 +289,7 @@ namespace game
 
             GenerateLevel();
             tms.ResetTurnCount();
-            log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
+            log.AddLog("You enter the dungeon. (explore:arrows Z:interact X:wait)");
             _state = eGameState.InGame;
 
             // Update the view

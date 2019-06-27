@@ -85,7 +85,7 @@ namespace game
 
                 int blitEnd = topLog.text.Length + 1; // + 1 for the space
                 
-                string pageMsg = "(cont)";
+                string pageMsg = "[space]";
                 if (HasQueuedLogs())
                 {
                     LogEntry nextTopLog =  _newLogs[0];
