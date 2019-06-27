@@ -67,6 +67,13 @@ namespace game
             return lhs.Priority.CompareTo(rhs.Priority);
         }
     }
+    
+    public struct ActionRequestComparer : IComparer<ActionRequest> {
+        public int Compare(ActionRequest lhs, ActionRequest rhs) {
+            return lhs.Priority.CompareTo(rhs.Priority);
+        }
+    }
+    
 
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public class ActionResolutionSystem : JobComponentSystem
@@ -222,11 +229,20 @@ namespace game
 
             public void Execute()
             {
-                if (ActionQueue.IsCreated)
+                if (ActionQueue.IsCreated && ActionQueue.Count > 0)
                 {
-                    ActionRequest ar;
-                    while (ActionQueue.TryDequeue(out ar))
+                    int pendingActionCount = ActionQueue.Count;
+                    NativeArray<ActionRequest> sortedActions =
+                        new NativeArray<ActionRequest>(pendingActionCount, Allocator.TempJob);
+                    for (int i = 0; i < pendingActionCount; i++)
                     {
+                        sortedActions[i] = ActionQueue.Dequeue();
+                    }
+
+                    sortedActions.Sort(new ActionRequestComparer());
+                    for (int i = 0; i < pendingActionCount; i++)
+                    {
+                        ActionRequest ar = sortedActions[i];
                         switch (ar.Act)
                         {
                             case Action.MoveUp:
@@ -234,28 +250,32 @@ namespace game
                                 uint2 moveTo = ar.Loc;
                                 moveTo.y -= 1;
                                 TryMove(ar.Ent, Direction.Right, ar.Loc, moveTo);
-                            } break;
+                            }
+                                break;
 
                             case Action.MoveDown:
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.y += 1;
                                 TryMove(ar.Ent, Direction.Left, ar.Loc, moveTo);
-                            } break;
+                            }
+                                break;
 
                             case Action.MoveLeft:
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.x -= 1;
                                 TryMove(ar.Ent, Direction.Left, ar.Loc, moveTo);
-                            } break;
+                            }
+                                break;
 
                             case Action.MoveRight:
                             {
                                 uint2 moveTo = ar.Loc;
                                 moveTo.x += 1;
                                 TryMove(ar.Ent, Direction.Right, ar.Loc, moveTo);
-                            } break;
+                            }
+                                break;
 
                             case Action.Interact:
                             {
@@ -266,14 +286,17 @@ namespace game
                                         InteractingEntity = ar.Ent,
                                         InteractPos = ar.Loc
                                     });
-                            } break;
+                            }
+                                break;
 
                             case Action.Wait:
                             {
-                                PendingWaits.Enqueue(new PendingWait { Ent = ar.Ent, Dir = ar.Dir, Ouch = false });
-                            } break;
+                                PendingWaits.Enqueue(new PendingWait {Ent = ar.Ent, Dir = ar.Dir, Ouch = false});
+                            }
+                                break;
                         }
                     }
+                    sortedActions.Dispose();
                 }
             }
         }
