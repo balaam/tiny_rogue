@@ -43,6 +43,7 @@ namespace game
         public Entity Attacker;
         public Direction AttackerDir;
         public Entity Defender;
+        public int2 LogLoc;
     }
 
     public struct PendingDoorOpen
@@ -196,7 +197,7 @@ namespace game
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
-                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx] });
+                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx], LogLoc = new int2 {x = (int)moveFrom.x, y = (int)moveFrom.y }});
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
@@ -402,7 +403,7 @@ namespace game
                                     dmg.ToString()),
                                     " damage!");
                 }
-                log.AddLog(logStr);
+                log.AddLog(pa.LogLoc,logStr);
 
                 EntityManager.SetComponentData(pa.Defender, hp);
             }
