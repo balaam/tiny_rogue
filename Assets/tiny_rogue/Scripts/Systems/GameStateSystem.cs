@@ -30,15 +30,17 @@ namespace game
             NextLevel,
             HiScores,
             Inventory,
-        }
-
-        eGameState _state = eGameState.Startup;
-        View _view = new View();
-        ScoreManager _scoreManager = new ScoreManager();
-        ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
-        CreatureLibrary _creatureLibrary = new CreatureLibrary();
+        };
+        
+        public static View GameView = new View();
+        
+        private eGameState _state = eGameState.Startup;
+        private ScoreManager _scoreManager = new ScoreManager();
+        private ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
+        private CreatureLibrary _creatureLibrary = new CreatureLibrary();
+        
         private DungeonSystem _dungeon;
-
+        
         private uint CurrentSeed = 1;
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
@@ -48,7 +50,7 @@ namespace game
             return (uint)(Time.time * 100000.0);
         }
 
-        public View View => _view;
+        public View View => GameView;
         public bool IsInGame => (_state == eGameState.InGame);
 
         protected override void OnCreate()
@@ -84,7 +86,7 @@ namespace game
             var startX = -(math.floor(width / 2) * GlobalGraphicsSettings.TileSize.x);
             var startY = math.floor(height / 2) * GlobalGraphicsSettings.TileSize.y;
 
-            _view.ViewTiles = new Entity[width * height];
+            GameView.ViewTiles = new Entity[width * height];
             for (int i = 0; i < width * height; i++)
             {
                 int2 xy = View.IndexToXY(i, width);
@@ -95,11 +97,11 @@ namespace game
                 Entity instance = _archetypeLibrary.CreateTile(
                     EntityManager, xy, pos, mapEntity);
 
-                this._view.ViewTiles[i] = instance;
+                GameView.ViewTiles[i] = instance;
             }
 
-            this._view.Width = width;
-            this._view.Height = height;
+            GameView.Width = width;
+            GameView.Height = height;
             return true;
         }
 
@@ -108,40 +110,40 @@ namespace game
             CurrentLevel++;
             CleanUpGameWorld(PostUpdateCommands);
 
-            _dungeon.GenerateDungeon(PostUpdateCommands, _view, _creatureLibrary, _archetypeLibrary, CurrentLevel);
+            _dungeon.GenerateDungeon(PostUpdateCommands, GameView, _creatureLibrary, _archetypeLibrary, CurrentLevel);
 
             // Apply doors
             foreach (var doorCoord in _dungeon.GetHorizontalDoors())
             {
                 if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
                 {
-                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), true);
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, GameView.ViewCoordToWorldPos(doorCoord), true);
                 }
             }
             foreach (var doorCoord in _dungeon.GetVerticalDoors())
             {
                 if (RandomRogue.Next(TinyRogueConstants.DoorProbability) == 0)
                 {
-                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, _view.ViewCoordToWorldPos(doorCoord), false);
+                    _archetypeLibrary.CreateDoorway(EntityManager, doorCoord, GameView.ViewCoordToWorldPos(doorCoord), false);
                 }
             }
 
             // Hard code a couple of spear traps, so the player can die.
             var trap1Coord = _dungeon.GetRandomPositionInRandomRoom();
             var trap2Coord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
-            _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
+            _archetypeLibrary.CreateSpearTrap(EntityManager, trap1Coord, GameView.ViewCoordToWorldPos(trap1Coord));
+            _archetypeLibrary.CreateSpearTrap(EntityManager, trap2Coord, GameView.ViewCoordToWorldPos(trap2Coord));
 
             if (CurrentLevel != LastDungeonNumber)
             {
                 var stairwayCoord = _dungeon.GetRandomPositionInRandomRoom();
                 _archetypeLibrary.CreateStairway(EntityManager, stairwayCoord,
-                    _view.ViewCoordToWorldPos(stairwayCoord));
+                    GameView.ViewCoordToWorldPos(stairwayCoord));
             }
             else
             {
                 var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateCrown(EntityManager, crownCoord, _view.ViewCoordToWorldPos(crownCoord));
+                _archetypeLibrary.CreateCrown(EntityManager, crownCoord, GameView.ViewCoordToWorldPos(crownCoord));
             }
 
             GenerateGold();
@@ -157,7 +159,7 @@ namespace game
              {
                  //TODO: figure out how it can know to avoid tiles that already have an entity
                  var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
-                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, GameView.ViewCoordToWorldPos(collectibleCoord));
              }
         }
 
@@ -172,105 +174,6 @@ namespace game
             });
         }
 
-        static Unity.Tiny.Core2D.Color GetColorForTile(Tile tile)
-        {
-            Unity.Tiny.Core2D.Color color = TinyRogueConstants.DefaultColor;
-            
-            if (!tile.IsSeen && tile.HasBeenRevealed)
-            {
-                color.r /= 2f;
-                color.g /= 2f;
-                color.b /= 2f;
-            }
-            else if (!tile.IsSeen)
-            {
-                color.a = 0f;
-            }
-
-            return color;
-        }
-        
-        private static Unity.Tiny.Core2D.Color GetColorForObject(Tile tile)
-        {
-            var color = TinyRogueConstants.DefaultColor;
-
-            if (!tile.IsSeen)
-            {
-                color.a = 0f;
-            }
-
-            return color;
-        }
-
-        private void UpdateView(EntityCommandBuffer ecb)
-        {
-            var tileSprite = Sprite2DRenderer.Default;
-
-            // Set all floor tiles
-            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
-            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
-            {
-                tileSprite.color = GetColorForTile(tile);
-                ecb.SetComponent(e, tileSprite);
-            });
-
-            // Default all block tiles to a wall
-            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
-            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
-            {
-                tileSprite.color = GetColorForTile(tile);
-                ecb.SetComponent(e, tileSprite);
-            });
-            
-            
-            var horizontalDoorOpen = Sprite2DRenderer.Default;
-            horizontalDoorOpen.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('\\')]; 
-
-            var verticalDoorOpen = Sprite2DRenderer.Default;
-            verticalDoorOpen.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('/')];
-            
-            var horizontalDoorClosed = Sprite2DRenderer.Default;
-            horizontalDoorClosed.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('_')];
-            
-            var verticalDoorClosed = Sprite2DRenderer.Default;
-            verticalDoorClosed.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('|')];
-            
-            // Set all door tiles// horizontal // vertical
-            // Set all closed door tiles // closed horizontal // closed vertical
-            Entities.WithAll<Sprite2DRenderer, Door>().ForEach((Entity e, ref Door door, ref WorldCoord coord) =>
-            {
-                Sprite2DRenderer spriteRenderer;
-                if (door.Opened)
-                    spriteRenderer = door.Horizontal ? horizontalDoorOpen : verticalDoorOpen;
-                else
-                    spriteRenderer = door.Horizontal ? horizontalDoorClosed : verticalDoorClosed;
-                
-                // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
-                int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
-                Entity tileEntity = _view.ViewTiles[tileIndex];
-                Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                spriteRenderer.color = GetColorForTile(tile);
-                
-                ecb.SetComponent(e, spriteRenderer);
-            });
-            
-            // This reads from *before* the above changes, so shouldn't be used on the same entities
-            Entities.WithNone<Player, Tile, Door>().ForEach(
-                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
-                {
-                    Sprite2DRenderer spriteRenderer = renderer;
-
-                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
-                    int tileIndex = View.XYToIndex(new int2(coord.x, coord.y), _view.Width);
-                    Entity tileEntity = _view.ViewTiles[tileIndex];
-                    Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
-
-                    spriteRenderer.color.a = tile.IsSeen ? 1 : 0;
-
-                    ecb.SetComponent(e, spriteRenderer);
-                });
-        }
-
         void GenerateGold()
        {
             // Saving the num in a variable so it can be used for
@@ -280,16 +183,12 @@ namespace game
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
                 var goldCoord = _dungeon.GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateGold(EntityManager, goldCoord, _view.ViewCoordToWorldPos(goldCoord));
+                _archetypeLibrary.CreateGold(EntityManager, goldCoord, GameView.ViewCoordToWorldPos(goldCoord));
             }
        }
 
         protected override void OnUpdate()
         {
-            // Update the view when we're not in startup
-            if(_state != eGameState.Startup)
-                UpdateView(PostUpdateCommands);
-
             switch (_state)
             {
                 case eGameState.Startup:
@@ -315,14 +214,13 @@ namespace game
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    CurrentLevel = 0;
                     if(input.GetKeyDown(KeyCode.H))
                     {
                         MoveToHiScores(PostUpdateCommands);
                     }
-                    else if (input.GetKeyUp(KeyCode.Space))
+                    else if (input.GetKeyDown(KeyCode.Space))
                     {
-                        MoveToInGame(PostUpdateCommands, false);
+                        MoveToInGame(PostUpdateCommands);
                     }
                 } break;
                 case eGameState.InGame:
@@ -361,18 +259,16 @@ namespace game
                 case eGameState.GameOver:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyUp(KeyCode.Space))
+                    if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen(PostUpdateCommands);
-                    else if (input.GetKeyUp(KeyCode.R))
-                        MoveToInGame(PostUpdateCommands, true);
+                    else if (input.GetKeyDown(KeyCode.R))
+                            MoveToReplay(PostUpdateCommands);
                 } break;
                 case eGameState.NextLevel:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
 
-                    // Generate a new seed
-                    CurrentSeed = MakeNewRandom();
                     GenerateLevel();
                     log.AddLog("You descend another floor.");
                     log.ShowNextLog(PostUpdateCommands); 
@@ -381,7 +277,7 @@ namespace game
                 case eGameState.HiScores:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyUp(KeyCode.Space))
+                    if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen(PostUpdateCommands);
                 } break;
             }
@@ -397,7 +293,7 @@ namespace game
             ClearView(cb);
 
             // Clear the dungeon
-            _dungeon.ClearDungeon(cb, _view);
+            _dungeon.ClearDungeon(cb, GameView);
             
             // Clear all Tile data
             Entities.WithAll<Tile>().ForEach((Entity e) =>
@@ -422,6 +318,14 @@ namespace game
         {
             HideInventory(cb);
             
+            // Record every player move at title screen
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
+            pis.StartRecording();
+            
+            // Start with a nice new seed
+            CurrentSeed = MakeNewRandom();
+            RandomRogue.Init(CurrentSeed);
+            
             // Clear the screen.
             Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
             {
@@ -431,29 +335,20 @@ namespace game
             });
             ClearView(cb);
 
-            _view.Blit(cb, new int2(0, 0), "TINY ROGUE");
-            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO BEGIN");
-            _view.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
+            GameView.Blit(cb, new int2(0, 0), "TINY ROGUE");
+            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO BEGIN");
+            GameView.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
             _state = eGameState.Title;
         }
 
-        public void MoveToInGame( EntityCommandBuffer cb, bool replay )
+        public void MoveToInGame( EntityCommandBuffer cb )
         {
-            
-            // Generate a new seed
-            if(!replay)
-                CurrentSeed = MakeNewRandom();
-            RandomRogue.Init(CurrentSeed);
+            // Start at 0th level
+            CurrentLevel = 0;
             LastDungeonNumber = RandomRogue.Next(5, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
-
-            if( replay )
-                pis.StartReplaying();
-            else
-                pis.StartRecording();
 
             GenerateLevel();
             tms.ResetTurnCount();
@@ -473,43 +368,55 @@ namespace game
             _state = eGameState.InGame;
         }
 
+        void MoveToReplay(EntityCommandBuffer cb)
+        {
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
+
+            pis.StartReplaying();
+            
+            // Init at the start of the current seed again
+            RandomRogue.Init(CurrentSeed);
+            
+            MoveToInGame(cb);
+        }
+
 
 
         public void MoveToGameOver(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(cb, new int2(0, 0), "GAME OVER!");
-            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
-            _view.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
+            GameView.Blit(cb, new int2(0, 0), "GAME OVER!");
+            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+            GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
 
         public void MoveToGameWin(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(cb, new int2(0, 0), "YOU WIN!");
-            _view.Blit(cb, new int2(30, 20),"PRESS SPACE TO START AGAIN");
-            _view.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
+            GameView.Blit(cb, new int2(0, 0), "YOU WIN!");
+            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+            GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
         }
 
         public void MoveToNextLevel(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(cb, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
-            _view.Blit(cb, new int2(30, 20), "PRESS SPACE TO CONTINUE");
+            GameView.Blit(cb, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
+            GameView.Blit(cb, new int2(30, 20), "PRESS SPACE TO CONTINUE");
             _state = eGameState.NextLevel;
         }
 
         public void MoveToHiScores(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            _view.Blit(cb, new int2(30, 7), "HiScores");
-            _view.Blit(cb, new int2(25, 20), "Press Space to Continue");
+            GameView.Blit(cb, new int2(30, 7), "HiScores");
+            GameView.Blit(cb, new int2(25, 20), "Press Space to Continue");
             for (int i = 1; i < 11; i++)
             {
-                _view.Blit(cb, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
-                _view.Blit(cb, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
+                GameView.Blit(cb, new int2(30, 7 + (1 * i)), i.ToString() + ": ");
+                GameView.Blit(cb, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
             }
             _state = eGameState.HiScores;
         }
