@@ -660,7 +660,7 @@
                 "x": 0.5,
                 "y": 0.5
             },
-            "blending": 4
+            "blending": 0
         }, {
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "5aa6b81e39954e839ccd7dc875d06315"
