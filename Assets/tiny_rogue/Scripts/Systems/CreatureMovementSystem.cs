@@ -42,7 +42,7 @@ namespace game
 
                 Entities.ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed, ref Animated animated) =>
                 {
-                    if (lastTurn%speed.SpeedRate == 0)
+                    if (lastTurn % speed.SpeedRate == 0)
                     {
                         if (lastTurn % speed.SpeedRate == 0)
                         {
@@ -60,7 +60,8 @@ namespace game
                             Action movement = getDirection(monsterPos, nextPos);
                             tms.AddDelayedAction(movement, creature, coord, animated.Direction);
                         }
-                    });
+                    }
+                });
             }
         }
 
