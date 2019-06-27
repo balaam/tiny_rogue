@@ -15,10 +15,12 @@ namespace game
     {
         class LogEntry
         {
+            public int2 loc;
             public string text;
         }
 
         const int MaxLogHistory = 64;
+        static readonly int2 DefaultLocation = new int2 { x = -1, y = -1 };
 
         List<LogEntry> _newLogs = new List<LogEntry>();
         List<LogEntry> _oldLogs = new List<LogEntry>();
@@ -31,7 +33,13 @@ namespace game
         /// <param name="log">The log line. Max length is View.Width (Default 80)</param>
         public void AddLog(string log)
         {
-            var entry = new LogEntry { text = log };
+            var entry = new LogEntry { loc = DefaultLocation, text= log };
+            _newLogs.Add(entry);
+        }
+
+        public void AddLog(int2 loc, string log)
+        {
+            var entry = new LogEntry { loc = loc, text= log };
             _newLogs.Add(entry);
         }
 
@@ -51,8 +59,23 @@ namespace game
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             View view = gss.View;
 
+            for (int i = _newLogs.Count - 1; i >= 0; i--)
+            {
+                if (!_newLogs[i].loc.Equals(DefaultLocation))
+                {
+                    int idx = View.XYToIndex(_newLogs[i].loc, gss.View.Width);
+                    Entity tileEntity = gss.View.ViewTiles[idx];
+                    Tile tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                    if (!tile.IsSeen)
+                    {
+                        _newLogs.RemoveAt(i);
+                    }
+                }
+            }
+
             if (_newLogs.Count > 0)
             {
+                
                 // Write the new log line out, remove it from the new list and add it to the old list.
                 LogEntry topLog =  _newLogs[0];
                 _newLogs.RemoveAt(0);
