@@ -1,7 +1,7 @@
 ﻿using Unity.Entities;
 using Unity.Tiny.Scenes;
 
-public struct SceneReferenceData : IComponentData
+public struct ButtonLoadScene : IComponentData
 {
     public SceneReference sceneReference;
 }
