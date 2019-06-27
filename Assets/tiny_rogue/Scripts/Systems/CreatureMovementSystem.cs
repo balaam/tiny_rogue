@@ -1,6 +1,7 @@
 using game;
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace game
 {
@@ -19,7 +20,7 @@ namespace game
                 lastTurn = tms.TurnCount;
                 // Find player to navigate towards
                 int2 playerPos = int2.zero;
-                Entities.WithAll<Player>().ForEach((Entity player, ref WorldCoord coord) =>
+                Entities.WithAll<Player>().ForEach((Entity player, ref WorldCoord coord, ref Animated animated) =>
                 {
                     playerPos.x = coord.x;
                     playerPos.y = coord.y;
@@ -27,7 +28,7 @@ namespace game
 
                 // Move all creatures towards Player
                 Entities.WithNone<PatrollingState>().WithAll<MeleeAttackMovement>()
-                    .ForEach((Entity creature, ref WorldCoord coord, ref Speed speed) =>
+                    .ForEach((Entity creature, ref WorldCoord coord, ref Speed speed, ref Animated animated) =>
                     {
                         if (lastTurn % speed.SpeedRate == 0)
                         {
@@ -35,15 +36,15 @@ namespace game
                             int2 nextPos =
                                 AStarPathfinding.getNextStep(creaturePos, playerPos, gss.View, EntityManager);
                             Action movement = getDirection(creaturePos, nextPos);
-                            tms.AddDelayedAction(movement, creature, coord);
+                            tms.AddDelayedAction(movement, creature, coord, animated.Direction);
                         }
                     });
 
                 Entities.WithAll<PatrollingState>().ForEach(
-                    (Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed) =>
+                    (Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed,
+                        ref Animated animated) =>
                     {
                         if (lastTurn % speed.SpeedRate == 0)
-
                         {
                             int2 monsterPos = new int2(coord.x, coord.y);
                             if (patrol.destination.Equals(new int2(0, 0)) || patrol.destination.Equals(monsterPos))
@@ -53,18 +54,17 @@ namespace game
                             }
 
                             EntityManager.SetComponentData(creature, patrol);
-
                             // Follow defined path now that we have ensured that one exists
                             int2 nextPos =
                                 AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
                             Action movement = getDirection(monsterPos, nextPos);
-                            tms.AddDelayedAction(movement, creature, coord);
+                            tms.AddDelayedAction(movement, creature, coord, animated.Direction);
                         }
                     });
             }
         }
 
-        private Action getDirection(int2 current, int2 target)
+        private static Action getDirection(int2 current, int2 target)
         {
             if (current.y < target.y)
             {

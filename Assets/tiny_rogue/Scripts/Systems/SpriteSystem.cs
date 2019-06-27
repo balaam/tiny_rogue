@@ -12,13 +12,15 @@ namespace game
         Stairway,
         Collectible,
         Gold,
-        CombatDummy,
         OpenVerticalDoor,
         ClosedVerticalDoor,
         OpenHorizontalDoor,
         ClosedHorizontalDoor,
         Wall,
-        Floor
+        Floor,
+        Floor1,
+        Floor2,
+        Floor3
     }
     /// <summary>
     /// Reads in the ASCII sprites and stores then in an array indexable by the chars decimal value. i.e. A is 65
@@ -60,9 +62,6 @@ namespace game
                     break;
                 case (char)236:
                     result = (char) SpriteEnum.Gold;
-                    break;
-                case 'd':
-                    result = (char) SpriteEnum.CombatDummy;
                     break;
                 case '/':
                     result = (char) SpriteEnum.OpenVerticalDoor;

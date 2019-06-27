@@ -34,6 +34,7 @@ namespace game
     {
         public Direction Dir;
         public Entity Ent;
+        public bool Ouch;
         //public WorldCoord Wc;
     }
 
@@ -43,6 +44,7 @@ namespace game
         public Entity Attacker;
         public Direction AttackerDir;
         public Entity Defender;
+        public int2 LogLoc;
     }
 
     public struct PendingDoorOpen
@@ -53,6 +55,7 @@ namespace game
 
     public struct PendingInteractions
     {
+        public Direction Dir;
         public uint2 InteractPos;
         public Entity InteractingEntity;
     }
@@ -192,11 +195,11 @@ namespace game
                 }
                 if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
                 {
-                    PendingWaits.Enqueue(new PendingWait { Ent = e, Dir = direction }); //Don't move
+                    PendingWaits.Enqueue(new PendingWait { Ent = e, Dir = direction, Ouch = true }); //Don't move
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
-                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx] });
+                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx], LogLoc = new int2 {x = (int)moveFrom.x, y = (int)moveFrom.y }});
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
@@ -248,9 +251,15 @@ namespace game
                                 PendingInteractions.Enqueue(
                                     new PendingInteractions()
                                     {
+                                        Dir = ar.Dir,
                                         InteractingEntity = ar.Ent,
                                         InteractPos = ar.Loc
                                     });
+                            } break;
+
+                            case Action.Wait:
+                            {
+                                PendingWaits.Enqueue(new PendingWait { Ent = ar.Ent, Dir = ar.Dir, Ouch = false });
                             } break;
                         }
                     }
@@ -318,7 +327,6 @@ namespace game
                 var trans = _gss.View.ViewCoordToWorldPos(new int2(pm.Wc.x, pm.Wc.y));
                 if (GlobalGraphicsSettings.ascii)
                 {
-                    EntityManager.SetComponentData(pm.Ent, pm.Wc);
                     EntityManager.SetComponentData(pm.Ent, new Translation { Value = trans });
                 }
                 else
@@ -327,21 +335,22 @@ namespace game
                     var mobile = EntityManager.GetComponentData<Mobile>(pm.Ent);
                     mobile.Initial = EntityManager.GetComponentData<Translation>(pm.Ent).Value;
                     mobile.Destination = trans;
-                    mobile.DestPos = new int2 { x = pm.Wc.x, y = pm.Wc.y };
                     EntityManager.SetComponentData(pm.Ent, mobile);
                     anim.StartAnimation(pm.Ent, Action.Move, pm.Dir);
                 }
+                EntityManager.SetComponentData(pm.Ent, pm.Wc);
             }
 
             PendingWait pw;
             while (pendingWaits.TryDequeue(out pw))
             {
-                if (EntityManager.HasComponent<Player>(pw.Ent))
+                if (pw.Ouch && EntityManager.HasComponent<Player>(pw.Ent))
                 {
                     log.AddLog("You bumped into a wall. Ouch.");
                 }
+                
                 var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
-                anim.StartAnimation(pw.Ent, Action.None, pw.Dir);
+                anim.StartAnimation(pw.Ent, pw.Ouch ? Action.None :Action.Wait, pw.Dir);
             }
 
             PendingAttack pa;
@@ -376,6 +385,9 @@ namespace game
                 {
                     logStr = string.Concat("You destroy the ", defenderName);
                     logStr = string.Concat(logStr, ".");
+                    ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
+                    xp.now += hp.max; //XP awarded equals the defenders max hp
+                    EntityManager.SetComponentData(pa.Attacker, xp);
                 }
                 else if (playerAttack)
                 {
@@ -387,7 +399,12 @@ namespace game
                                     " damage!");
 
                     if(killHit)
+                    {
                         logStr = string.Concat(logStr, " Killing it.");
+                        ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
+                        xp.now += hp.max; //XP awarded equals the defenders max hp
+                        EntityManager.SetComponentData(pa.Attacker, xp);
+                    }
                 }
                 else
                 {
@@ -402,7 +419,7 @@ namespace game
                                     dmg.ToString()),
                                     " damage!");
                 }
-                log.AddLog(logStr);
+                log.AddLog(pa.LogLoc,logStr);
 
                 EntityManager.SetComponentData(pa.Defender, hp);
             }

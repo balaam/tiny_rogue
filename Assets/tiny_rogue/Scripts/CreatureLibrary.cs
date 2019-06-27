@@ -126,44 +126,6 @@ namespace game
                 typeof(NeedsAnimationStart)
             });
         }
-
-        public Entity SpawnCreature(EntityManager entityManager, ECreatureId cId)
-        {
-            Entity entity = entityManager.CreateEntity(_creatureArchetype);
-            CreatureDescription descr = CreatureDescriptions[(int) cId];
-            
-            Sprite2DRenderer s = new Sprite2DRenderer();
-            LayerSorting l = new LayerSorting();
-            Creature c = new Creature {id = (int)cId};
-            HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
-            AttackStat att = new AttackStat { range = descr.attackRange };
-            Sight sight = new Sight { SightRadius = descr.sightRadius };
-            PatrollingState patrol = new PatrollingState();
-            MeleeAttackMovement movement = new MeleeAttackMovement();
-            Speed speed = new Speed { SpeedRate = descr.speed };
-            Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
-            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
-
-            // Only tint sprites if ascii
-            s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
-            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
-            l.layer = 2;
-            
-            entityManager.SetComponentData(entity, s);
-            entityManager.SetComponentData(entity, c);
-            entityManager.SetComponentData(entity, l);
-            entityManager.SetComponentData(entity, hp);
-            entityManager.SetComponentData(entity, att);
-            entityManager.SetComponentData(entity, sight);
-            entityManager.SetComponentData(entity, movement);
-            entityManager.SetComponentData(entity, patrol);
-            entityManager.SetComponentData(entity, speed);
-            entityManager.SetComponentData(entity, mobile);
-            entityManager.SetComponentData(entity, animated);
-
-            return entity;
-        }
-        
         
         public Entity SpawnCreature(EntityCommandBuffer cb, ECreatureId cId)
         {
@@ -212,7 +174,7 @@ namespace game
             HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
             Level lvl = new Level { level = 1 };
-            ExperiencePoints exp = new ExperiencePoints { now = 0 };
+            ExperiencePoints exp = new ExperiencePoints { now = 0, next = LevelSystem.GetXPRequiredForLevel(1) };
             GoldCount gp = new GoldCount { count = 0 };
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0, Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
@@ -248,7 +210,7 @@ namespace game
             HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
             Level lvl = new Level { level = 1 };
-            ExperiencePoints exp = new ExperiencePoints {now = 0};
+            ExperiencePoints exp = new ExperiencePoints {now = 0,  next = LevelSystem.GetXPRequiredForLevel(1)};
             GoldCount gp = new GoldCount { count = 0 };
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };

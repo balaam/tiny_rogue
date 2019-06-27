@@ -78,7 +78,6 @@ namespace game
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-            var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
 
             var time = Time.time;
@@ -100,7 +99,7 @@ namespace game
                     if (action == Action.None)
                         return;
 
-                    tms.AddActionRequest(action, playerEntity, coord);
+                    tms.AddActionRequest(action, playerEntity, coord, animated.Direction);
 
                     // Save the action to the action stream if the player has it
                     if (!Replaying)
