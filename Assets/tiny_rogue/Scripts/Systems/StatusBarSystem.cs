@@ -1,8 +1,10 @@
+using System;
 using Unity.Entities;
 using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Tiny.Core;
 using Unity.Tiny.Core2D;
+using Unity.Tiny.Text;
 
 namespace game
 {
@@ -61,25 +63,61 @@ namespace game
                     // 4 space      4           54
                     // FLOOR:
 
-                    // If you have two strings interpolations it doesn't work
-                    int yPos = view.Height - 1;
-                    string hpStr1 = $"HP:{hpNowAsStr}";
-                    string hpStr2 = $"({hpMaxAsStr})";
-                    view.Blit(PostUpdateCommands, new int2(0, yPos), hpStr1);
-                    view.Blit(PostUpdateCommands, new int2(hpStr1.Length, yPos), hpStr2);
+                    if (GlobalGraphicsSettings.ascii)
+                    {
+                        // If you have two strings interpolations it doesn't work
+                        int yPos = view.Height - 1;
+                        string hpStr1 = $"HP:{hpNowAsStr}";
+                        string hpStr2 = $"({hpMaxAsStr})";
+                        view.Blit(PostUpdateCommands, new int2(0, yPos), hpStr1);
+                        view.Blit(PostUpdateCommands, new int2(hpStr1.Length, yPos), hpStr2);
 
-                    string lvlStr = $"LEVEL:{lvlAsStr}";
-                    view.Blit(PostUpdateCommands, new int2(15, yPos), lvlStr);
+                        string lvlStr = $"LEVEL:{lvlAsStr}";
+                        view.Blit(PostUpdateCommands, new int2(15, yPos), lvlStr);
 
-                    string xpStr = $"EXP:{xpNowAsStr}/";
-                    xpStr = string.Concat(xpStr, xpMaxAsStr);
-                    view.Blit(PostUpdateCommands, new int2(27, yPos), xpStr);
+                        string xpStr = $"EXP:{xpNowAsStr}/";
+                        xpStr = string.Concat(xpStr, xpMaxAsStr);
+                        view.Blit(PostUpdateCommands, new int2(27, yPos), xpStr);
 
-                    string gpStr = $"GOLD:{gpAsStr}";
-                    view.Blit(PostUpdateCommands, new int2(42, yPos), gpStr);
+                        string gpStr = $"GOLD:{gpAsStr}";
+                        view.Blit(PostUpdateCommands, new int2(42, yPos), gpStr);
 
-                    string flStr = $"FLOOR:{flAsStr}";
-                    view.Blit(PostUpdateCommands, new int2(54, yPos), flStr);
+                        string flStr = $"FLOOR:{flAsStr}";
+                        view.Blit(PostUpdateCommands, new int2(54, yPos), flStr);
+                    }
+                    else
+                    {
+                        Entities.WithAll<StatBarEntry>().ForEach((Entity e, ref StatBarEntry stat) =>
+                        {
+                            var text = "";
+                            switch (stat.Stat)
+                            {
+                                case StatType.Hp:
+                                    text = hpNowAsStr;
+                                    text += " (";
+                                    text += hpMaxAsStr;
+                                    text += ")";
+                                    break;
+                                case StatType.Level:
+                                    text = lvlAsStr;
+                                    break;
+                                case StatType.Xp:
+                                    text = xpNowAsStr;
+                                    text += "/";
+                                    text += xpMaxAsStr;
+                                    break;
+                                case StatType.Gold:
+                                    text = gpAsStr;
+                                    break;
+                                case StatType.Floor:
+                                    text = flAsStr;
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(stat.Stat), "Unknown stat type.");
+                            }
+                            EntityManager.SetBufferFromString<TextString>(e, text);
+                        });
+                    }
 
                 });
             }

@@ -598,16 +598,19 @@
             "Index": 3
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
-            "anchorMin": {},
+            "anchorMin": {
+                "y": 0.5
+            },
             "anchorMax": {
                 "x": 1,
-                "y": 0.48
+                "y": 0.5
             },
             "sizeDelta": {
-                "y": 21.8
+                "x": -40,
+                "y": 125.8
             },
             "anchoredPosition": {
-                "y": -2
+                "y": -50
             },
             "pivot": {
                 "x": 0.5,
@@ -1032,6 +1035,9 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "5aa6b81e39954e839ccd7dc875d06315"
         }, {
+            "$type": "game.StatBarEntry, tiny_rogue",
+            "Stat": 0
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -1094,21 +1100,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "1"
-            }, {
-                "c": "0"
-            }, {
-                "c": " "
-            }, {
-                "c": "("
-            }, {
-                "c": "1"
-            }, {
-                "c": "0"
-            }, {
-                "c": ")"
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -1156,6 +1148,8 @@
                 "StableTypeHash": 16791256614846730296
             }, {
                 "StableTypeHash": 10569324262974196863
+            }, {
+                "StableTypeHash": 1870217753808411505
             }]
         }]
     }, {
@@ -1388,6 +1382,9 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "e8815d25b39b432489fb105bdb452004"
         }, {
+            "$type": "game.StatBarEntry, tiny_rogue",
+            "Stat": 4
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -1450,17 +1447,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "0"
-            }, {
-                "c": "/"
-            }, {
-                "c": "?"
-            }, {
-                "c": "?"
-            }, {
-                "c": "?"
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -1508,6 +1495,8 @@
                 "StableTypeHash": 16791256614846730296
             }, {
                 "StableTypeHash": 10569324262974196863
+            }, {
+                "StableTypeHash": 1870217753808411505
             }]
         }]
     }, {
@@ -1999,17 +1988,18 @@
             "Index": 2
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
-            "anchorMin": {},
+            "anchorMin": {
+                "y": 0.5
+            },
             "anchorMax": {
                 "x": 1,
-                "y": 0.48
+                "y": 0.5
             },
             "sizeDelta": {
-                "y": 21.8
+                "x": -40,
+                "y": 125.8
             },
-            "anchoredPosition": {
-                "y": 52
-            },
+            "anchoredPosition": {},
             "pivot": {
                 "x": 0.5,
                 "y": 0.5
@@ -5668,6 +5658,9 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "8942f98e04f4480c9c416e7a40950100"
         }, {
+            "$type": "game.StatBarEntry, tiny_rogue",
+            "Stat": 3
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -5730,9 +5723,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "1"
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -5786,6 +5777,8 @@
                 "StableTypeHash": 16791256614846730296
             }, {
                 "StableTypeHash": 10569324262974196863
+            }, {
+                "StableTypeHash": 1870217753808411505
             }]
         }]
     }, {
@@ -6092,6 +6085,9 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "1f12fd6764ea4204881caca7753e9cc5"
         }, {
+            "$type": "game.StatBarEntry, tiny_rogue",
+            "Stat": 2
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -6154,9 +6150,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "1"
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -6210,6 +6204,8 @@
                 "StableTypeHash": 16791256614846730296
             }, {
                 "StableTypeHash": 10569324262974196863
+            }, {
+                "StableTypeHash": 1870217753808411505
             }]
         }]
     }, {
@@ -6648,6 +6644,9 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "13a8f40fac8f45649bcee8b9a74764f7"
         }, {
+            "$type": "game.StatBarEntry, tiny_rogue",
+            "Stat": 1
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -6770,6 +6769,8 @@
                 "StableTypeHash": 16791256614846730296
             }, {
                 "StableTypeHash": 10569324262974196863
+            }, {
+                "StableTypeHash": 1870217753808411505
             }]
         }]
     }, {
@@ -7028,17 +7029,18 @@
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {
-                "y": 0.52
+                "y": 0.5
             },
             "anchorMax": {
                 "x": 1,
-                "y": 1
+                "y": 0.5
             },
             "sizeDelta": {
-                "y": 23.7
+                "x": -40,
+                "y": 125.8
             },
             "anchoredPosition": {
-                "y": -11.9
+                "y": 50
             },
             "pivot": {
                 "x": 0.5,

@@ -54,7 +54,7 @@ namespace game
                 {
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        logSystem.AddLog("You found a " + pickable.name);
+                        logSystem.AddLog($"You found a {pickable.name}");
                     }
                 });
         }
@@ -68,7 +68,7 @@ namespace game
                 {
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        logSystem.AddLog("You picked up a " + pickable.name);
+                        logSystem.AddLog($"You picked up a {pickable.name}");
                         AddItem(pickable);
                         
                         ecb.DestroyEntity(item);
