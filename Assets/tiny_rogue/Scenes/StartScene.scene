@@ -945,9 +945,9 @@
             },
             "blending": 0
         }, {
-            "$type": "ButtonLoadScene, tiny_rogue",
+            "$type": "SceneReferenceData, tiny_rogue",
             "sceneReference": {
-                "SceneGuid": "2dafd427285a4e23994193fab47df02d"
+                "SceneGuid": "71846fdef5ad4670b25f7ef01f7418a5"
             }
         }, {
             "$type": "Unity.Tiny.UIControls.PointerInteraction, Unity.Tiny.UIControls"
@@ -1090,6 +1090,10 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 17446735709682133789
+            }, {
+                "StableTypeHash": 15167326762717363718
+            }, {
+                "StableTypeHash": 11060144837946397734
             }]
         }]
     }, {
@@ -1563,7 +1567,7 @@
             },
             "blending": 0
         }, {
-            "$type": "ButtonLoadScene, tiny_rogue",
+            "$type": "SceneReferenceData, tiny_rogue",
             "sceneReference": {
                 "SceneGuid": "71846fdef5ad4670b25f7ef01f7418a5"
             }
@@ -1713,6 +1717,10 @@
                 "StableTypeHash": 11410773464688625477
             }, {
                 "StableTypeHash": 17446735709682133789
+            }, {
+                "StableTypeHash": 15167326762717363718
+            }, {
+                "StableTypeHash": 11060144837946397734
             }]
         }]
     }, {
