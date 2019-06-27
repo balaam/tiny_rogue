@@ -2,6 +2,7 @@ using System;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
+using Unity.Tiny.Core;
 using Unity.Tiny.Input;
 using UnityEngine;
 using Color = Unity.Tiny.Core2D.Color;
@@ -81,6 +82,8 @@ namespace game
 
             if (!foundMap)
                 return false;
+            
+            World.TinyEnvironment().fixedFrameRateEnabled = true;
 
             _archetypeLibrary.Init(EntityManager);
             var startX = -(math.floor(width / 2) * GlobalGraphicsSettings.TileSize.x);
