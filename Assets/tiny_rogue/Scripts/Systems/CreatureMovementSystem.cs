@@ -44,22 +44,20 @@ namespace game
                 {
                     if (lastTurn % speed.SpeedRate == 0)
                     {
-                        if (lastTurn % speed.SpeedRate == 0)
+                        int2 monsterPos = new int2(coord.x, coord.y);
+                        if (patrol.destination.Equals(new int2(0, 0)) || patrol.destination.Equals(monsterPos))
                         {
-                            int2 monsterPos = new int2(coord.x, coord.y);
-                            if (patrol.destination.Equals(new int2(0, 0)) || patrol.destination.Equals(monsterPos))
-                            {
-                                DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
-                                patrol.destination = ds.GetRandomPositionInRandomRoom();
-                            }
-
-                            EntityManager.SetComponentData(creature, patrol);
-                            // Follow defined path now that we have ensured that one exists
-                            int2 nextPos =
-                                AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
-                            Action movement = getDirection(monsterPos, nextPos);
-                            tms.AddDelayedAction(movement, creature, coord, animated.Direction);
+                            DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                            patrol.destination = ds.GetRandomPositionInRandomRoom();
                         }
+
+                        EntityManager.SetComponentData(creature, patrol);
+                        // Follow defined path now that we have ensured that one exists
+                        int2 nextPos =
+                            AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
+                        Action movement = getDirection(monsterPos, nextPos);
+                        tms.AddDelayedAction(movement, creature, coord, animated.Direction);
+
                     }
                 });
             }
