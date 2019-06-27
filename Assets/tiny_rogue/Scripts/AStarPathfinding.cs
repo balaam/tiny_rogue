@@ -178,7 +178,7 @@ namespace game
             return found;
         }
 
-        private static List<int2> getWalkableAdjacentSquares(int2 start, List<String> locations, View view, EntityManager em)
+        private static List<int2> getWalkableAdjacentSquares(int2 start, List<int2> locations, View view, EntityManager em)
         {
             List<int2> walkableSquares = new List<int2>();
             List<int2>adjacentSquares = new List<int2>()
@@ -194,7 +194,7 @@ namespace game
                 int i = View.XYToIndex(pos, view.Width);
                 Entity e = view.ViewTiles[i];
 
-                if (locations.Contains($"{pos.x},{pos.y}")) continue;
+                if (locations.Contains(pos)) continue;
                 if (em.HasComponent(e, typeof(BlockMovement))) continue;
                    
                 walkableSquares.Add(pos);
