@@ -234,7 +234,6 @@ namespace game
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    CurrentLevel = 0;
                     if (input.GetKeyDown(KeyCode.D))
                     {
                         MoveToDebugLevelSelect(PostUpdateCommands);
@@ -245,7 +244,7 @@ namespace game
                     }
                     else if (input.GetKeyDown(KeyCode.Space))
                     {
-                        MoveToInGame(PostUpdateCommands, false);
+                        MoveToInGame(PostUpdateCommands);
                     }
                 } break;
                 case eGameState.InGame:
@@ -287,15 +286,13 @@ namespace game
                     if (input.GetKeyDown(KeyCode.Space))
                         MoveToTitleScreen(PostUpdateCommands);
                     else if (input.GetKeyDown(KeyCode.R))
-                        MoveToInGame(PostUpdateCommands, true);
+                            MoveToReplay(PostUpdateCommands);
                 } break;
                 case eGameState.NextLevel:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     var log = EntityManager.World.GetExistingSystem<LogSystem>();
 
-                    // Generate a new seed
-                    CurrentSeed = MakeNewRandom();
                     GenerateLevel();
                     log.AddLog("You descend another floor.");
                     log.ShowNextLog(PostUpdateCommands); 
@@ -364,6 +361,14 @@ namespace game
         {
             HideInventory(cb);
             
+            // Record every player move at title screen
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
+            pis.StartRecording();
+            
+            // Start with a nice new seed
+            CurrentSeed = MakeNewRandom();
+            RandomRogue.Init(CurrentSeed);
+            
             // Clear the screen.
             Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
             {
@@ -380,28 +385,18 @@ namespace game
             _state = eGameState.Title;
         }
 
-        public void MoveToInGame( EntityCommandBuffer cb, bool replay )
+        public void MoveToInGame( EntityCommandBuffer cb )
         {
-            // Generate a new seed
-            if(!replay)
-                CurrentSeed = MakeNewRandom();
-            
-            RandomRogue.Init(CurrentSeed);
+            // Start at 0th level
+            CurrentLevel = 0;
             LastDungeonNumber = RandomRogue.Next(5, 10);
 
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
-
-            if( replay )
-                pis.StartReplaying();
-            else
-                pis.StartRecording();
 
             GenerateLevel();
             tms.ResetTurnCount();
             log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
-            
             _state = eGameState.InGame;
         }
         
@@ -415,6 +410,18 @@ namespace game
         {
             HideInventory(cb);
             _state = eGameState.InGame;
+        }
+
+        void MoveToReplay(EntityCommandBuffer cb)
+        {
+            var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
+
+            pis.StartReplaying();
+            
+            // Init at the start of the current seed again
+            RandomRogue.Init(CurrentSeed);
+            
+            MoveToInGame(cb);
         }
 
 
