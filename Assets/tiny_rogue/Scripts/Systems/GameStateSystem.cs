@@ -46,6 +46,7 @@ namespace game
         private int LastDungeonNumber;
         
         List<Sprite2DRenderer> spriteRenderers = new List<Sprite2DRenderer>();
+        bool populateInventory = false;
 
 
         private uint MakeNewRandom()
@@ -364,6 +365,10 @@ namespace game
                 case eGameState.Inventory:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    if (populateInventory)
+                    {
+                        PopulateInventory();
+                    }
                     if (input.GetKeyDown(KeyCode.Escape))
                     {
                         MoveBackToGame(PostUpdateCommands);
@@ -587,15 +592,24 @@ namespace game
                 }
             });
 
+            populateInventory = true;
+        }
+
+        void PopulateInventory()
+        {
+
             spriteRenderers.Clear();
             
             Entities.WithAll<InventoryItemUI>().ForEach((Entity e, ref Sprite2DRenderer spr) =>
-                {
-                    spriteRenderers.Add(spr);
-                });
+            {
+                spriteRenderers.Add(spr);
+            });
 
             var invSys = EntityManager.World.GetExistingSystem<InventorySystem>();
             invSys.RenderInventoryItems(spriteRenderers);
+            
+            populateInventory = false;
+
         }
         
         void HideInventory(EntityCommandBuffer ecb)
