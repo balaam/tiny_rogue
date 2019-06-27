@@ -194,13 +194,7 @@ namespace game
                 int i = View.XYToIndex(pos, view.Width);
                 Entity e = view.ViewTiles[i];
 
-                var found = false;
-                foreach (var loc in locations)
-                    if (pos.Equals(loc))
-                        found = true;
-                if (found)
-                    continue;
-                
+                if (locations.Contains(pos)) continue;
                 if (em.HasComponent(e, typeof(BlockMovement))) continue;
                    
                 walkableSquares.Add(pos);
