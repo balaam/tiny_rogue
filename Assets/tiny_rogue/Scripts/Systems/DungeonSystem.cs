@@ -195,16 +195,17 @@ namespace game
         {
             for (var i = 0; i < _cells.Length; i++)
             {
+                var tileOffset = RandomRogue.Next(4);
                 switch (_cells[i])
                 {
                     case Type.eWall:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Wall());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Wall { TileOffset = tileOffset });
                         _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
                         break;
                     case Type.eHallway:
                     case Type.eFloor:
                     case Type.eDoor:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Floor { TileOffset =  tileOffset });
                         break;
                     case Type.eEmpty:
                         break;
