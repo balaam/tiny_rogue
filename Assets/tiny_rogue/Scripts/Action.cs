@@ -14,6 +14,7 @@ namespace game
         Attack = 7,
         Move = 8,
         Bump = 9,
-        Ouch = 9
+        Ouch = 9,
+        Die = 10
     }
 }

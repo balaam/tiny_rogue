@@ -15,6 +15,7 @@ namespace game
         public Entity Ent;
         public uint2 Loc;
         public Direction Dir;
+        public int Priority;
     };
     
     [UpdateAfter(typeof(PlayerInputSystem))]
@@ -38,7 +39,7 @@ namespace game
             _turnCount = 0;
         }
 
-        public void AddDelayedAction(Action a, Entity e, WorldCoord loc, Direction direction)
+        public void AddDelayedAction(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
         {
             if (!_actionQueue.IsCreated)
             {
@@ -49,24 +50,14 @@ namespace game
             ar.Ent = e;
             ar.Loc = new uint2((uint)loc.x, (uint)loc.y);
             ar.Dir = direction;
+            ar.Priority = priority;
             _actionQueue.Enqueue(ar);
         }
 
-        public void AddActionRequest(Action a, Entity e, WorldCoord loc, Direction direction)
+        public void AddActionRequest(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
         {
-            AddDelayedAction(a, e, loc, direction);
+            AddDelayedAction(a, e, loc, direction, priority);
             NeedToTickTurn = true;
-        }
-
-        public bool ConsumeActionRequest(out ActionRequest ar)
-        {
-            if (_actionQueue.IsCreated)
-            {
-                return _actionQueue.TryDequeue(out ar);
-            }
-
-            ar = new ActionRequest();
-            return false;
         }
 
         public void CleanActionQueue()
