@@ -359,19 +359,48 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
+                "x": 7.7248E-06,
                 "y": -56,
                 "z": -1
             }
         }, {
             "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
             "Value": {
-                "x": 1,
+                "x": 0.85,
                 "y": 1,
                 "z": 1
             }
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
             "Elements": [{
+                "c": "D"
+            }, {
+                "c": "a"
+            }, {
+                "c": "v"
+            }, {
+                "c": "i"
+            }, {
+                "c": "d"
+            }, {
+                "c": " "
+            }, {
+                "c": "L"
+            }, {
+                "c": "a"
+            }, {
+                "c": "t"
+            }, {
+                "c": "h"
+            }, {
+                "c": "a"
+            }, {
+                "c": "m"
+            }, {
+                "c": ","
+            }, {
+                "c": " "
+            }, {
                 "c": "J"
             }, {
                 "c": "i"
@@ -407,34 +436,6 @@
                 "c": "i"
             }, {
                 "c": "l"
-            }, {
-                "c": ","
-            }, {
-                "c": " "
-            }, {
-                "c": "L"
-            }, {
-                "c": "a"
-            }, {
-                "c": "r"
-            }, {
-                "c": "s"
-            }, {
-                "c": " "
-            }, {
-                "c": "N"
-            }, {
-                "c": "i"
-            }, {
-                "c": "e"
-            }, {
-                "c": "l"
-            }, {
-                "c": "s"
-            }, {
-                "c": "e"
-            }, {
-                "c": "n"
             }, {
                 "c": ","
             }, {
@@ -779,13 +780,14 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
+                "x": 7.7248E-06,
                 "y": -112,
                 "z": -1
             }
         }, {
             "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
             "Value": {
-                "x": 1,
+                "x": 0.85,
                 "y": 1,
                 "z": 1
             }
@@ -877,6 +879,40 @@
                 "c": "k"
             }, {
                 "c": "e"
+            }, {
+                "c": ","
+            }, {
+                "c": " "
+            }, {
+                "c": "V"
+            }, {
+                "c": "i"
+            }, {
+                "c": "c"
+            }, {
+                "c": "t"
+            }, {
+                "c": "o"
+            }, {
+                "c": "r"
+            }, {
+                "c": " "
+            }, {
+                "c": "W"
+            }, {
+                "c": "i"
+            }, {
+                "c": "l"
+            }, {
+                "c": "l"
+            }, {
+                "c": "y"
+            }, {
+                "c": "a"
+            }, {
+                "c": "m"
+            }, {
+                "c": "s"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -1245,12 +1281,13 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
+                "x": 7.7248E-06,
                 "z": -1
             }
         }, {
             "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
             "Value": {
-                "x": 1,
+                "x": 0.85,
                 "y": 1,
                 "z": 1
             }
@@ -1336,6 +1373,12 @@
                 "c": "a"
             }, {
                 "c": "n"
+            }, {
+                "c": "i"
+            }, {
+                "c": "e"
+            }, {
+                "c": "l"
             }, {
                 "c": " "
             }, {

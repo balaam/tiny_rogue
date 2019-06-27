@@ -112,6 +112,7 @@ public class AnimationSystem : ComponentSystem
 
                 switch (animated.Action)
                 {
+                    case Action.Bump:
                     case Action.None:
                     case Action.Wait:
                     case Action.Interact:
@@ -136,8 +137,15 @@ public class AnimationSystem : ComponentSystem
 
     void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
     {
+        var animAction = animated.Action;
+        // Bump has no animation, so map to idle
+        if (animAction == Action.Bump)
+        {
+            animAction = Action.None;
+        }
+        
         var direction = (int)animated.Direction;
-        var action = (int)animated.Action;
+        var action = (int)animAction;
         var id = animated.Id;
         Debug.Log($"Try set animation: {direction} {action}");
 
