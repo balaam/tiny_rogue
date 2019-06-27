@@ -28,7 +28,6 @@ namespace game
             ReadQueuedLog,
             GameOver,
             NextLevel,
-            DebugLevelSelect,
             HiScores,
             Inventory,
         };
@@ -188,25 +187,6 @@ namespace game
             }
        }
 
-        public void GenerateCombatTestLevel()
-        {
-            _dungeon.GenerateDungeon(PostUpdateCommands, GameView, _creatureLibrary, _archetypeLibrary, 1);
-
-            for (int i = 0; i < 20; i++)
-            {
-                var worldCoord = _dungeon.GetRandomPositionInRandomRoom();
-                var viewCoord = GameView.ViewCoordToWorldPos(worldCoord);
-                Entity ratEntity = _creatureLibrary.SpawnCreature(EntityManager, ECreatureId.Rat);
-
-                EntityManager.SetComponentData(ratEntity, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
-                EntityManager.SetComponentData(ratEntity, new Translation {Value = viewCoord});
-            }
-
-            // Create 'Exit'
-            var crownCoord = _dungeon.GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateCrown(EntityManager, crownCoord, GameView.ViewCoordToWorldPos(crownCoord));
-        }
-
         protected override void OnUpdate()
         {
             switch (_state)
@@ -234,11 +214,7 @@ namespace game
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.D))
-                    {
-                        MoveToDebugLevelSelect(PostUpdateCommands);
-                    }
-                    else if(input.GetKeyDown(KeyCode.H))
+                    if(input.GetKeyDown(KeyCode.H))
                     {
                         MoveToHiScores(PostUpdateCommands);
                     }
@@ -297,25 +273,6 @@ namespace game
                     log.AddLog("You descend another floor.");
                     log.ShowNextLog(PostUpdateCommands); 
                     _state = eGameState.InGame;
-                } break;
-                case eGameState.DebugLevelSelect:
-                {
-                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    var log = EntityManager.World.GetExistingSystem<LogSystem>();
-
-                    if (input.GetKeyDown(KeyCode.Alpha1))
-                    {
-                        var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-                        GenerateCombatTestLevel();
-                        tms.ResetTurnCount();
-                        log.AddLog("This is a room to test the combat system");
-                        log.AddLog("Move to the crown to exit");
-                        _state = eGameState.InGame;
-                    }
-                    else if (input.GetKeyDown(KeyCode.Space))
-                    {
-                        MoveToTitleScreen(PostUpdateCommands);
-                    }
                 } break;
                 case eGameState.HiScores:
                 {
@@ -381,7 +338,6 @@ namespace game
             GameView.Blit(cb, new int2(0, 0), "TINY ROGUE");
             GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO BEGIN");
             GameView.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
-            GameView.Blit(cb, new int2(70, 23),"(d)ebug");
             _state = eGameState.Title;
         }
 
@@ -463,17 +419,6 @@ namespace game
                 GameView.Blit(cb, new int2(35, 7 + (1 * i)), _scoreManager.HiScores[i - 1].ToString());
             }
             _state = eGameState.HiScores;
-        }
-
-        private void MoveToDebugLevelSelect(EntityCommandBuffer cb)
-        {
-            // Clear the screen.
-            ClearView(cb);
-
-            GameView.Blit(cb, new int2(0, 0), "TINY ROGUE (Debug Levels)");
-            GameView.Blit(cb, new int2(30, 10),"1) Combat Test");
-            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO EXIT");
-            _state = eGameState.DebugLevelSelect;
         }
 
         public void MoveToReadQueuedLog()
