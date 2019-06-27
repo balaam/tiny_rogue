@@ -29,7 +29,6 @@ namespace game
                             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                             gss.LastPlayerHurtLog = dmgLog;
                             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-                            tms.NeedToTickTurn = true;
                         }
 
                         dmg = 5;

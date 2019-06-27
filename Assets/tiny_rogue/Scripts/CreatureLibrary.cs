@@ -46,7 +46,7 @@ namespace game
                 health = 1, 
                 attackRange = new int2(1,1),
                 ascii = 'F', 
-                asciiColor = new Color(0.9f, 0f, 0f),
+                asciiColor = new Color(0.9f, 0f, 0f, 0f), // start invisible
                 sightRadius = 10, // Fireskulls have good eyesight
                 speed = 1,
                 spriteId = 2,
@@ -59,7 +59,7 @@ namespace game
                 health = 3,
                 attackRange = new int2(1,3),
                 ascii = 'k',
-                asciiColor = new Color(0.5f, 0.9f, 0.3f),
+                asciiColor = new Color(0.5f, 0.9f, 0.3f, 0f), // start invisible
                 sightRadius = 3, // Kobolds aren't very good at spotting enemies
                 speed = 3,
                 spriteId = 1,
@@ -156,6 +156,7 @@ namespace game
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
+            s.color.a = 0.0f; // Start invisible
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(descr.ascii)];
             l.layer = 2;
             

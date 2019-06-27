@@ -6,6 +6,7 @@ namespace game
 {
 
 
+    [UpdateInGroup(typeof(TurnSystemGroup))]
     public class HealthItemsSystem : ComponentSystem
     {
         protected override void OnUpdate()
@@ -45,7 +46,6 @@ namespace game
                         gss.LastPlayerHurtLog = dmgLog; 
                     }
                     PostUpdateCommands.DestroyEntity(healingItems[i]);
-                    tms.NeedToTickTurn = true;
                 }
             });
         }
