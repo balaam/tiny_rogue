@@ -148,7 +148,7 @@ namespace game
             MeleeAttackMovement movement = new MeleeAttackMovement();
             Speed speed = new Speed { SpeedRate = descr.speed };
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
-            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
+            Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             ArmorClass ac = new ArmorClass { AC = descr.ac };
 
             // Only tint sprites if ascii

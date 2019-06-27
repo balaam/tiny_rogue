@@ -50,11 +50,23 @@ public class AnimationSystem : ComponentSystem
 
                     if (animated.AnimationTime <= 0f)
                     {
+                        var prevAction = animated.Action;
+                        
                         animated.AnimationTrigger = false;
                         animated.AnimationTime = 0f;
                         animated.Action = Action.None;
                         SetAnimation(ref animated, ref sequencePlayer);
-                        Debug.Log("Switch animation");
+
+                        if (prevAction == Action.Die)
+                        {
+                            PostUpdateCommands.DestroyEntity(e);
+                            // Player death, end game
+                            if (animated.Id == 0)
+                            {
+                                var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                                gss.MoveToGameOver(PostUpdateCommands);
+                            }
+                        }
                     }
                 }
             });
@@ -135,7 +147,7 @@ public class AnimationSystem : ComponentSystem
         }
     }
 
-    void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
+    public void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
     {
         var animAction = animated.Action;
         // Bump has no animation, so map to idle
@@ -147,7 +159,7 @@ public class AnimationSystem : ComponentSystem
         var direction = (int)animated.Direction;
         var action = (int)animAction;
         var id = animated.Id;
-        Debug.Log($"Try set animation: {direction} {action}");
+        Debug.Log($"Try set animation: {animated.Id} {direction} {action}");
 
         Entity animation = Entity.Null;
         Entities.WithAll<AnimationSequence>().ForEach((Entity entity, ref AnimationSequence animationSequence) =>
