@@ -35,7 +35,6 @@ public class AnimationSystem : ComponentSystem
                     {
                         mobile.Moving = false;
                         translation.Value = mobile.Destination;
-                        EntityManager.SetComponentData(e, new WorldCoord { x = mobile.DestPos.x, y = mobile.DestPos.y });
                     }
                 }
             });
@@ -108,6 +107,7 @@ public class AnimationSystem : ComponentSystem
                 {
                     animated.AnimationTrigger = true;
                     animated.AnimationTime = 0.5f;
+                    sequencePlayer.speed = 0.5f;
                 }
 
                 switch (animated.Action)
@@ -115,10 +115,9 @@ public class AnimationSystem : ComponentSystem
                     case Action.None:
                     case Action.Wait:
                     case Action.Interact:
-                        sequencePlayer.speed = 0.5f;
+                        // Default from above
                         break;
                     case Action.Attack:
-                        sequencePlayer.speed = 0.5f;
                         animated.AnimationTime = 0.25f;
                         break;
                     case Action.Move:

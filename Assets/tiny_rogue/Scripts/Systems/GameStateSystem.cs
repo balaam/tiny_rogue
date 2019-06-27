@@ -31,16 +31,16 @@ namespace game
             HiScores,
             Inventory,
         };
-        
+
         public static View GameView = new View();
-        
+
         private eGameState _state = eGameState.Startup;
         private ScoreManager _scoreManager = new ScoreManager();
         private ArchetypeLibrary _archetypeLibrary = new ArchetypeLibrary();
         private CreatureLibrary _creatureLibrary = new CreatureLibrary();
-        
+
         private DungeonSystem _dungeon;
-        
+
         private uint CurrentSeed = 1;
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
@@ -150,7 +150,7 @@ namespace game
 
             GenerateCollectibles();
 
-
+            GenerateHealingItems();
         }
 
         void GenerateCollectibles()
@@ -187,30 +187,41 @@ namespace game
             }
        }
 
+        void GenerateHealingItems()
+        {
+            int healingItems = RandomRogue.Next(0, 5);
+            for (int i = 0; i < healingItems; i++)
+            {
+                var healCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateHealingItem(EntityManager, healCoord, GameView.ViewCoordToWorldPos(healCoord),
+                    RandomRogue.Next(-2, 6));
+            }
+        }
+
         protected override void OnUpdate()
         {
             switch (_state)
             {
                 case eGameState.Startup:
+                {
+                    bool done = TryGenerateViewport();
+                    if (done)
                     {
-                        bool done = TryGenerateViewport();
-                        if (done)
+                        var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
+                        // Re-parent the camera on graphical to follow the character.
+                        if (!GlobalGraphicsSettings.ascii)
                         {
-                            var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
-                            // Re-parent the camera on graphical to follow the character.
-                            if (!GlobalGraphicsSettings.ascii)
+                            Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
                             {
-                                Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
-                                {
-                                    parent.Value = playerEntity;
-                                });
-                            }
-
-                            _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
-                            MoveToTitleScreen(PostUpdateCommands);
+                                parent.Value = playerEntity;
+                            });
                         }
+
+                        _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                        MoveToTitleScreen(PostUpdateCommands);
                     }
-                    break;
+                }
+                break;
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -271,7 +282,7 @@ namespace game
 
                     GenerateLevel();
                     log.AddLog("You descend another floor.");
-                    log.ShowNextLog(PostUpdateCommands); 
+                    log.ShowNextLog(PostUpdateCommands);
                     _state = eGameState.InGame;
                 } break;
                 case eGameState.HiScores:
@@ -294,7 +305,7 @@ namespace game
 
             // Clear the dungeon
             _dungeon.ClearDungeon(cb, GameView);
-            
+
             // Clear all Tile data
             Entities.WithAll<Tile>().ForEach((Entity e) =>
             {
@@ -317,17 +328,17 @@ namespace game
         public void MoveToTitleScreen(EntityCommandBuffer cb)
         {
             HideInventory(cb);
-            
+
             // Record every player move at title screen
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
             pis.StartRecording();
-            
+
             // Start with a nice new seed
             CurrentSeed = MakeNewRandom();
             RandomRogue.Init(CurrentSeed);
-            
+
             // Clear the screen.
-            Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
+            Entities.WithAll<Player>().ForEach((Entity player, ref GoldCount gc, ref Level level) =>
             {
                 _scoreManager.SetHiScores(gc.count + (level.level - 1) * 10);
                 level.level = 1;
@@ -354,8 +365,11 @@ namespace game
             tms.ResetTurnCount();
             log.AddLog("You enter the dungeon. (Use the arrow keys to explore!)");
             _state = eGameState.InGame;
+
+            // Update the view
+            GameViewSystem.UpdateViewNeeded = true;
         }
-        
+
         void MoveToInventoryScreen(EntityCommandBuffer cb)
         {
             ShowInventory(cb);
@@ -373,10 +387,10 @@ namespace game
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
 
             pis.StartReplaying();
-            
+
             // Init at the start of the current seed again
             RandomRogue.Init(CurrentSeed);
-            
+
             MoveToInGame(cb);
         }
 
@@ -437,7 +451,7 @@ namespace game
             });
 
         }
-        
+
         void HideInventory(EntityCommandBuffer ecb)
         {
             Entities.WithAll<InventoryUI>().ForEach( e => { ecb.AddComponent<Disabled>(e, new Disabled()); });

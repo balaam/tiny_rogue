@@ -34,6 +34,7 @@ namespace game
     {
         public Direction Dir;
         public Entity Ent;
+        public bool Ouch;
         //public WorldCoord Wc;
     }
 
@@ -54,6 +55,7 @@ namespace game
 
     public struct PendingInteractions
     {
+        public Direction Dir;
         public uint2 InteractPos;
         public Entity InteractingEntity;
     }
@@ -193,7 +195,7 @@ namespace game
                 }
                 if ((targetFlags & (byte) EInteractionFlags.Blocking) != 0 && (targetFlags & (byte) EInteractionFlags.Door) == 0 && (targetFlags & ((byte) EInteractionFlags.Hostile)) == 0)
                 {
-                    PendingWaits.Enqueue(new PendingWait { Ent = e, Dir = direction }); //Don't move
+                    PendingWaits.Enqueue(new PendingWait { Ent = e, Dir = direction, Ouch = true }); //Don't move
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
@@ -249,9 +251,15 @@ namespace game
                                 PendingInteractions.Enqueue(
                                     new PendingInteractions()
                                     {
+                                        Dir = ar.Dir,
                                         InteractingEntity = ar.Ent,
                                         InteractPos = ar.Loc
                                     });
+                            } break;
+
+                            case Action.Wait:
+                            {
+                                PendingWaits.Enqueue(new PendingWait { Ent = ar.Ent, Dir = ar.Dir, Ouch = false });
                             } break;
                         }
                     }
@@ -319,7 +327,6 @@ namespace game
                 var trans = _gss.View.ViewCoordToWorldPos(new int2(pm.Wc.x, pm.Wc.y));
                 if (GlobalGraphicsSettings.ascii)
                 {
-                    EntityManager.SetComponentData(pm.Ent, pm.Wc);
                     EntityManager.SetComponentData(pm.Ent, new Translation { Value = trans });
                 }
                 else
@@ -328,21 +335,22 @@ namespace game
                     var mobile = EntityManager.GetComponentData<Mobile>(pm.Ent);
                     mobile.Initial = EntityManager.GetComponentData<Translation>(pm.Ent).Value;
                     mobile.Destination = trans;
-                    mobile.DestPos = new int2 { x = pm.Wc.x, y = pm.Wc.y };
                     EntityManager.SetComponentData(pm.Ent, mobile);
                     anim.StartAnimation(pm.Ent, Action.Move, pm.Dir);
                 }
+                EntityManager.SetComponentData(pm.Ent, pm.Wc);
             }
 
             PendingWait pw;
             while (pendingWaits.TryDequeue(out pw))
             {
-                if (EntityManager.HasComponent<Player>(pw.Ent))
+                if (pw.Ouch && EntityManager.HasComponent<Player>(pw.Ent))
                 {
                     log.AddLog("You bumped into a wall. Ouch.");
                 }
+                
                 var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
-                anim.StartAnimation(pw.Ent, Action.None, pw.Dir);
+                anim.StartAnimation(pw.Ent, pw.Ouch ? Action.None :Action.Wait, pw.Dir);
             }
 
             PendingAttack pa;
