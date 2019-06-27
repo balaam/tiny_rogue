@@ -16,12 +16,15 @@ namespace game
         ClosedVerticalDoor,
         OpenHorizontalDoor,
         ClosedHorizontalDoor,
-        Wall,
         Floor,
         Floor1,
         Floor2,
         Floor3,
-        HealthPotion
+        HealthPotion,
+        Wall,
+        Wall1,
+        Wall2,
+        Wall3
     }
     /// <summary>
     /// Reads in the ASCII sprites and stores then in an array indexable by the chars decimal value. i.e. A is 65
@@ -36,7 +39,7 @@ namespace game
             get { return _loaded; }
         }
 
-        public static char ConvertToGraphics(char c)
+        public static char ConvertToGraphics(char c, int offset = 0)
         {
             char result = c;
 
@@ -80,10 +83,10 @@ namespace game
                     result = (char) SpriteEnum.ClosedHorizontalDoor;
                     break;
                 case '#':
-                    result = (char) SpriteEnum.Wall;
+                    result = (char) (SpriteEnum.Wall + offset);
                     break;
                 case '.':
-                    result = (char) SpriteEnum.Floor;
+                    result = (char) (SpriteEnum.Floor + offset);
                     break;
             }
 

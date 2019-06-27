@@ -45,6 +45,7 @@ namespace game
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
+        public string LastPlayerHurtLog;
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
         
@@ -326,13 +327,12 @@ namespace game
 
             MoveToInGame(cb);
         }
-
-
-
+        
         public void MoveToGameOver(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
             GameView.Blit(cb, new int2(0, 0), "GAME OVER!");
+            GameView.Blit(cb, new int2(0, 15), "CAUSE OF DEATH: " + LastPlayerHurtLog);
             GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
             GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
