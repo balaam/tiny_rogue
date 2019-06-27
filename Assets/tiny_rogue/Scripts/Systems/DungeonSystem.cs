@@ -36,6 +36,8 @@ namespace game
                 return pos;
             }
         }
+        
+        
 
         enum Type
         {
@@ -59,7 +61,8 @@ namespace game
 
         private EntityCommandBuffer _ecb;
         private CreatureLibrary _creatureLibrary;
-        ArchetypeLibrary _archetypeLibrary;
+        private ArchetypeLibrary _archetypeLibrary;
+        private DungeonGenParams _dungeonGenParams;
 
         int numberOfCollectibles = 0;
         public int NumberOfCollectibles => numberOfCollectibles;
