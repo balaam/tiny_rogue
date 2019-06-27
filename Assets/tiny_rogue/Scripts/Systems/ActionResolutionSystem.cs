@@ -428,7 +428,11 @@ namespace game
                 }
                 else
                 {
-                    string logStr = attackerName + " swings at " + defenderName + ".  But missed!";
+                    string logStr = attackerName;
+                    logStr = string.Concat(logStr, " swings at ");
+                    logStr = string.Concat(logStr, defenderName);
+                    logStr = string.Concat(logStr, ".  But missed!");
+                        
                     log.AddLog(logStr);
                 }
             }
