@@ -27,7 +27,12 @@ namespace game
                 if (EntityManager.HasComponent(healingItems[i], typeof(HealItem)))
                 {
                     HealItem heal = EntityManager.GetComponentData<HealItem>(healingItems[i]);
-                    hp.now += heal.HealAmount;
+
+                    if (hp.now + heal.HealAmount > hp.max)
+                        hp.now = hp.max;
+                    else
+                        hp.now += heal.HealAmount;
+
                     if (heal.HealAmount > 0)
                         log.AddLog("Healed for " + heal.HealAmount.ToString() + " points.");
                     else if (heal.HealAmount == 0)
