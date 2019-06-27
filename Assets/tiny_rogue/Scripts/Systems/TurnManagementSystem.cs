@@ -125,6 +125,8 @@ namespace game
             if (shouldTickSystems)
             {
                 _turnCount++;
+                // Only update the view after we've ticked the systems
+                GameViewSystem.UpdateViewNeeded = true;
             }
             NeedToTickTurn = false;
         }

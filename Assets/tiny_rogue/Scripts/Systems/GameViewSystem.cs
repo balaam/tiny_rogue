@@ -19,6 +19,8 @@ namespace game
     [UpdateAfter(typeof(TurnSystemGroup))]
     public class GameViewSystem : ComponentSystem
     {
+        public static bool UpdateViewNeeded = false;
+        
         static Unity.Tiny.Core2D.Color GetColorForTile(Tile tile)
         {
             Unity.Tiny.Core2D.Color color = TinyRogueConstants.DefaultColor;
@@ -52,7 +54,7 @@ namespace game
         protected override void OnUpdate()
         {
             // Don't do anything until we have sprites
-            if (!SpriteSystem.Loaded)
+            if (!SpriteSystem.Loaded || !UpdateViewNeeded)
                 return;
             
             var tileSprite = Sprite2DRenderer.Default;
