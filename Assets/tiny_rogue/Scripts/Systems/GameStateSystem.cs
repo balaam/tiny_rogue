@@ -155,11 +155,11 @@ namespace game
         void GenerateCollectibles()
         {
             for (int i = 0; i < _dungeon.NumberOfCollectibles; i++)
-             {
-                 //TODO: figure out how it can know to avoid tiles that already have an entity
-                 var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
-                 _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
-             }
+            {
+                //TODO: figure out how it can know to avoid tiles that already have an entity
+                var collectibleCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateCollectible(EntityManager, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+            }
         }
 
         void ClearView(EntityCommandBuffer ecb)
@@ -307,31 +307,33 @@ namespace game
         protected override void OnUpdate()
         {
             // Update the view when we're not in startup
-            if(_state != eGameState.Startup)
+            if (_state != eGameState.Startup && _state != eGameState.Title)
+            {
                 UpdateView(PostUpdateCommands);
+            }
 
             switch (_state)
             {
                 case eGameState.Startup:
+                {
+                    bool done = TryGenerateViewport();
+                    if (done)
                     {
-                        bool done = TryGenerateViewport();
-                        if (done)
+                        var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
+                        // Re-parent the camera on graphical to follow the character.
+                        if (!GlobalGraphicsSettings.ascii)
                         {
-                            var playerEntity = _creatureLibrary.SpawnPlayer(EntityManager);
-                            // Re-parent the camera on graphical to follow the character.
-                            if (!GlobalGraphicsSettings.ascii)
+                            Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
                             {
-                                Entities.WithAll<Camera2D>().ForEach((ref Parent parent) =>
-                                {
-                                    parent.Value = playerEntity;
-                                });
-                            }
-
-                            _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
-                            MoveToTitleScreen(PostUpdateCommands);
+                                parent.Value = playerEntity;
+                            });
                         }
+
+                        _dungeon = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                        MoveToTitleScreen(PostUpdateCommands);
                     }
-                    break;
+                }
+                break;
                 case eGameState.Title:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
@@ -465,7 +467,7 @@ namespace game
             HideInventory(cb);
             
             // Clear the screen.
-            Entities.WithAll<Player>().ForEach((Entity Player, ref GoldCount gc, ref Level level) =>
+            Entities.WithAll<Player>().ForEach((Entity player, ref GoldCount gc, ref Level level) =>
             {
                 _scoreManager.SetHiScores(gc.count + (level.level - 1) * 10);
                 level.level = 1;
@@ -480,7 +482,7 @@ namespace game
             _state = eGameState.Title;
         }
 
-        public void MoveToInGame( EntityCommandBuffer cb, bool replay )
+        public void MoveToInGame(EntityCommandBuffer cb, bool replay)
         {
             
             // Generate a new seed
@@ -493,7 +495,7 @@ namespace game
             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
             var pis = EntityManager.World.GetExistingSystem<PlayerInputSystem>();
 
-            if( replay )
+            if (replay)
                 pis.StartReplaying();
             else
                 pis.StartRecording();
