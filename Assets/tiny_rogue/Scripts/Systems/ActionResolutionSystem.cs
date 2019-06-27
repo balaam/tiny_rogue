@@ -44,6 +44,7 @@ namespace game
         public Entity Attacker;
         public Direction AttackerDir;
         public Entity Defender;
+        public int2 LogLoc;
     }
 
     public struct PendingDoorOpen
@@ -198,7 +199,7 @@ namespace game
                 }
                 else if ((targetFlags & ((byte) EInteractionFlags.Hostile | (byte) EInteractionFlags.Player)) != 0)
                 {
-                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx] });
+                    PendingAttacks.Enqueue(new PendingAttack { Attacker = e, AttackerDir = direction, Defender = EntityMap[moveToIdx], LogLoc = new int2 {x = (int)moveFrom.x, y = (int)moveFrom.y }});
                 }
                 else if ((targetFlags & (byte) EInteractionFlags.Door) != 0)
                 {
@@ -360,67 +361,76 @@ namespace game
                 HealthPoints hp = EntityManager.GetComponentData<HealthPoints>(pa.Defender);
                 Creature defender = EntityManager.GetComponentData<Creature>(pa.Defender);
                 HealthPoints attackerHp = EntityManager.GetComponentData<HealthPoints>(pa.Attacker);
+                ArmorClass defAC = EntityManager.GetComponentData<ArmorClass>(pa.Defender);
 
                 if (attackerHp.now <= 0) // don't let the dead attack, is this hack? Maybe.
                     continue;
-
-                int dmg = RandomRogue.Next(att.range.x, att.range.y);
-                bool firstHit = hp.now == hp.max;
-
-                hp.now -= dmg;
-
-                var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
-                anim.StartAnimation(pa.Attacker, Action.Attack, pa.AttackerDir);
-
                 string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                 string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
 
-                bool playerAttack = attackerName == "Player";
-                bool killHit = hp.now <= 0;
-
-                string logStr;
-
-                if (playerAttack && killHit && firstHit)
+                if (DiceRoller.Roll(1, 20, 0) >= defAC.AC)
                 {
-                    logStr = string.Concat("You destroy the ", defenderName);
-                    logStr = string.Concat(logStr, ".");
-                    ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
-                    xp.now += hp.max; //XP awarded equals the defenders max hp
-                    EntityManager.SetComponentData(pa.Attacker, xp);
-                }
-                else if (playerAttack)
-                {
-                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(
-                                    "You hit the ",
-                                    defenderName),
-                                    " for "),
-                                    dmg.ToString()),
-                                    " damage!");
+                    int dmg = RandomRogue.Next(att.range.x, att.range.y);
+                    bool firstHit = hp.now == hp.max;
 
-                    if(killHit)
+                    hp.now -= dmg;
+
+                    var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
+                    anim.StartAnimation(pa.Attacker, Action.Attack, pa.AttackerDir);
+
+                    bool playerAttack = attackerName == "Player";
+                    bool killHit = hp.now <= 0;
+
+                    string logStr;
+
+                    if (playerAttack && killHit && firstHit)
                     {
-                        logStr = string.Concat(logStr, " Killing it.");
+                        logStr = string.Concat("You destroy the ", defenderName);
+                        logStr = string.Concat(logStr, ".");
                         ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
                         xp.now += hp.max; //XP awarded equals the defenders max hp
                         EntityManager.SetComponentData(pa.Attacker, xp);
                     }
+                    else if (playerAttack)
+                    {
+                        logStr = string.Concat(string.Concat(string.Concat(string.Concat(
+                                        "You hit the ",
+                                        defenderName),
+                                    " for "),
+                                dmg.ToString()),
+                            " damage!");
+
+                        if (killHit)
+                        {
+                            logStr = string.Concat(logStr, " Killing it.");
+                            ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
+                            xp.now += hp.max; //XP awarded equals the defenders max hp
+                            EntityManager.SetComponentData(pa.Attacker, xp);
+                        }
+                    }
+                    else
+                    {
+                        if (defenderName == "Player")
+                            defenderName = "you";
+
+                        logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
+                                            attackerName,
+                                            " hits "),
+                                        defenderName),
+                                    " for "),
+                                dmg.ToString()),
+                            " damage!");
+                    }
+
+                    log.AddLog(logStr);
+
+                    EntityManager.SetComponentData(pa.Defender, hp);
                 }
                 else
                 {
-                	if (defenderName == "Player")
-                        defenderName = "you";
-
-                    logStr = string.Concat(string.Concat(string.Concat(string.Concat(string.Concat(
-                                    attackerName,
-                                    " hits "),
-                                    defenderName),
-                                    " for "),
-                                    dmg.ToString()),
-                                    " damage!");
+                    string logStr = attackerName + " swings at " + defenderName + ".  But missed!";
+                    log.AddLog(logStr);
                 }
-                log.AddLog(logStr);
-
-                EntityManager.SetComponentData(pa.Defender, hp);
             }
 
             PendingDoorOpen pd;
