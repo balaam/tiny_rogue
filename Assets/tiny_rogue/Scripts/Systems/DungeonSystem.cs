@@ -60,7 +60,7 @@ namespace game
         private List<int2> _collectiblesCoords = new List<int2>();
 
         private Entity _dungeonViewEntity;
-        private View GameView;
+        private View _view;
 
         private EntityCommandBuffer _ecb;
         private CreatureLibrary _creatureLibrary;
@@ -74,7 +74,7 @@ namespace game
         public void ClearDungeon(EntityCommandBuffer cb, View view)
         {
             _ecb = cb;
-            GameView = view;
+            _view = view;
 
             _rooms.Clear();
             _verticalDoors.Clear();
@@ -88,13 +88,13 @@ namespace game
         public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level)
         {
             _ecb = cb;
-            GameView = view;
+            _view = view;
             _creatureLibrary = cl;
             _archetypeLibrary = al;
 
             ClearDungeon(cb, view);
             
-            _cells = new Type[GameView.ViewTiles.Length];
+            _cells = new Type[_view.ViewTiles.Length];
 
             int maxRoom = 0;
             int maxRoomSize = 0;
@@ -113,8 +113,8 @@ namespace game
                 int newWidth = RandomRogue.Next(minRoomSize, maxRoomSize);
                 int newHeight = RandomRogue.Next(minRoomSize, maxRoomSize);
 
-                int newX = RandomRogue.Next(1, GameView.Width - newWidth);
-                int newY = RandomRogue.Next(1, GameView.Height - newHeight);
+                int newX = RandomRogue.Next(1, _view.Width - newWidth);
+                int newY = RandomRogue.Next(1, _view.Height - newHeight);
 
 
                 Room newRoom = new Room(newX, newY, newWidth, newHeight);
@@ -144,7 +144,7 @@ namespace game
             {
                 int creatureId = RandomRogue.Next(0, creatureTypeCount);
                 var worldCoord = GetRandomPositionInRandomRoom();
-                var viewCoord = GameView.ViewCoordToWorldPos(worldCoord);
+                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
                 Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId);
 
                 _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
@@ -160,7 +160,7 @@ namespace game
             {
                 int2 randomStartPosition = GetPlayerStartPosition();
                 WorldCoord worldCoord = new WorldCoord {x = randomStartPosition.x, y = randomStartPosition.y};
-                Translation translation = new Translation {Value = GameView.ViewCoordToWorldPos(randomStartPosition)};
+                Translation translation = new Translation {Value = _view.ViewCoordToWorldPos(randomStartPosition)};
                 if (reset)
                 {
                     _creatureLibrary.ResetPlayer(_ecb, player, worldCoord, translation);
@@ -180,12 +180,12 @@ namespace game
                 switch (_cells[i])
                 {
                     case Type.eWall:
-                        _ecb.AddComponent(GameView.ViewTiles[i], new Wall());
-                        _ecb.AddComponent(GameView.ViewTiles[i], new BlockMovement());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Wall());
+                        _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
                         break;
                     case Type.eFloor:
                     case Type.eDoor:
-                        _ecb.AddComponent(GameView.ViewTiles[i], new Floor());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
                         break;
                     case Type.eEmpty:
                         break;
@@ -204,7 +204,7 @@ namespace game
                     for (int j = room.startY; j < room.startY + room.height; j++)
                     {
                         int2 xy = new int2(i, j);
-                        int tileIndex = View.XYToIndex(xy, GameView.Width);
+                        int tileIndex = View.XYToIndex(xy, _view.Width);
 
                         bool isWall = (i == room.startX
                             || i == room.startX + room.width - 1
@@ -295,7 +295,7 @@ namespace game
         {
             foreach (var pos in positions)
             {
-                var tileIndex = View.XYToIndex(pos, GameView.Width);
+                var tileIndex = View.XYToIndex(pos, _view.Width);
                 if (_cells[tileIndex] == Type.eEmpty)
                     _cells[tileIndex] = Type.eWall;
             }
@@ -343,7 +343,7 @@ namespace game
 
         private void CreateHallwayTile(int2 xy, HallDirection direction)
         {
-            var current = _cells[View.XYToIndex(xy, GameView.Width)];
+            var current = _cells[View.XYToIndex(xy, _view.Width)];
 
             int2 neighbor1 = xy;
             int2 neighbor2 = xy;
@@ -359,12 +359,12 @@ namespace game
                 neighbor2.x -= 1;
             }
 
-            var neighborEntityOne = _cells[View.XYToIndex(neighbor1, GameView.Width)];
-            var neighborEntityTwo = _cells[View.XYToIndex(neighbor2, GameView.Width)];
+            var neighborEntityOne = _cells[View.XYToIndex(neighbor1, _view.Width)];
+            var neighborEntityTwo = _cells[View.XYToIndex(neighbor2, _view.Width)];
 
             if (current == Type.eWall && neighborEntityOne == Type.eWall && neighborEntityTwo == Type.eWall)
             {
-                _cells[View.XYToIndex(xy, GameView.Width)] = Type.eDoor;
+                _cells[View.XYToIndex(xy, _view.Width)] = Type.eDoor;
                 if (direction == HallDirection.Horizontal)
                 {
                     _verticalDoors.Add(xy);
@@ -376,7 +376,7 @@ namespace game
             }
             else
             {
-                _cells[View.XYToIndex(xy, GameView.Width)] = Type.eFloor;
+                _cells[View.XYToIndex(xy, _view.Width)] = Type.eFloor;
             }
         }
     }
