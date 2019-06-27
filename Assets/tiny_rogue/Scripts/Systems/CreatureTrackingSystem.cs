@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 
 namespace game
 {
@@ -8,9 +9,9 @@ namespace game
     public class CreatureTrackingSystem: ComponentSystem
     {
         private uint lastTurn = 999999; // Kind of like -1 except not  
-        private List<String> locations;
+        private List<int2> locations;
 
-        public List<String> Locations => locations;
+        public List<int2> Locations => locations;
         
         protected override void OnUpdate()
         {
@@ -23,7 +24,7 @@ namespace game
                 
                 Entities.WithAll<Creature>().WithNone<Player>().ForEach((Entity creature, ref WorldCoord coord) =>
                     {
-                        locations.Add(($"{coord.x},{coord.y}"));
+                        locations.Add(new int2(coord.x, coord.y));
                     });
 
             }
@@ -31,7 +32,7 @@ namespace game
 
         private void ResetCreatureMap()
         {
-            locations = new List<String>(); // Probably no more than 100 monsters, right?
+            locations = new List<int2>(); // Probably no more than 100 monsters, right?
         }
     }
 }
