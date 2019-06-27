@@ -24,7 +24,7 @@ namespace game
             {
                 Entities.ForEach((Entity player, ref ExperiencePoints xp, ref Level level) =>
                 {
-                    if (xp.now >=status-bar-shows-xp GetXPRequiredForLevel(level.level))
+                    if (xp.now >= GetXPRequiredForLevel(level.level))
                     {
                         level.level++;
                         xp.now = 0;
