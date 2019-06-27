@@ -75,20 +75,16 @@ namespace game
 
             int2 currentTile = start;
 
-            bool breakLoop = false;
             while (!currentTile.Equals(end))
             {
-                if (breakLoop)
-                    return true;
-
                 if (currentTile.x != end.x)
                     currentTile.x += (int)xDirection;
 
                 if (currentTile.y != end.y)
                     currentTile.y += (int)yDirection;
 
-                if (blockedPositions[View.XYToIndex(currentTile, view.Width)])
-                    breakLoop = true;
+                if (blockedPositions[View.XYToIndex(currentTile, view.Width)] && !currentTile.Equals(end))
+                    return true;
             }
 
             return false;
