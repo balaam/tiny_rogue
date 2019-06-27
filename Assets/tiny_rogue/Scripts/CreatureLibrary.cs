@@ -38,15 +38,15 @@ namespace game
 
         public static CreatureDescription[] CreatureDescriptions = new[]
         {
-            /* Rat */
+            /* Fireskull */
             new CreatureDescription
             {
-                name = "Rat", 
+                name = "Fireskull", 
                 health = 1, 
                 attackRange = new int2(1,1),
-                ascii = 'r', 
-                asciiColor = new Color(0.9f, 0.5f, 0.3f),
-                sightRadius = 10, // Rats have good eyesight
+                ascii = 'F', 
+                asciiColor = new Color(0.9f, 0f, 0f),
+                sightRadius = 10, // Fireskulls have good eyesight
                 speed = 1,
                 spriteId = 2
             },
