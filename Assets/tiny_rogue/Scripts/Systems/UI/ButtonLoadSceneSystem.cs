@@ -10,15 +10,15 @@ public class ButtonLoadSceneSystem : ComponentSystem
 {
 	protected override void OnUpdate()
 	{
-		SceneReferenceData scene = new SceneReferenceData();
+		ButtonLoadScene scene = new ButtonLoadScene();
 		bool sceneSelected = false;
 		Entity e = Entity.Null;
-		Entities.WithAll<SceneReferenceData>().ForEach((Entity entity, ref PointerInteraction pointerInteraction) =>
+		Entities.WithAll<ButtonLoadScene>().ForEach((Entity entity, ref PointerInteraction pointerInteraction) =>
             {
                 if (pointerInteraction.clicked)
 				{
                     // Go to the referenced scene
-                    scene = EntityManager.GetComponentData<SceneReferenceData>(entity);
+                    scene = EntityManager.GetComponentData<ButtonLoadScene>(entity);
                     sceneSelected = true;
                     e = entity;
 				}
