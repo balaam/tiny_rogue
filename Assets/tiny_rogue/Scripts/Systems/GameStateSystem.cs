@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
@@ -43,6 +44,9 @@ namespace game
         private uint CurrentSeed = 1;
         public int CurrentLevel = 1;
         private int LastDungeonNumber;
+        
+        List<Sprite2DRenderer> spriteRenderers = new List<Sprite2DRenderer>();
+
 
         private uint MakeNewRandom()
         {
@@ -583,6 +587,15 @@ namespace game
                 }
             });
 
+            spriteRenderers.Clear();
+            
+            Entities.WithAll<InventoryItemUI>().ForEach((Entity e, ref Sprite2DRenderer spr) =>
+                {
+                    spriteRenderers.Add(spr);
+                });
+
+            var invSys = EntityManager.World.GetExistingSystem<InventorySystem>();
+            invSys.RenderInventoryItems(spriteRenderers);
         }
         
         void HideInventory(EntityCommandBuffer ecb)

@@ -65,6 +65,7 @@ namespace game
         private int2 _cachedMapSize;
         private GameStateSystem _gss;
         private TurnManagementSystem _tms;
+        InventorySystem _inv;
         private EntityQuery _mapFillQuery;
 
         protected override void OnCreate()
@@ -72,6 +73,8 @@ namespace game
             base.OnCreate();
             _gss = EntityManager.World.GetOrCreateSystem<GameStateSystem>();
             _tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
+            _inv = EntityManager.World.GetOrCreateSystem<InventorySystem>();
+
 
             ResizeMaps(_gss.View.Width, _gss.View.Height);
             var query = new EntityQueryDesc
@@ -330,6 +333,7 @@ namespace game
                     mobile.DestPos = new int2 { x = pm.Wc.x, y = pm.Wc.y };
                     EntityManager.SetComponentData(pm.Ent, mobile);
                     anim.StartAnimation(pm.Ent, Action.Move, pm.Dir);
+                    _inv.LogItemsAt(pm.Wc);
                 }
             }
 
@@ -430,6 +434,18 @@ namespace game
                 {
                     foreach (Entity e in entities)
                     {
+                        if (EntityManager.HasComponent(e, typeof(WorldCoord)) &&
+                            EntityManager.HasComponent(e, typeof(Collectible)))
+                        {
+                            WorldCoord coord = EntityManager.GetComponentData<WorldCoord>(e);
+                            int2 ePos = new int2(coord.x, coord.y);
+
+                            if (pi.InteractPos.x == ePos.x && pi.InteractPos.y == ePos.y)
+                            {
+                                 _inv.CollectItemsAt(new EntityCommandBuffer(Allocator.TempJob), coord);
+                            }
+                        }
+
                         if (EntityManager.HasComponent(e, typeof(WorldCoord)) &&
                             EntityManager.HasComponent(e, typeof(Stairway)))
                         {
