@@ -23,6 +23,8 @@
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 5288823807249927487, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 2719343640401242082, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -615346627500165536, "Type": 3},
+        { "Guid": "329edf0b8a92d3c458c0dc2f7087410e", "FileId": 21300000, "Type": 3},
+        { "Guid": "4a485c5932e283a4d8f9b04717171ef1", "FileId": 11400000, "Type": 2},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 9189373513727322328, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 7242132728375541890, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 7628838840289465439, "Type": 3},
@@ -31,8 +33,6 @@
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 353062076768680309, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": -4360340548659234750, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 6884339102510084849, "Type": 3},
-        { "Guid": "329edf0b8a92d3c458c0dc2f7087410e", "FileId": 21300000, "Type": 3},
-        { "Guid": "4a485c5932e283a4d8f9b04717171ef1", "FileId": 11400000, "Type": 2},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": 5468823273806312931, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": -2889467469415547705, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": -1450111586348494558, "Type": 3},
@@ -1621,61 +1621,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "Y"
-            }, {
-                "c": "o"
-            }, {
-                "c": "u"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": "r"
-            }, {
-                "c": "e"
-            }, {
-                "c": " "
-            }, {
-                "c": "i"
-            }, {
-                "c": "n"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": " "
-            }, {
-                "c": "v"
-            }, {
-                "c": "a"
-            }, {
-                "c": "s"
-            }, {
-                "c": "t"
-            }, {
-                "c": " "
-            }, {
-                "c": "c"
-            }, {
-                "c": "a"
-            }, {
-                "c": "v"
-            }, {
-                "c": "e"
-            }, {
-                "c": "r"
-            }, {
-                "c": "n"
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -6184,61 +6130,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "Y"
-            }, {
-                "c": "o"
-            }, {
-                "c": "u"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": "r"
-            }, {
-                "c": "e"
-            }, {
-                "c": " "
-            }, {
-                "c": "i"
-            }, {
-                "c": "n"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": " "
-            }, {
-                "c": "v"
-            }, {
-                "c": "a"
-            }, {
-                "c": "s"
-            }, {
-                "c": "t"
-            }, {
-                "c": " "
-            }, {
-                "c": "c"
-            }, {
-                "c": "a"
-            }, {
-                "c": "v"
-            }, {
-                "c": "e"
-            }, {
-                "c": "r"
-            }, {
-                "c": "n"
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
