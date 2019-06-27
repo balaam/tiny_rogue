@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace game
 {
-    
+
     [UpdateAfter(typeof(TurnSystemGroup))]
     public class DeathSystem : ComponentSystem
     {
-        protected override void OnUpdate() 
-        { 
+        protected override void OnUpdate()
+        {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             if (gss.IsInGame)
             {
@@ -37,26 +37,30 @@ namespace game
                             Parent parent = new Parent();
                             Translation trans = pos;
                             Sprite2DRenderer deathRenderer = new Sprite2DRenderer { color = TinyRogueConstants.DefaultColor };
-                            Sprite2DSequencePlayer deathPlayer = new Sprite2DSequencePlayer { speed = 0.25f };
-                            Animated deathAnimated = new Animated { Id = animated.Id, Direction = Direction.Right, Action = Action.Die, AnimationTime = 1f, AnimationTrigger = true };
+                            Sprite2DSequencePlayer deathPlayer = new Sprite2DSequencePlayer { speed = 0.5f };
+                            Animated deathAnimated = new Animated { Id = animated.Id, Direction = animated.Direction, Action = Action.Die, AnimationTime = 0.75f, AnimationTrigger = true };
                             LayerSorting layerSorting = new LayerSorting { layer = 2 };
+
+                            if (EntityManager.HasComponent(creature, typeof(Player)))
+                            {
+                                renderer.color.a = 0f;
+                                deathPlayer.loop = LoopMode.Once;
+                                deathAnimated.AnimationTime = 10f;
+                            }
+                            else
+                            {
+                                PostUpdateCommands.DestroyEntity(creature);
+                            }
+
                             var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
                             anim.SetAnimation(ref deathAnimated, ref deathPlayer);
+
                             PostUpdateCommands.AddComponent(death, parent);
                             PostUpdateCommands.AddComponent(death, trans);
                             PostUpdateCommands.AddComponent(death, deathRenderer);
                             PostUpdateCommands.AddComponent(death, deathPlayer);
                             PostUpdateCommands.AddComponent(death, deathAnimated);
                             PostUpdateCommands.AddComponent(death, layerSorting);
-                            
-                            if (EntityManager.HasComponent(creature, typeof(Player)))
-                            {
-                                renderer.color.a = 0f;
-                            }
-                            else
-                            {
-                                PostUpdateCommands.DestroyEntity(creature);
-                            }
                         }
                     }
                 });

@@ -414,6 +414,10 @@ namespace game
                         continue;
                     string attackerName = CreatureLibrary.CreatureDescriptions[attacker.id].name;
                     string defenderName = CreatureLibrary.CreatureDescriptions[defender.id].name;
+                    
+                    // Play animation even if the creature misses
+                    var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
+                    anim.StartAnimation(pa.Attacker, Action.Attack, pa.AttackerDir);
 
                     if (DiceRoller.Roll(1, 20, 0) >= defAC.AC)
                     {
@@ -421,9 +425,6 @@ namespace game
                         bool firstHit = hp.now == hp.max;
 
                         hp.now -= dmg;
-
-                        var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
-                        anim.StartAnimation(pa.Attacker, Action.Attack, pa.AttackerDir);
 
                         bool playerAttack = attackerName == "Player";
                         bool killHit = hp.now <= 0;

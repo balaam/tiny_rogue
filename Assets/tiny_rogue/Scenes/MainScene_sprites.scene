@@ -5,11 +5,12 @@
     "AssetReferences": [
         { "Guid": "b5773def4badfe84db07a5130426dc3f", "FileId": 21300000, "Type": 3},
         { "Guid": "c3ec12b00f2dfac4f82e09efba11a9d1", "FileId": 21300000, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 6146100763361339921, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 626579521712368083, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 6492391811256561238, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 2870069359427524133, "Type": 3},
-        { "Guid": "4a485c5932e283a4d8f9b04717171ef1", "FileId": 11400000, "Type": 2},
+        { "Guid": "7690b48f4550f7a4a911d395a127d868", "FileId": -3250429317076314605, "Type": 3},
+        { "Guid": "7690b48f4550f7a4a911d395a127d868", "FileId": -8162340000760383044, "Type": 3},
+        { "Guid": "7690b48f4550f7a4a911d395a127d868", "FileId": -5966514448653521044, "Type": 3},
+        { "Guid": "7690b48f4550f7a4a911d395a127d868", "FileId": -7503749043517014277, "Type": 3},
+        { "Guid": "7690b48f4550f7a4a911d395a127d868", "FileId": 6179964953089499693, "Type": 3},
+        { "Guid": "7690b48f4550f7a4a911d395a127d868", "FileId": -1177330378949727915, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 3739080502477263925, "Type": 3},
         { "Guid": "31bc0b240ebaf314ab1502e9f91fa233", "FileId": 21300000, "Type": 3},
         { "Guid": "3ff60003353b9c7498d4a8996ff3ec79", "FileId": 21300000, "Type": 3},
@@ -19,12 +20,16 @@
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 7878020206559418716, "Type": 3},
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 4855345070251282711, "Type": 3},
         { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": -4545966818087984541, "Type": 3},
-        { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 9192807146851360899, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -6397690473321333150, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 5288823807249927487, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": 2719343640401242082, "Type": 3},
         { "Guid": "94ff134ad416e3242bd742280c99c7e0", "FileId": -615346627500165536, "Type": 3},
         { "Guid": "329edf0b8a92d3c458c0dc2f7087410e", "FileId": 21300000, "Type": 3},
+        { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 9192807146851360899, "Type": 3},
+        { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": -5780946942853957794, "Type": 3},
+        { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": -3101223541174215270, "Type": 3},
+        { "Guid": "1fc2c698dedab7d42a3cdcc710b61930", "FileId": 9098253957437126366, "Type": 3},
+        { "Guid": "4a485c5932e283a4d8f9b04717171ef1", "FileId": 11400000, "Type": 2},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 9189373513727322328, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 7242132728375541890, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 7628838840289465439, "Type": 3},
@@ -33,6 +38,14 @@
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 353062076768680309, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": -4360340548659234750, "Type": 3},
         { "Guid": "3ba30e755aa528640a8c0e3e2d0de8e9", "FileId": 6884339102510084849, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -2648603408176151833, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -5029392897328146241, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -5020702770653034635, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -1242762520113259716, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": 5339564456416058424, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -1610462896307939717, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -5378621148311923135, "Type": 3},
+        { "Guid": "101051aecab817b41b583df2abbf6e22", "FileId": -9113929917122632992, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": 5468823273806312931, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": -2889467469415547705, "Type": 3},
         { "Guid": "91bce4a64cd9b154490f49315833262c", "FileId": -1450111586348494558, "Type": 3},
@@ -45,6 +58,22 @@
         { "Guid": "acfa775c02df476409343b8434a12dcf", "FileId": -1854905569334035964, "Type": 3},
         { "Guid": "acfa775c02df476409343b8434a12dcf", "FileId": -7416271712920672268, "Type": 3},
         { "Guid": "acfa775c02df476409343b8434a12dcf", "FileId": 5936679295591715811, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -6675217640258474755, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": 4914535930907396383, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -862605905983126923, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -8740131370209831190, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -2595195912212913646, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -1461459895958827593, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -2122458298730044766, "Type": 3},
+        { "Guid": "737481182e09c9b4b9a6d8179a55e373", "FileId": -1362833501642369620, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": -5135608961386106405, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": 6965344936748837597, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": 5562431270903610881, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": -1153883139226930691, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": 3111477528964972305, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": 7790338331440953608, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": -3658259172112970002, "Type": 3},
+        { "Guid": "4a8fd00c169ff274fb99af7f63c75d02", "FileId": 4341287674365110508, "Type": 3},
         { "Guid": "3f6cbc274ec15364b8b80101734f2893", "FileId": 6312307291557181577, "Type": 3},
         { "Guid": "3f6cbc274ec15364b8b80101734f2893", "FileId": 4834933463613039253, "Type": 3},
         { "Guid": "3f6cbc274ec15364b8b80101734f2893", "FileId": -8037615194437268996, "Type": 3},
@@ -59,21 +88,31 @@
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -8242079236125156025, "Type": 3},
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -2326089145535536525, "Type": 3},
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -7959244921154816734, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 2832926354409090191, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 7657997290605826247, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 1793098399170956477, "Type": 3},
-        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": -6141789945343111265, "Type": 3},
-        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -4777356578409548835, "Type": 3},
-        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": 8525569710601911754, "Type": 3},
-        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -748415228597202318, "Type": 3},
-        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -6021356656868484949, "Type": 3},
+        { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": -1819133959599894686, "Type": 3},
+        { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": 2016970530771397890, "Type": 3},
+        { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": -31335849815105806, "Type": 3},
+        { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": 4586441744265669670, "Type": 3},
+        { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": 1049141639618431965, "Type": 3},
+        { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": -667107959437361612, "Type": 3},
+        { "Guid": "612526176bf3b304fafe716c850db56c", "FileId": -4023701401553216256, "Type": 3},
+        { "Guid": "612526176bf3b304fafe716c850db56c", "FileId": 6707078109437418864, "Type": 3},
+        { "Guid": "612526176bf3b304fafe716c850db56c", "FileId": -1850589898084233507, "Type": 3},
+        { "Guid": "612526176bf3b304fafe716c850db56c", "FileId": 7748608124870179483, "Type": 3},
         { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -734421948117538538, "Type": 3},
         { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -7444602644379781646, "Type": 3},
         { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -8577064763936714601, "Type": 3},
         { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": 8862705642088948780, "Type": 3},
         { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": 3940253472677573253, "Type": 3},
         { "Guid": "bf5d639b69089494a87faf54e323f810", "FileId": -5266393102166459594, "Type": 3},
+        { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": 4571722583836904899, "Type": 3},
+        { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": -4521056767328005949, "Type": 3},
+        { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": -6596337670695716646, "Type": 3},
+        { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": -4176208147106487414, "Type": 3},
         { "Guid": "df475df384600ca428e797bf457f8cf9", "FileId": 21300000, "Type": 3},
+        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -4777356578409548835, "Type": 3},
+        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": 8525569710601911754, "Type": 3},
+        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -748415228597202318, "Type": 3},
+        { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -6021356656868484949, "Type": 3},
         { "Guid": "9ab98b479aa13b24eab885045ccee0d7", "FileId": -1732836454376435756, "Type": 3},
         { "Guid": "9ab98b479aa13b24eab885045ccee0d7", "FileId": -7965897856167901780, "Type": 3},
         { "Guid": "9ab98b479aa13b24eab885045ccee0d7", "FileId": -6001801462861719930, "Type": 3},
@@ -90,6 +129,22 @@
         { "Guid": "b30d285f0faba914b870514942be77f8", "FileId": -468847060386556583, "Type": 3},
         { "Guid": "b30d285f0faba914b870514942be77f8", "FileId": 5217950410639887067, "Type": 3},
         { "Guid": "b30d285f0faba914b870514942be77f8", "FileId": 5942996968520979326, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 6146100763361339921, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 626579521712368083, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 6492391811256561238, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 2870069359427524133, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 2832926354409090191, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 7657997290605826247, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": 1793098399170956477, "Type": 3},
+        { "Guid": "2a9ca768db409d44a8d5c0db57261919", "FileId": -6141789945343111265, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": 1577474529323032901, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": 7494204895897645153, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": 3288559811870275056, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": -7609426912337277781, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": 3545770472272460556, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": -2223122906613598452, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": -5980297245062762764, "Type": 3},
+        { "Guid": "ef2b38c967d37de499bf6b7704ab415c", "FileId": 3994587271603300740, "Type": 3},
         { "Guid": "bf671a683ced70b42b962cde4327b041", "FileId": 1608144950198249749, "Type": 3},
         { "Guid": "bf671a683ced70b42b962cde4327b041", "FileId": 7671915784223041292, "Type": 3},
         { "Guid": "bf671a683ced70b42b962cde4327b041", "FileId": 1117049863152555574, "Type": 3},
@@ -102,6 +157,22 @@
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": 8748236870546505689, "Type": 3},
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5816505035548416359, "Type": 3},
         { "Guid": "492ea864233820848beb225d2564adfc", "FileId": -5276079933208924874, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": 941230923984176473, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": -77731913614405377, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": 5435167046971502786, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": -1420711810767530851, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": -1445759654364713482, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": -4024748259254037243, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": 8161425157677730761, "Type": 3},
+        { "Guid": "8eb75f47fa874294486c4506961bdfe5", "FileId": 7134223618667218381, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": -6873752080101157433, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": 2342896189998415431, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": 4363005018918557944, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": 6030857826758829790, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": -3775827593917408622, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": -6485948350643479476, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": -6041442376507481456, "Type": 3},
+        { "Guid": "04d93f507a37ff64e8bc32956959f081", "FileId": -5306617174370653304, "Type": 3},
         { "Guid": "7c5725a44a9f162489645f0a4d1e87a5", "FileId": -4874932953405743407, "Type": 3},
         { "Guid": "7c5725a44a9f162489645f0a4d1e87a5", "FileId": -7377591154170861404, "Type": 3},
         { "Guid": "7c5725a44a9f162489645f0a4d1e87a5", "FileId": -5971247977857920063, "Type": 3},
@@ -111,19 +182,28 @@
         { "Guid": "7c5725a44a9f162489645f0a4d1e87a5", "FileId": -7174123198794040472, "Type": 3},
         { "Guid": "7c5725a44a9f162489645f0a4d1e87a5", "FileId": -2686541347659251097, "Type": 3},
         { "Guid": "3190c26c81738c54ea3a0213350b9e00", "FileId": 21300000, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -429619830534962590, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -2595263667671225073, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -141888989662064490, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -3604684104517833985, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": 3330741820430108907, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -5841076631399524356, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -2736020979966418357, "Type": 3},
+        { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": 8040722274139258807, "Type": 3},
         { "Guid": "52cb17a44201e914295c92336a633447", "FileId": 21300000, "Type": 3},
         { "Guid": "11d4cd1f8f67a044aaf2df44bbff0f71", "FileId": 11400000, "Type": 2},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 1899901556599167055, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 6399280041854345734, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 820585990694486454, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": -2457906793250956708, "Type": 3},
-        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 1401537174331165813, "Type": 3},
+        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 5080525497150260364, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 8799743602586295264, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 7062645298493904822, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": -1440287764009404396, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 6129151483037699693, "Type": 3},
         { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 3953798185892045511, "Type": 3},
-        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 4241232142142336541, "Type": 3}],
+        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 4241232142142336541, "Type": 3},
+        { "Guid": "8bc66e51ac894d745aae75f7785086ed", "FileId": 1401537174331165813, "Type": 3}],
     "Entities": [{
         "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
@@ -433,13 +513,17 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "1c6baf13e8b30d3c134799df6c3b35cf"
+                "e": "493f8931990478b162060f60417991d5"
             }, {
-                "e": "c05f811cccab174ee202ab3ace3c51c1"
+                "e": "8982e9a31368b110d1b79edd73217e67"
             }, {
-                "e": "441807a945742e89047c0dc6fd49476d"
+                "e": "bd73d5b5eda0cbe53837e44e8deb7a45"
             }, {
-                "e": "f2c6e6be4c585b5e594401bf52e0b1e5"
+                "e": "f92fa7d00689b250616c1d644f787fb8"
+            }, {
+                "e": "805a6ebb2fa92fbd5f5246a2c456d6eb"
+            }, {
+                "e": "2bd674ced6525b0a85ca9ef3decbac5e"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -722,8 +806,6 @@
             }, {
                 "sprite": "a288a9cbe4feb8aca5a7aa085a5bc472"
             }, {
-                "sprite": "f919cb9df6879af0a26de100b1d9ad17"
-            }, {
                 "sprite": "df63c28000c55726110c1185fae68092"
             }, {
                 "sprite": "e0e19f31e3a048ae2a8ac6fc5a98a044"
@@ -733,6 +815,14 @@
                 "sprite": "69ccfa309a3ecb3522834a00283242b3"
             }, {
                 "sprite": "3d2da7ef9d6d53183eab77b6a4c827b9"
+            }, {
+                "sprite": "f919cb9df6879af0a26de100b1d9ad17"
+            }, {
+                "sprite": "4b62142385a5a5c0e062dc215ba1e589"
+            }, {
+                "sprite": "9360451287f505954fd032301cd7839c"
+            }, {
+                "sprite": "e59c0f2b37f97aed65258713bf97cb97"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -1135,6 +1225,78 @@
             "Value": "63f5414ccb9c497381a4d58c01261008"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
+            "PlayerId": 2,
+            "MoveId": 10,
+            "DirectionId": 2
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 7
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 3352129210547651844,
+            "b": 10832066382002596900
+        }, {
+            "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
+            "Elements": [{
+                "e": "76a88b600cedbd4346cc2a64e645fe42"
+            }, {
+                "e": "96f343a5f4b3c6b3edf9f59520f0cc82"
+            }, {
+                "e": "3e459b7b45fa35f1d8119d0b1c83207c"
+            }, {
+                "e": "993503ab316ec3a9537127b66d97c720"
+            }, {
+                "e": "3a5b34679853b6f7bb94322e13ebc5af"
+            }, {
+                "e": "39b05274e8043da5c818cb5a1038ce6b"
+            }, {
+                "e": "890d5bf08bc0d2d15ea83f696ea40466"
+            }, {
+                "e": "443c9a9e5b9435de6dc2c21b534d799e"
+            }]
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "D"
+            }, {
+                "c": "e"
+            }, {
+                "c": "a"
+            }, {
+                "c": "t"
+            }, {
+                "c": "h"
+            }, {
+                "c": "L"
+            }, {
+                "c": "e"
+            }, {
+                "c": "f"
+            }, {
+                "c": "t"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 10860951414169075601
+            }, {
+                "StableTypeHash": 16033114912968864438
+            }]
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
+            "Value": "63f5414ccb9c497381a4d58c01261008"
+        }, {
+            "$type": "game.AnimationSequence, tiny_rogue",
             "PlayerId": 2
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
@@ -1337,11 +1499,10 @@
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "PlayerId": 1,
-            "MoveId": 7,
-            "DirectionId": 2
+            "MoveId": 7
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 5
+            "Index": 4
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 4023716243865682694,
@@ -1416,21 +1577,21 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "472d4c8efe5267cd0990d6e664cc19c6"
+                "e": "4e4e4dbb0fe837ebe71145d07ede76c2"
             }, {
-                "e": "1aba2cc7a1513244e1486d89cbf27f6a"
+                "e": "d8cd9e9a2e1a8dee994cb07f154b8c0c"
             }, {
-                "e": "2fb60d11af99ceb94c898fccbfd92953"
+                "e": "306bfd1d47a1c902a9ab829fdf1120e4"
             }, {
-                "e": "213873925d38b1995492136c6a9b4708"
+                "e": "32cfb5631e3097f21939b63d142ba418"
             }, {
-                "e": "3373aaf379eddad7e5a7b9cb66edbf55"
+                "e": "2ab2b1b4f81045047790256baf6fd640"
             }, {
-                "e": "371249b1756539974a72d7fc3935209b"
+                "e": "658ceabab9358fff962a12703bef9c33"
             }, {
-                "e": "00e4045e0de619298d4a20e1ed1b562a"
+                "e": "438294cc3f1fe5ff7040b5a30e447d28"
             }, {
-                "e": "5f9d9bb3ce21d9cfaccaf0b8bc6a964a"
+                "e": "67404264d28832e4bb7927afc832bb21"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -1488,21 +1649,21 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "472d4c8efe5267cd0990d6e664cc19c6"
+                "e": "5027a5a950f23c29899aef15fd228d2c"
             }, {
-                "e": "1aba2cc7a1513244e1486d89cbf27f6a"
+                "e": "8c8ed642a15df7791e6bc8b175452e9f"
             }, {
-                "e": "2fb60d11af99ceb94c898fccbfd92953"
+                "e": "80d74d040bcfd7dfbc629c3faf734576"
             }, {
-                "e": "213873925d38b1995492136c6a9b4708"
+                "e": "85a29c5023084d97b4255335f81baf08"
             }, {
-                "e": "3373aaf379eddad7e5a7b9cb66edbf55"
+                "e": "88f8436e6a7a04b8bf8fb62fa359fe64"
             }, {
-                "e": "371249b1756539974a72d7fc3935209b"
+                "e": "300fa3cc62cfc5ba92e113d8f28f33f2"
             }, {
-                "e": "00e4045e0de619298d4a20e1ed1b562a"
+                "e": "273e1dd53a05a0d2291c2c5081f89f4f"
             }, {
-                "e": "5f9d9bb3ce21d9cfaccaf0b8bc6a964a"
+                "e": "5c9bfae1a8def6988a29ee0de6f51607"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -1903,13 +2064,17 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "b447d44a11a18413982809680ac65b4f"
+                "e": "c66baa0cd274b2c32910feaa3ac2f0ee"
             }, {
-                "e": "2aec7ff81a3f7a066576699f72b0e4ae"
+                "e": "f730cacaf22b6d0f368bb15270d2e1a7"
             }, {
-                "e": "bf03b38b16912e64f589d4de6d6a6e52"
+                "e": "8eb91b6c700beebafee4b7e5469cad44"
             }, {
-                "e": "ad3bf7c7f1e53236d14f5367331f4684"
+                "e": "6b445b8268a2f518a36683aa7ea4df95"
+            }, {
+                "e": "d16c6607decd7cdd5a1fd4222a7091f6"
+            }, {
+                "e": "4c3ae7c2c36048f4e994befac1597cc5"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -2031,13 +2196,13 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "1495a00ee070d2e46d672524691e80d8"
+                "e": "9087fd6aa1ef58c604d5b5cf9a7aadfe"
             }, {
-                "e": "2319bcf16936555d85d8e35fe5f56534"
+                "e": "ff34ee16f8e625f0a9b2db11140d2afd"
             }, {
-                "e": "29c36f1dc047c84c7f457b49c949ce68"
+                "e": "01ff288389d85a7d82e9b261c2ed438a"
             }, {
-                "e": "a52bccd6082714b470569a18ae0bde8b"
+                "e": "750655fe263af9600404c1e8a2ef18e2"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -2652,10 +2817,11 @@
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
             "PlayerId": 1,
-            "MoveId": 7
+            "MoveId": 7,
+            "DirectionId": 2
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 4
+            "Index": 5
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 7934588855281666490,
@@ -2663,13 +2829,13 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "46aae4e440084e225c73949b25674a15"
+                "e": "bba4807914802216116c9b3da680db66"
             }, {
-                "e": "5441a9902b4f918800e44181a57973b7"
+                "e": "7a34402cd433066d6ffa7b272d04c059"
             }, {
-                "e": "1f10ebeb7de6ebbfb266148ebfe2f0e6"
+                "e": "702fb35043500d088db956fc6492e93b"
             }, {
-                "e": "d579612dc326153dad4b9b9196012650"
+                "e": "717cd6e6db984c3da72de6299dfc6444"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -3535,6 +3701,77 @@
             "Value": "b57cc00c58fe4b02a782053a99a0b3cc"
         }, {
             "$type": "game.AnimationSequence, tiny_rogue",
+            "MoveId": 10,
+            "DirectionId": 2
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 11
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 10301224886079277767,
+            "b": 11273306755446118442
+        }, {
+            "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
+            "Elements": [{
+                "e": "2e0734ab96ca973d5717bc12b059185d"
+            }, {
+                "e": "e0372cd66aed9b85c0b1f1a4d4609277"
+            }, {
+                "e": "62e87b9194baadc4a7dd35af73d870d7"
+            }, {
+                "e": "56511704567a41d0975bf6924195c61e"
+            }, {
+                "e": "68b0ff870ab36588d5af8008ce9da606"
+            }, {
+                "e": "8dd87bb121cc857d9ca3480bc8c9a8d0"
+            }, {
+                "e": "29e6822e50f717b605a54a8148ae04e8"
+            }, {
+                "e": "7366cb91b9bb5b2b359329be0db86efb"
+            }]
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "D"
+            }, {
+                "c": "e"
+            }, {
+                "c": "a"
+            }, {
+                "c": "t"
+            }, {
+                "c": "h"
+            }, {
+                "c": "L"
+            }, {
+                "c": "e"
+            }, {
+                "c": "f"
+            }, {
+                "c": "t"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 10860951414169075601
+            }, {
+                "StableTypeHash": 16033114912968864438
+            }]
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
+            "Value": "b57cc00c58fe4b02a782053a99a0b3cc"
+        }, {
+            "$type": "game.AnimationSequence, tiny_rogue",
             "MoveId": 7
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
@@ -3644,6 +3881,78 @@
                 "c": "g"
             }, {
                 "c": "h"
+            }, {
+                "c": "t"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 10860951414169075601
+            }, {
+                "StableTypeHash": 16033114912968864438
+            }]
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
+            "Value": "b2e248e330f14ec68422401f55229447"
+        }, {
+            "$type": "game.AnimationSequence, tiny_rogue",
+            "PlayerId": 1,
+            "MoveId": 10,
+            "DirectionId": 2
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 7
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 11543788917770504744,
+            "b": 12142461281185984956
+        }, {
+            "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
+            "Elements": [{
+                "e": "5e273eba5c9b7990f82be9e9fd541590"
+            }, {
+                "e": "9eee3a4487ec7c84d406bccecca00d44"
+            }, {
+                "e": "caebf8330d5cb062f06abb6bc93b27c6"
+            }, {
+                "e": "d24bace80618c3d9284d4ade7f3053fb"
+            }, {
+                "e": "b447f3c7ec7cd227ff847b67789286f0"
+            }, {
+                "e": "53d2873dfd67167e5d4453c302e41c75"
+            }, {
+                "e": "b2b87cbeedaff8f7aaf5fb7fd191b723"
+            }, {
+                "e": "3924aba619a2ff6dc16b28acc0fdb0f9"
+            }]
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "D"
+            }, {
+                "c": "e"
+            }, {
+                "c": "a"
+            }, {
+                "c": "t"
+            }, {
+                "c": "h"
+            }, {
+                "c": "L"
+            }, {
+                "c": "e"
+            }, {
+                "c": "f"
             }, {
                 "c": "t"
             }]
@@ -4000,13 +4309,21 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "b447d44a11a18413982809680ac65b4f"
+                "e": "e5c1773530174b93aab45fba6fc53789"
             }, {
-                "e": "2aec7ff81a3f7a066576699f72b0e4ae"
+                "e": "f8e4c07c3bf8abff2a52fd456bfa48a1"
             }, {
-                "e": "bf03b38b16912e64f589d4de6d6a6e52"
+                "e": "3553b43913da34cfb446e7306d233442"
             }, {
-                "e": "ad3bf7c7f1e53236d14f5367331f4684"
+                "e": "250a4883479943850cd478e15a1883af"
+            }, {
+                "e": "e8947bf4fcbfb7f606ec0e4a3e6574b0"
+            }, {
+                "e": "d1796333d8b60dbd866ee621b1b2559c"
+            }, {
+                "e": "84db7e09cc9a228582eb374483eeb0de"
+            }, {
+                "e": "ee353919507a95847909c5d20e353966"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -4946,21 +5263,21 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "472d4c8efe5267cd0990d6e664cc19c6"
+                "e": "94d1e35aab7cc19d6ca0fe6837392ce3"
             }, {
-                "e": "1aba2cc7a1513244e1486d89cbf27f6a"
+                "e": "52f9e5523957719a4b0ccf30d3a7c735"
             }, {
-                "e": "2fb60d11af99ceb94c898fccbfd92953"
+                "e": "54c6667a2d600580ef058f4f2d9a8247"
             }, {
-                "e": "213873925d38b1995492136c6a9b4708"
+                "e": "ceecc014c0992c4528fa0d7fee9bff3a"
             }, {
-                "e": "3373aaf379eddad7e5a7b9cb66edbf55"
+                "e": "d638ec9fe84dbf6a1acf4afad63fd018"
             }, {
-                "e": "371249b1756539974a72d7fc3935209b"
+                "e": "b56eafb72388bb038d17f76e8645bb67"
             }, {
-                "e": "00e4045e0de619298d4a20e1ed1b562a"
+                "e": "9c1e51f045761eb00a6a4759869f2d54"
             }, {
-                "e": "5f9d9bb3ce21d9cfaccaf0b8bc6a964a"
+                "e": "43bd215fe159f1216af3e7410d0c48b3"
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -6051,7 +6368,7 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Sprite2DSequence, Unity.Tiny.Sprite2D",
             "Elements": [{
-                "e": "c576566ed57f29a4379abf26b0d09320"
+                "e": "7e1dfe78b82e59f18d6f4ad3cd353e6f"
             }, {
                 "e": "00c5ec0cc12dcfc098899a0a2c33d074"
             }, {

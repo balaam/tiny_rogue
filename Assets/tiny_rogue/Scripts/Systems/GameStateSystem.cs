@@ -329,9 +329,7 @@ namespace game
 
             MoveToInGame(cb);
         }
-
-
-
+        
         public void MoveToGameOver(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
