@@ -61,6 +61,7 @@ namespace game
         private CreatureLibrary _creatureLibrary;
         ArchetypeLibrary _archetypeLibrary;
 
+        private int _creaturnOrderIndex;
         int numberOfCollectibles = 0;
         public int NumberOfCollectibles => numberOfCollectibles;
 
@@ -86,6 +87,7 @@ namespace game
             _view = view;
             _creatureLibrary = cl;
             _archetypeLibrary = al;
+            _creaturnOrderIndex = 0;
 
             ClearDungeon(cb, view);
             
@@ -161,7 +163,7 @@ namespace game
                 int creatureId = RandomRogue.Next(0, creatureTypeCount);
                 var worldCoord = GetRandomPositionInRandomRoom();
                 var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
-                Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId);
+                Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId, _creaturnOrderIndex++);
 
                 _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
                 _ecb.SetComponent(cr, new Translation {Value = viewCoord});

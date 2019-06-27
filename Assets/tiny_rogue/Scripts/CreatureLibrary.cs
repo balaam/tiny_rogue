@@ -102,7 +102,8 @@ namespace game
                 typeof(Animated),
                 typeof(Sprite2DSequencePlayer),
                 typeof(NeedsAnimationStart),
-                typeof(ArmorClass)
+                typeof(ArmorClass),
+                typeof(TurnPriorityComponent)
             });
             
             _playerArchetype = em.CreateArchetype(new ComponentType[]
@@ -129,11 +130,12 @@ namespace game
                 typeof(Speed),
                 typeof(Sprite2DSequencePlayer),
                 typeof(NeedsAnimationStart),
-                typeof(ArmorClass)
+                typeof(ArmorClass),
+                typeof(TurnPriorityComponent)
             });
         }
         
-        public Entity SpawnCreature(EntityCommandBuffer cb, ECreatureId cId)
+        public Entity SpawnCreature(EntityCommandBuffer cb, ECreatureId cId, int priority)
         {
             Entity entity = cb.CreateEntity(_creatureArchetype);
             CreatureDescription descr = CreatureDescriptions[(int) cId];
@@ -150,6 +152,7 @@ namespace game
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             ArmorClass ac = new ArmorClass { AC = descr.ac };
+            TurnPriorityComponent tp = new TurnPriorityComponent { Value = priority};
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
@@ -188,6 +191,7 @@ namespace game
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
             ArmorClass ac = new ArmorClass {AC = descr.ac};
+            TurnPriorityComponent tp = new TurnPriorityComponent { Value = -1};
 
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
@@ -208,6 +212,7 @@ namespace game
             entityManager.SetComponentData(entity, animated);
             entityManager.SetComponentData(entity, sight);
             entityManager.SetComponentData(entity, ac);
+            entityManager.SetComponentData(entity, tp);
 
             return entity;
         }
@@ -225,6 +230,7 @@ namespace game
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
+            TurnPriorityComponent tp = new TurnPriorityComponent { Value = -1};
             
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
@@ -246,6 +252,7 @@ namespace game
             cb.SetComponent(player, sight);
             cb.SetComponent(player, worldCoord);
             cb.SetComponent(player, translation);
+            cb.SetComponent(player, tp);
         }
         
     }
