@@ -13,10 +13,10 @@ namespace game
 
         protected override void OnUpdate()
         {
-            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
             if (lastTurn != tms.TurnCount) // Don't always be moving!
             {
+                var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                 lastTurn = tms.TurnCount;
                 // Find player to navigate towards
                 int2 playerPos = int2.zero;
@@ -33,7 +33,8 @@ namespace game
                         if (lastTurn % speed.SpeedRate == 0)
                         {
                             int2 creaturePos = new int2(coord.x, coord.y);
-                            int2 nextPos = AStarPathfinding.getNextStep(creaturePos, playerPos, gss.View, EntityManager);
+                            int2 nextPos =
+                                AStarPathfinding.getNextStep(creaturePos, playerPos, gss.View, EntityManager);
                             Action movement = getDirection(creaturePos, nextPos);
                             tms.AddDelayedAction(movement, creature, coord, animated.Direction);
                         }
@@ -43,22 +44,23 @@ namespace game
                 {
                     if (lastTurn%speed.SpeedRate == 0)
                     {
-                        int2 monsterPos = new int2(coord.x, coord.y);
-                        if (patrol.destination.Equals(new int2(0,0)) || patrol.destination.Equals(monsterPos))
+                        if (lastTurn % speed.SpeedRate == 0)
                         {
-                            DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
-                            patrol.destination = ds.GetRandomPositionInRandomRoom();
+                            int2 monsterPos = new int2(coord.x, coord.y);
+                            if (patrol.destination.Equals(new int2(0, 0)) || patrol.destination.Equals(monsterPos))
+                            {
+                                DungeonSystem ds = EntityManager.World.GetExistingSystem<DungeonSystem>();
+                                patrol.destination = ds.GetRandomPositionInRandomRoom();
+                            }
+
+                            EntityManager.SetComponentData(creature, patrol);
+                            // Follow defined path now that we have ensured that one exists
+                            int2 nextPos =
+                                AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
+                            Action movement = getDirection(monsterPos, nextPos);
+                            tms.AddDelayedAction(movement, creature, coord, animated.Direction);
                         }
-
-                        EntityManager.SetComponentData(creature, patrol);
-
-                        // Follow defined path now that we have ensured that one exists
-                        int2 nextPos =
-                            AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
-                        Action movement = getDirection(monsterPos, nextPos);
-                        tms.AddDelayedAction(movement, creature, coord, animated.Direction);
-                    }
-                });
+                    });
             }
         }
 
