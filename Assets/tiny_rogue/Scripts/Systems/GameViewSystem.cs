@@ -16,10 +16,16 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 namespace game
 {
     // GameState drives the other systems.
-    [UpdateAfter(typeof(TurnSystemGroup))]
-    public class GameViewSystem : ComponentSystem
+    [UpdateAfter(typeof(ActionResolutionSystem))]
+    [UpdateAfter(typeof(FogOfWarSystem))]
+    public class GameViewSystem : TurnSystem
     {
-        public static bool UpdateViewNeeded = false;
+        protected override void OnCreate()
+        {
+            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
+            tms.RegisterTurnSystem(this);
+            base.OnCreate();
+        }
         
         static float GetAlphaForStaticTile(Tile tile)
         {
@@ -62,10 +68,6 @@ namespace game
 
         protected override void OnUpdate()
         {
-            // Don't do anything until we have sprites
-            if (!SpriteSystem.Loaded || !UpdateViewNeeded)
-                return;
-            
             var tileSprite = Sprite2DRenderer.Default;
             tileSprite.color = TinyRogueConstants.DefaultColor;
 

@@ -8,7 +8,7 @@ namespace game
     // Notes:
     // - This could be more less specific - i.e. it only handles spear traps what about other traps?
     // - The for loop nesting should be reversed. There are probably less traps than living things generally?
-    public class TrapSystem : ComponentSystem
+    public class TrapSystem : TurnSystem
     {
         protected override void OnUpdate()
         {
@@ -29,7 +29,6 @@ namespace game
                             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                             gss.LastPlayerHurtLog = dmgLog;
                             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-                            tms.NeedToTickTurn = true;
                         }
 
                         dmg = 5;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
+using UnityEngine;
 
 namespace game
 {
@@ -368,8 +369,8 @@ namespace game
         {
             foreach (Room createdRoom in _rooms)
             {
-                Rect r1 = new Rect(roomToAdd.startX, roomToAdd.startY, roomToAdd.width, roomToAdd.height);
-                Rect r2 = new Rect(createdRoom.startX, createdRoom.startY, createdRoom.width, createdRoom.height);
+                Unity.Tiny.Core2D.Rect r1 = new Unity.Tiny.Core2D.Rect(roomToAdd.startX, roomToAdd.startY, roomToAdd.width, roomToAdd.height);
+                Unity.Tiny.Core2D.Rect r2 = new Unity.Tiny.Core2D.Rect(createdRoom.startX, createdRoom.startY, createdRoom.width, createdRoom.height);
 
                 if ((r1.x < r2.x + r2.width) &&
                     (r1.x + r1.width > r2.x) &&

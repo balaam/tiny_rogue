@@ -7,7 +7,7 @@ namespace game
 {
     // Notes:
     // - 
-    public class GoldSystem : ComponentSystem
+    public class GoldSystem : TurnSystem
     {
         protected override void OnUpdate()
         {
@@ -25,7 +25,6 @@ namespace game
                             var log = EntityManager.World.GetExistingSystem<LogSystem>();
                             log.AddLog("You collected 2 gold coins.");
                             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
-                            tms.NeedToTickTurn = true;
                         }
 
                         amount = 2;
