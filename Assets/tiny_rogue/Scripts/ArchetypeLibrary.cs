@@ -18,6 +18,7 @@ namespace game
         public EntityArchetype Doorway { get; private set; }
         public EntityArchetype Collectible { get; private set; }
         public EntityArchetype Gold { get; private set; }
+        public EntityArchetype HealingPotion { get; private set; }
 
         public void Init(EntityManager em)
         {
@@ -91,6 +92,16 @@ namespace game
                 typeof(Sprite2DRenderer),                 //conflicts
                 typeof(LayerSorting),                     //hopefully
                 typeof(Gold)
+            });
+
+            HealingPotion = em.CreateArchetype(new ComponentType[]
+            {
+                typeof(Parent),
+                typeof(Translation),
+                typeof(WorldCoord),
+                typeof(Sprite2DRenderer),
+                typeof(LayerSorting),
+                typeof(HealItem)
             });
         }
 
@@ -320,5 +331,39 @@ namespace game
             return entity;
         }
 
+        public Entity CreateHealingItem(EntityManager entityManager, int2 xy, float3 pos, int healAmount)
+        {
+            Entity entity = entityManager.CreateEntity(HealingPotion);
+
+            HealItem heal = new HealItem();
+            Sprite2DRenderer s = new Sprite2DRenderer();
+            Translation t = new Translation();
+            WorldCoord c = new WorldCoord();
+            LayerSorting l = new LayerSorting();
+            t.Value = pos;
+
+            c.x = xy.x;
+            c.y = xy.y;
+
+            // Only tint sprites if ascii
+            s.color = GlobalGraphicsSettings.ascii
+                ? new Unity.Tiny.Core2D.Color(1.0f, 0.26f, 0.23f)
+                : Color.Default;
+            if (GlobalGraphicsSettings.ascii)
+                s.color.a = 0;
+
+            s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics((char)235)];
+            l.layer = 1;
+
+            heal.HealAmount = healAmount;
+
+            entityManager.SetComponentData(entity, s);
+            entityManager.SetComponentData(entity, t);
+            entityManager.SetComponentData(entity, c);
+            entityManager.SetComponentData(entity, l);
+            entityManager.SetComponentData(entity, heal);
+
+            return entity;
+        }
     }
 }
