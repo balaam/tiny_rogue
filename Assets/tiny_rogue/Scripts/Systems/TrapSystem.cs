@@ -23,8 +23,11 @@ namespace game
                     {
                         if(EntityManager.HasComponent(creature, typeof(Player)))
                         {
+                            string dmgLog = "A spear trap hits you for 5 damage.";
                             var log = EntityManager.World.GetExistingSystem<LogSystem>();
-                            log.AddLog("A spear trap hits you for 5 damage.");
+                            log.AddLog(dmgLog);
+                            var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                            gss.LastPlayerHurtLog = dmgLog;
                             var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
                             tms.NeedToTickTurn = true;
                         }
