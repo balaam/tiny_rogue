@@ -377,7 +377,7 @@ namespace game
                     logStr = string.Concat("You destroy the ", defenderName);
                     logStr = string.Concat(logStr, ".");
                     ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
-                    xp.now += 5;
+                    xp.now += hp.max; //XP awarded equals the defenders max hp
                     EntityManager.SetComponentData(pa.Attacker, xp);
                 }
                 else if (playerAttack)
@@ -390,10 +390,12 @@ namespace game
                                     " damage!");
 
                     if(killHit)
+                    {
                         logStr = string.Concat(logStr, " Killing it.");
                         ExperiencePoints xp = EntityManager.GetComponentData<ExperiencePoints>(pa.Attacker);
-                        xp.now += 5;
+                        xp.now += hp.max; //XP awarded equals the defenders max hp
                         EntityManager.SetComponentData(pa.Attacker, xp);
+                    }
                 }
                 else
                 {
