@@ -59,6 +59,7 @@ namespace game
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             View view = gss.View;
 
+            // Filter out events in the FOW
             for (int i = _newLogs.Count - 1; i >= 0; i--)
             {
                 if (!_newLogs[i].loc.Equals(DefaultLocation))
@@ -88,23 +89,33 @@ namespace game
                 string pageMsg = "[space]";
                 if (HasQueuedLogs())
                 {
-                    LogEntry nextTopLog =  _newLogs[0];
+                    var gLog = EntityManager.World.GetOrCreateSystem<GraphicalLogSystem>();
+                    LogEntry nextTopLog = _newLogs[0];
 
-                    if ((blitEnd + nextTopLog.text.Length) < (view.Width - pageMsg.Length))
+                    if (GlobalGraphicsSettings.ascii)
                     {
-                        _newLogs.RemoveAt(0);
-                        _oldLogs.Add(nextTopLog);
-                        view.Blit(cb, new int2(blitEnd,0), nextTopLog.text);
+                        if ((blitEnd + nextTopLog.text.Length) < (view.Width - pageMsg.Length))
+                        {
+                            _newLogs.RemoveAt(0);
+                            _oldLogs.Add(nextTopLog);
+                            view.Blit(cb, new int2(blitEnd, 0), nextTopLog.text);
+                        }
+                        else
+                        {
+
+                            var pageXY = new int2(view.Width - pageMsg.Length, 0);
+                            view.Blit(cb, pageXY, pageMsg, new Color(1, 1, 1, 1));
+                            gss.MoveToReadQueuedLog();
+                        }
                     }
                     else
                     {
-                        var pageXY = new int2(view.Width - pageMsg.Length, 0);
-                        view.Blit(cb, pageXY, pageMsg, new Color(1,1,1,1));
-                        gss.MoveToReadQueuedLog();    
+                        _newLogs.RemoveAt(0);
+                        _oldLogs.Add(nextTopLog);
+                        var needsSpace = _newLogs.Count != 0 ? $" {pageMsg}" : "";
+                        gLog.AddToLog($"{nextTopLog.text}{needsSpace}");
                     }
-                    
                 }
-
 
                 while(_oldLogs.Count > MaxLogHistory)
                     _oldLogs.RemoveAtSwapBack(_oldLogs.Count - 1);
