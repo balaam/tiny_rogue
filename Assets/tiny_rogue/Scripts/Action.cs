@@ -12,6 +12,8 @@ namespace game
         Wait = 5,
         Interact = 6,
         Attack = 7,
-        Move = 8
+        Move = 8,
+        Bump = 9,
+        Ouch = 9
     }
 }
