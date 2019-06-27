@@ -150,7 +150,7 @@ namespace game
 
             GenerateCollectibles();
 
-
+            GenerateHealingItems();
         }
 
         void GenerateCollectibles()
@@ -186,6 +186,17 @@ namespace game
                 _archetypeLibrary.CreateGold(EntityManager, goldCoord, GameView.ViewCoordToWorldPos(goldCoord));
             }
        }
+
+        void GenerateHealingItems()
+        {
+            int healingItems = RandomRogue.Next(0, 5);
+            for (int i = 0; i < healingItems; i++)
+            {
+                var healCoord = _dungeon.GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateHealingItem(EntityManager, healCoord, GameView.ViewCoordToWorldPos(healCoord),
+                    RandomRogue.Next(-2, 6));
+            }
+        }
 
         protected override void OnUpdate()
         {
