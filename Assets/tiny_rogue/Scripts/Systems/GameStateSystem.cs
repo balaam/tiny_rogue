@@ -18,6 +18,7 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 namespace game
 {
     // GameState drives the other systems.
+    [UpdateBefore(typeof(TurnManagementSystem))]
     public class GameStateSystem : ComponentSystem
     {
         // Simple game loop
@@ -44,6 +45,7 @@ namespace game
         private DungeonSystem _dungeon;
 
         private uint CurrentSeed = 1;
+        public string LastPlayerHurtLog;
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
         
@@ -220,6 +222,8 @@ namespace game
                     GenerateLevel();
                     log.AddLog("You descend another floor.");
                     log.ShowNextLog(PostUpdateCommands);
+                    var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
+                    tms.NeedToTickDisplay = true;
                     _state = eGameState.InGame;
                 } break;
                 case eGameState.HiScores:
@@ -300,9 +304,6 @@ namespace game
             tms.ResetTurnCount();
             log.AddLog("Welcome! Use the arrow keys to explore, z to interact and x to wait.");
             _state = eGameState.InGame;
-
-            // Update the view
-            GameViewSystem.UpdateViewNeeded = true;
         }
 
         void MoveToInventoryScreen(EntityCommandBuffer cb)
@@ -328,13 +329,12 @@ namespace game
 
             MoveToInGame(cb);
         }
-
-
-
+        
         public void MoveToGameOver(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
             GameView.Blit(cb, new int2(0, 0), "GAME OVER!");
+            GameView.Blit(cb, new int2(0, 15), "CAUSE OF DEATH: " + LastPlayerHurtLog);
             GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
             GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
             _state = eGameState.GameOver;
@@ -372,7 +372,8 @@ namespace game
 
         public void MoveToReadQueuedLog()
         {
-            _state = eGameState.ReadQueuedLog;
+            if(!PlayerInputSystem.Replaying)
+                _state = eGameState.ReadQueuedLog;
         }
 
         void ShowInventory(EntityCommandBuffer ecb)

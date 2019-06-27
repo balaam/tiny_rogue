@@ -16,10 +16,10 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 namespace game
 {
     // GameState drives the other systems.
-    [UpdateAfter(typeof(TurnSystemGroup))]
+    [UpdateAfter(typeof(FogOfWarSystem))]
+    [UpdateInGroup(typeof(DisplaySystemGroup))]
     public class GameViewSystem : ComponentSystem
     {
-        public static bool UpdateViewNeeded = false;
         
         static float GetAlphaForStaticTile(Tile tile)
         {
@@ -37,6 +37,24 @@ namespace game
             return color;
         }
         
+        static Color GetColorForDoor(Tile tile)
+        {
+            Color color = TinyRogueConstants.DefaultColor;
+            
+            if (!tile.IsSeen && tile.HasBeenRevealed)
+            {
+                color.r /= 2f;
+                color.g /= 2f;
+                color.b /= 2f;
+            }
+            else if (!tile.IsSeen)
+            {
+                color.a = 0f;
+            }
+
+            return color;
+        }
+        
         static float GetColorForMobileEntity(Tile tile)
         {
             return tile.IsSeen ? 1f : 0f;
@@ -44,25 +62,22 @@ namespace game
 
         protected override void OnUpdate()
         {
-            // Don't do anything until we have sprites
-            if (!SpriteSystem.Loaded || !UpdateViewNeeded)
-                return;
-            
             var tileSprite = Sprite2DRenderer.Default;
             tileSprite.color = TinyRogueConstants.DefaultColor;
 
             // Set all floor tiles
-            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
-            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
+            Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile, ref Floor floor) =>
             {
+                tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.', floor.TileOffset)];
                 tileSprite.color.a = GetAlphaForStaticTile(tile);
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });
 
             // Default all block tiles to a wall
-            tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
-            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
+            
+            Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile, ref Wall wall) =>
             {
+                tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#', wall.TileOffset)];
                 tileSprite.color.a = GetAlphaForStaticTile(tile);
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });
@@ -82,8 +97,16 @@ namespace game
                 var tileIndex = View.XYToIndex(new int2(coord.x, coord.y), GameStateSystem.GameView.Width);
                 var tileEntity = GameStateSystem.GameView.ViewTiles[tileIndex];
                 var tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                doorSprite.color.a = GetAlphaForStaticTile(tile);
-                
+                // Setting alpha on a door onto of a tile only works for ascii. For graphics, dim the colours instead.
+                if (GlobalGraphicsSettings.ascii)
+                {
+                    doorSprite.color.a = GetAlphaForStaticTile(tile);
+                }
+                else
+                {
+                    doorSprite.color = GetColorForDoor(tile);
+                }
+
                 PostUpdateCommands.SetComponent(e, doorSprite);
             });
             
