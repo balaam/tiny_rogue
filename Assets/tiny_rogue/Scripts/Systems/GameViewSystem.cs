@@ -21,36 +21,27 @@ namespace game
     {
         public static bool UpdateViewNeeded = false;
         
-        static Unity.Tiny.Core2D.Color GetColorForTile(Tile tile)
+        static float GetAlphaForStaticTile(Tile tile)
         {
-            Unity.Tiny.Core2D.Color color = TinyRogueConstants.DefaultColor;
+           float color = TinyRogueConstants.DefaultColor.a;
             
             if (!tile.IsSeen && tile.HasBeenRevealed)
             {
-                color.r /= 2f;
-                color.g /= 2f;
-                color.b /= 2f;
+                color /= 2f;
             }
             else if (!tile.IsSeen)
             {
-                color.a = 0f;
+                color = 0f;
             }
 
             return color;
         }
         
-        private static Unity.Tiny.Core2D.Color GetColorForObject(Tile tile)
+        static float GetColorForMobileEntity(Tile tile)
         {
-            var color = TinyRogueConstants.DefaultColor;
-
-            if (!tile.IsSeen)
-            {
-                color.a = 0f;
-            }
-
-            return color;
+            return tile.IsSeen ? 1f : 0f;
         }
-        
+
         protected override void OnUpdate()
         {
             // Don't do anything until we have sprites
@@ -58,12 +49,13 @@ namespace game
                 return;
             
             var tileSprite = Sprite2DRenderer.Default;
+            tileSprite.color = TinyRogueConstants.DefaultColor;
 
             // Set all floor tiles
             tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
             Entities.WithAll<Sprite2DRenderer, Floor>().ForEach((Entity e, ref Tile tile) =>
             {
-                tileSprite.color = GetColorForTile(tile);
+                tileSprite.color.a = GetAlphaForStaticTile(tile);
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });
 
@@ -71,7 +63,7 @@ namespace game
             tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('#')];
             Entities.WithAll<Sprite2DRenderer, Wall>().ForEach((Entity e, ref Tile tile) =>
             {
-                tileSprite.color = GetColorForTile(tile);
+                tileSprite.color.a = GetAlphaForStaticTile(tile);
                 PostUpdateCommands.SetComponent(e, tileSprite);
             });
             
@@ -102,13 +94,14 @@ namespace game
                 var tileIndex = View.XYToIndex(new int2(coord.x, coord.y), GameStateSystem.GameView.Width);
                 var tileEntity = GameStateSystem.GameView.ViewTiles[tileIndex];
                 var tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                spriteRenderer.color = GetColorForTile(tile);
+                spriteRenderer.color.a = GetAlphaForStaticTile(tile);
                 
                 PostUpdateCommands.SetComponent(e, spriteRenderer);
             });
             
+            // All remaining static entities can be updated but need to keep their colour
             // This reads from *before* the above changes, so shouldn't be used on the same entities
-            Entities.WithNone<Player, Tile, Door>().ForEach(
+            Entities.WithNone<Mobile, Tile, Door>().ForEach(
                 (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
                 {
                     var spriteRenderer = renderer;
@@ -117,8 +110,22 @@ namespace game
                     var tileIndex = View.XYToIndex(new int2(coord.x, coord.y), GameStateSystem.GameView.Width);
                     var tileEntity = GameStateSystem.GameView.ViewTiles[tileIndex];
                     var tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                    spriteRenderer.color.a = GetAlphaForStaticTile(tile);
 
-                    spriteRenderer.color.a = tile.IsSeen ? 1 : 0;
+                    PostUpdateCommands.SetComponent(e, spriteRenderer);
+                });
+            
+            // All mobile entities should be either visible or not
+            Entities.WithAll<Mobile>().ForEach(
+                (Entity e, ref Sprite2DRenderer renderer, ref WorldCoord coord) =>
+                {
+                    var spriteRenderer = renderer;
+
+                    // Check the tile, regardless of what entity we're looking at; this will tell objects if their tile is visible or not
+                    var tileIndex = View.XYToIndex(new int2(coord.x, coord.y), GameStateSystem.GameView.Width);
+                    var tileEntity = GameStateSystem.GameView.ViewTiles[tileIndex];
+                    var tile = EntityManager.GetComponentData<Tile>(tileEntity);
+                    spriteRenderer.color.a = GetColorForMobileEntity(tile);
 
                     PostUpdateCommands.SetComponent(e, spriteRenderer);
                 });

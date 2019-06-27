@@ -28,6 +28,7 @@ namespace game
         public int sightRadius;
         public int speed;
         public int spriteId;
+        public int ac;
     }
 
     public class CreatureLibrary
@@ -48,7 +49,8 @@ namespace game
                 asciiColor = new Color(0.9f, 0f, 0f),
                 sightRadius = 10, // Fireskulls have good eyesight
                 speed = 1,
-                spriteId = 2
+                spriteId = 2,
+                ac = 6
             },
             /* Kobold */
             new CreatureDescription
@@ -60,7 +62,8 @@ namespace game
                 asciiColor = new Color(0.5f, 0.9f, 0.3f),
                 sightRadius = 3, // Kobolds aren't very good at spotting enemies
                 speed = 3,
-                spriteId = 1
+                spriteId = 1,
+                ac = 9
             },
             
             // Unspawnables
@@ -72,7 +75,8 @@ namespace game
                 attackRange = new int2(1,1),
                 ascii = (char)1,
                 asciiColor = new Color(1, 1, 1),
-                spriteId = 0
+                spriteId = 0,
+                ac = 13
             },
         };
 
@@ -97,7 +101,8 @@ namespace game
                 typeof(Mobile),
                 typeof(Animated),
                 typeof(Sprite2DSequencePlayer),
-                typeof(NeedsAnimationStart)
+                typeof(NeedsAnimationStart),
+                typeof(ArmorClass)
             });
             
             _playerArchetype = em.CreateArchetype(new ComponentType[]
@@ -123,7 +128,8 @@ namespace game
                 typeof(Sight),
                 typeof(Speed),
                 typeof(Sprite2DSequencePlayer),
-                typeof(NeedsAnimationStart)
+                typeof(NeedsAnimationStart),
+                typeof(ArmorClass)
             });
         }
         
@@ -143,6 +149,7 @@ namespace game
             Speed speed = new Speed { SpeedRate = descr.speed };
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false};
+            ArmorClass ac = new ArmorClass { AC = descr.ac };
 
             // Only tint sprites if ascii
             s.color = GlobalGraphicsSettings.ascii ? descr.asciiColor : Color.Default;
@@ -160,6 +167,7 @@ namespace game
             cb.SetComponent(entity, speed);
             cb.SetComponent(entity, mobile);
             cb.SetComponent(entity, animated);
+            cb.SetComponent(entity, ac);
 
             return entity;
         }
@@ -174,12 +182,13 @@ namespace game
             HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
             Level lvl = new Level { level = 1 };
-            ExperiencePoints exp = new ExperiencePoints { now = 0 };
+            ExperiencePoints exp = new ExperiencePoints { now = 0, next = LevelSystem.GetXPRequiredForLevel(1) };
             GoldCount gp = new GoldCount { count = 0 };
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0, Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
             Sight sight = new Sight { SightRadius = 4 };
-            
+            ArmorClass ac = new ArmorClass {AC = descr.ac};
+
             // Only tint sprites if ascii
             Sprite2DRenderer s = new Sprite2DRenderer();
             LayerSorting l = new LayerSorting { order = 2 };
@@ -198,7 +207,8 @@ namespace game
             entityManager.SetComponentData(entity, mobile);
             entityManager.SetComponentData(entity, animated);
             entityManager.SetComponentData(entity, sight);
-            
+            entityManager.SetComponentData(entity, ac);
+
             return entity;
         }
 
@@ -210,7 +220,7 @@ namespace game
             HealthPoints hp = new HealthPoints { max = descr.health, now = descr.health };
             AttackStat att = new AttackStat { range = descr.attackRange };
             Level lvl = new Level { level = 1 };
-            ExperiencePoints exp = new ExperiencePoints {now = 0};
+            ExperiencePoints exp = new ExperiencePoints {now = 0,  next = LevelSystem.GetXPRequiredForLevel(1)};
             GoldCount gp = new GoldCount { count = 0 };
             Mobile mobile = new Mobile { Destination = new float3(0,0,0), Initial = new float3(0,0,0), MoveTime = 0,Moving = false };
             Animated animated = new Animated { Id = descr.spriteId, Direction = Direction.Right, Action = Action.None, AnimationTime = 0, AnimationTrigger = false };
