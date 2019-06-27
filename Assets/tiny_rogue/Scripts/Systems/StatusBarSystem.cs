@@ -37,7 +37,7 @@ namespace game
             var gss = World.GetOrCreateSystem<GameStateSystem>();
             if (gss.IsInGame)
             {
-                Entities.ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level,
+                Entities.WithAll<Player>().ForEach((Entity player, ref HealthPoints hp, ref ExperiencePoints xp, ref Level level,
                     ref GoldCount gp) =>
                 {
                     View view = gss.View;
