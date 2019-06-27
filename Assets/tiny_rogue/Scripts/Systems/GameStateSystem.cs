@@ -82,8 +82,6 @@ namespace game
 
             if (!foundMap)
                 return false;
-            
-            World.TinyEnvironment().fixedFrameRateEnabled = true;
 
             _archetypeLibrary.Init(EntityManager);
             var startX = -(math.floor(width / 2) * GlobalGraphicsSettings.TileSize.x);
