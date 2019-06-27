@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Tiny.Core2D;
+using UnityEngine;
 
 namespace game
 {

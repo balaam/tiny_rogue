@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Mathematics;
+using Unity.Tiny.Core2D;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace game
@@ -39,7 +41,7 @@ namespace game
             _turnCount = 0;
         }
 
-        public void AddDelayedAction(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
+        public void AddActionRequest(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
         {
             if (!_actionQueue.IsCreated)
             {
@@ -54,9 +56,9 @@ namespace game
             _actionQueue.Enqueue(ar);
         }
 
-        public void AddActionRequest(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
+        public void AddPlayerActionRequest(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
         {
-            AddDelayedAction(a, e, loc, direction, priority);
+            AddActionRequest(a, e, loc, direction, priority);
             NeedToTickTurn = true;
         }
 
@@ -109,17 +111,31 @@ namespace game
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
-            bool shouldTickSystems = gss.IsInGame && (NeedToTickTurn || _turnCount == 0);
+            
+            var fog = EntityManager.World.GetExistingSystem<FogOfWarSystem>();
+            var gvs = EntityManager.World.GetExistingSystem<GameViewSystem>();
+            var log = EntityManager.World.GetExistingSystem<LogSystem>();
+            
+            bool shouldTickSystems = gss.IsInGame && NeedToTickTurn;
             for (int i = 0; i < _turnSystems.Count; i++)
             {
-                _turnSystems[i].Enabled = shouldTickSystems;
+                // We must update these systems on the first turn to display the log, fog, and dungeon
+                if (_turnCount == 0 && (_turnSystems[i] == fog || _turnSystems[i] == gvs || _turnSystems[i] == log))
+                {
+                    _turnSystems[i].Enabled = true;
+                }
+                else
+                    _turnSystems[i].Enabled = shouldTickSystems;
             }
+            
+            // Step forward once but don't tick
+            if(_turnCount == 0)
+                _turnCount++;
 
             if (shouldTickSystems)
             {
                 _turnCount++;
-                // Only update the view after we've ticked the systems
-                GameViewSystem.UpdateViewNeeded = true;
+                Debug.Log($"New Turn {_turnCount}");
             }
             NeedToTickTurn = false;
         }

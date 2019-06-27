@@ -18,6 +18,7 @@ using InputSystem = Unity.Tiny.GLFW.GLFWInputSystem;
 namespace game
 {
     // GameState drives the other systems.
+    [UpdateBefore(typeof(TurnManagementSystem))]
     public class GameStateSystem : ComponentSystem
     {
         // Simple game loop
@@ -300,9 +301,6 @@ namespace game
             tms.ResetTurnCount();
             log.AddLog("Welcome! Use the arrow keys to explore, z to interact and x to wait.");
             _state = eGameState.InGame;
-
-            // Update the view
-            GameViewSystem.UpdateViewNeeded = true;
         }
 
         void MoveToInventoryScreen(EntityCommandBuffer cb)
@@ -372,7 +370,8 @@ namespace game
 
         public void MoveToReadQueuedLog()
         {
-            _state = eGameState.ReadQueuedLog;
+            if(!PlayerInputSystem.Replaying)
+                _state = eGameState.ReadQueuedLog;
         }
 
         void ShowInventory(EntityCommandBuffer ecb)

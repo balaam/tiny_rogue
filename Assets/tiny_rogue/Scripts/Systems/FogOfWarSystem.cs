@@ -1,10 +1,19 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using UnityEngine;
 
 namespace game
 {
-    public class FogOfWarSystem : ComponentSystem
+    [UpdateBefore(typeof(ActionResolutionSystem))]
+    public class FogOfWarSystem : TurnSystem
     {
+        protected override void OnCreate()
+        {
+            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
+            tms.RegisterTurnSystem(this);
+            base.OnCreate();
+        }
+        
         protected override void OnUpdate()
         {
             if (!EntityManager.World.GetExistingSystem<GameStateSystem>().IsInGame)
@@ -12,7 +21,6 @@ namespace game
 
             int2 playerPos = int2.zero;
             int viewDepth = 0;
-
             Entities.WithAll<Player>().ForEach((Entity e, ref WorldCoord coord, ref Sight sight) =>
             {
                 playerPos = new int2(coord.x, coord.y);
@@ -28,20 +36,7 @@ namespace game
                 int i = View.XYToIndex(new int2(coord.x, coord.y), view.Width);
                 blockedPosition[i] = true;
             });
-
-            // Monsters stop Patrolling and start actively following the Player if they can spot the Player
-            Entities.WithAll<PatrollingState, Sight>().ForEach(
-                (Entity e, ref WorldCoord coord, ref Sight sight) =>
-                {
-                    int2 pos = new int2(coord.x, coord.y);
-                    float totalDistance = math.sqrt(math.pow(math.distance(playerPos.x, pos.x), 2) +
-                                                    math.pow(math.distance(playerPos.y, pos.y), 2));
-                    
-                    if (totalDistance <= viewDepth && !SightBlocked(playerPos, pos, view, blockedPosition))
-                    {
-                        PostUpdateCommands.RemoveComponent(e, typeof(PatrollingState));
-                    }
-                });
+            
 
             // Determine whether tile is visible to Player
             Entities.ForEach((Entity e, ref WorldCoord coord) =>
@@ -65,7 +60,7 @@ namespace game
             });
         }
 
-        private bool SightBlocked(int2 start, int2 end, View view, bool[] blockedPositions)
+        public static bool SightBlocked(int2 start, int2 end, View view, bool[] blockedPositions)
         {
             float x = (end - start).x;
             float y = (end - start).y;

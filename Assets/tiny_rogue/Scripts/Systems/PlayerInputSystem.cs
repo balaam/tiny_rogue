@@ -16,7 +16,7 @@ namespace game
     [UpdateAfter(typeof(StatusBarSystem))]
     public class PlayerInputSystem : ComponentSystem
     {
-        private bool Replaying = false;
+        public static bool Replaying = false;
         private int ReplayPosition = 0;
         
         private static float ReplaySpeed = 0.125f;
@@ -99,7 +99,7 @@ namespace game
                     if (action == Action.None)
                         return;
 
-                    tms.AddActionRequest(action, playerEntity, coord, animated.Direction, 0);
+                    tms.AddPlayerActionRequest(action, playerEntity, coord, animated.Direction, -1);
 
                     // Save the action to the action stream if the player has it
                     if (!Replaying)

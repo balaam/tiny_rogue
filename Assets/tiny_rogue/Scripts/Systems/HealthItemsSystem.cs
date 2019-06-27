@@ -6,7 +6,7 @@ namespace game
 {
 
 
-    public class HealthItemsSystem : ComponentSystem
+    public class HealthItemsSystem : TurnSystem
     {
         protected override void OnUpdate()
         {
@@ -41,7 +41,6 @@ namespace game
                     else if (heal.HealAmount < 0)
                         log.AddLog("The Kobolds have poisoned the potion!!  " + (-1*heal.HealAmount).ToString() + " damage taken!");
                     PostUpdateCommands.DestroyEntity(healingItems[i]);
-                    tms.NeedToTickTurn = true;
                 }
             });
         }
