@@ -55,6 +55,9 @@
         { "Guid": "3190c26c81738c54ea3a0213350b9e00", "FileId": 21300000, "Type": 3},
         { "Guid": "52cb17a44201e914295c92336a633447", "FileId": 21300000, "Type": 3},
         { "Guid": "11d4cd1f8f67a044aaf2df44bbff0f71", "FileId": 11400000, "Type": 2},
+        { "Guid": "329edf0b8a92d3c458c0dc2f7087410e", "FileId": 21300000, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300166, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300170, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 1899901556599167055, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 6399280041854345734, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 820585990694486454, "Type": 3},
@@ -429,7 +432,7 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 1
+            "Index": 2
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 2346403976845739980,
@@ -1122,7 +1125,7 @@
             "height": 75
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 2
+            "Index": 3
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 4604247537078127658,
@@ -1837,7 +1840,8 @@
                 "y": 1
             }
         }, {
-            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 1
         }, {
             "$type": "Unity.Entities.EntityGuid, Unity.Entities",
             "a": 7523191366302844709,
@@ -2437,7 +2441,7 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
         }, {
             "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
-            "Index": 3
+            "Index": 4
         }, {
             "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
             "anchorMin": {},
@@ -5849,6 +5853,83 @@
             }, {
                 "StableTypeHash": 17378348762221180850
             }]
+        }]
+    }, {
+        "Components": [{
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D"
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core"
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 17703687943448446794,
+            "b": 12319828803468974121
+        }, {
+            "$type": "game.CollectibleEntry, tiny_rogue",
+            "Elements": [{
+                "spriteGraphics": "3d2da7ef9d6d53183eab77b6a4c827b9",
+                "spriteAscii": "60c16d73a198d81e70360d6fc0785685",
+                "name": "health potion",
+                "description": "Adds 5 HP",
+                "healthBonus": 5
+            }, {
+                "spriteGraphics": "51b33fa061527d087a89da42f3f6b10e",
+                "spriteAscii": "c9ff5f02326e699155e2b7561bbbd0a3",
+                "name": "soup",
+                "description": "Adds 10 HP",
+                "healthBonus": 10
+            }]
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "C"
+            }, {
+                "c": "o"
+            }, {
+                "c": "l"
+            }, {
+                "c": "l"
+            }, {
+                "c": "e"
+            }, {
+                "c": "c"
+            }, {
+                "c": "t"
+            }, {
+                "c": "i"
+            }, {
+                "c": "o"
+            }, {
+                "c": "n"
+            }, {
+                "c": "L"
+            }, {
+                "c": "o"
+            }, {
+                "c": "o"
+            }, {
+                "c": "k"
+            }, {
+                "c": "u"
+            }, {
+                "c": "p"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 811236308990524696
+            }, {
+                "StableTypeHash": 15630053096561400185
+            }]
+        }, {
+            "$type": "game.CollectibleLookup, tiny_rogue"
         }]
     }, {
         "Components": [{
