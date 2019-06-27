@@ -26,8 +26,8 @@ public class AnimationSystem : ComponentSystem
             {
                 if (mobile.Moving)
                 {
-                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
-                    // Double frame time, so the move takes 0.25 of a second
+                    var frameTime = World.TinyEnvironment().frameDeltaTime;
+                    // Double frame time, so the move takes 0.25 of a second    
                     mobile.MoveTime += frameTime * 4;
                     translation.Value = math.lerp(mobile.Initial, mobile.Destination, mobile.MoveTime);
                     // Ensure player is left in correct position
@@ -45,7 +45,7 @@ public class AnimationSystem : ComponentSystem
                 if (animated.AnimationTrigger)
                 {
                     // Count down one-off animation/action
-                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
+                    var frameTime = World.TinyEnvironment().frameDeltaTime;
                     animated.AnimationTime -= frameTime;
 
                     if (animated.AnimationTime <= 0f)
