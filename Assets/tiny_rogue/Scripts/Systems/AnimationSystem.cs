@@ -26,8 +26,8 @@ public class AnimationSystem : ComponentSystem
             {
                 if (mobile.Moving)
                 {
-                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
-                    // Double frame time, so the move takes 0.25 of a second
+                    var frameTime = World.TinyEnvironment().frameDeltaTime;
+                    // Double frame time, so the move takes 0.25 of a second    
                     mobile.MoveTime += frameTime * 4;
                     translation.Value = math.lerp(mobile.Initial, mobile.Destination, mobile.MoveTime);
                     // Ensure player is left in correct position
@@ -45,16 +45,28 @@ public class AnimationSystem : ComponentSystem
                 if (animated.AnimationTrigger)
                 {
                     // Count down one-off animation/action
-                    var frameTime = World.TinyEnvironment().fixedFrameDeltaTime;
+                    var frameTime = World.TinyEnvironment().frameDeltaTime;
                     animated.AnimationTime -= frameTime;
 
                     if (animated.AnimationTime <= 0f)
                     {
+                        var prevAction = animated.Action;
+                        
                         animated.AnimationTrigger = false;
                         animated.AnimationTime = 0f;
                         animated.Action = Action.None;
                         SetAnimation(ref animated, ref sequencePlayer);
-                        Debug.Log("Switch animation");
+
+                        if (prevAction == Action.Die)
+                        {
+                            PostUpdateCommands.DestroyEntity(e);
+                            // Player death, end game
+                            if (animated.Id == 0)
+                            {
+                                var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
+                                gss.MoveToGameOver(PostUpdateCommands);
+                            }
+                        }
                     }
                 }
             });
@@ -122,8 +134,7 @@ public class AnimationSystem : ComponentSystem
                         animated.AnimationTime = 0.25f;
                         break;
                     case Action.Move:
-                        sequencePlayer.speed = 0.75f;
-                        animated.AnimationTime = 0.25f;
+                        animated.AnimationTime = 0.375f;
                         break;
                 }
                 SetAnimation(ref animated, ref sequencePlayer);
@@ -135,7 +146,7 @@ public class AnimationSystem : ComponentSystem
         }
     }
 
-    void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
+    public void SetAnimation(ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer)
     {
         var animAction = animated.Action;
         // Bump has no animation, so map to idle
@@ -147,7 +158,7 @@ public class AnimationSystem : ComponentSystem
         var direction = (int)animated.Direction;
         var action = (int)animAction;
         var id = animated.Id;
-        Debug.Log($"Try set animation: {direction} {action}");
+        Debug.Log($"Try set animation: {animated.Id} {direction} {action}");
 
         Entity animation = Entity.Null;
         Entities.WithAll<AnimationSequence>().ForEach((Entity entity, ref AnimationSequence animationSequence) =>

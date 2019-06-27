@@ -64,6 +64,7 @@ namespace game
         private ArchetypeLibrary _archetypeLibrary;
         private DungeonGenParams _dungeonGenParams;
 
+        private int _creaturnOrderIndex;
         int numberOfCollectibles = 0;
         public int NumberOfCollectibles => numberOfCollectibles;
 
@@ -90,6 +91,7 @@ namespace game
             _creatureLibrary = cl;
             _archetypeLibrary = al;
             _dungeonGenParams = DungeonLibrary.GetDungeonParams(level, isFinalLevel);
+            _creaturnOrderIndex = 0;
 
             ClearDungeon(cb, view);
             
@@ -165,7 +167,7 @@ namespace game
                     int cIdx = RandomRogue.Next(0, spawnParams.Creatures.Length);
                     var worldCoord = GetRandomPositionInRandomRoom();
                     var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
-                    Entity cEntity = _creatureLibrary.SpawnCreature(_ecb, spawnParams.Creatures[cIdx]);
+                    Entity cEntity = _creatureLibrary.SpawnCreature(_ecb, spawnParams.Creatures[cIdx], _creaturnOrderIndex++);
                     _ecb.SetComponent(cEntity, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
                     _ecb.SetComponent(cEntity, new Translation {Value = viewCoord});
                     _ecb.SetComponent(cEntity, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
@@ -197,16 +199,17 @@ namespace game
         {
             for (var i = 0; i < _cells.Length; i++)
             {
+                var tileOffset = RandomRogue.Next(4);
                 switch (_cells[i])
                 {
                     case Type.eWall:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Wall());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Wall { TileOffset = tileOffset });
                         _ecb.AddComponent(_view.ViewTiles[i], new BlockMovement());
                         break;
                     case Type.eHallway:
                     case Type.eFloor:
                     case Type.eDoor:
-                        _ecb.AddComponent(_view.ViewTiles[i], new Floor());
+                        _ecb.AddComponent(_view.ViewTiles[i], new Floor { TileOffset =  tileOffset });
                         break;
                     case Type.eEmpty:
                         break;

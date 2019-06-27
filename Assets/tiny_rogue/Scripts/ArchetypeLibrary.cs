@@ -241,7 +241,7 @@ namespace game
             s.color = GlobalGraphicsSettings.ascii 
                 ? new Unity.Tiny.Core2D.Color(18 / 255.0f, 222 / 255.0f, 23.0f / 255.0f) 
                 : Color.Default;
-            if(GlobalGraphicsSettings.ascii)
+            if (GlobalGraphicsSettings.ascii)
                 s.color.a = 0;
 
             s.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics(horizontal ? '\\' : '/')];

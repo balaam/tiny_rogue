@@ -28,7 +28,7 @@ namespace game
 
                 // Move all creatures towards Player
                 Entities.WithNone<PatrollingState>().WithAll<MeleeAttackMovement>()
-                    .ForEach((Entity creature, ref WorldCoord coord, ref Speed speed, ref Animated animated) =>
+                    .ForEach((Entity creature, ref WorldCoord coord, ref Speed speed, ref Animated animated, ref TurnPriorityComponent pri) =>
                     {
                         if (lastTurn % speed.SpeedRate == 0)
                         {
@@ -36,11 +36,11 @@ namespace game
                             int2 nextPos =
                                 AStarPathfinding.getNextStep(creaturePos, playerPos, gss.View, EntityManager);
                             Action movement = getDirection(creaturePos, nextPos);
-                            tms.AddDelayedAction(movement, creature, coord, animated.Direction);
+                            tms.AddDelayedAction(movement, creature, coord, animated.Direction, pri.Value);
                         }
                     });
 
-                Entities.ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed, ref Animated animated) =>
+                Entities.ForEach((Entity creature, ref WorldCoord coord, ref PatrollingState patrol, ref Speed speed, ref Animated animated, ref TurnPriorityComponent pri) =>
                 {
                     if (lastTurn % speed.SpeedRate == 0)
                     {
@@ -56,7 +56,7 @@ namespace game
                         int2 nextPos =
                             AStarPathfinding.getNextStep(monsterPos, patrol.destination, gss.View, EntityManager);
                         Action movement = getDirection(monsterPos, nextPos);
-                        tms.AddDelayedAction(movement, creature, coord, animated.Direction);
+                        tms.AddDelayedAction(movement, creature, coord, animated.Direction, pri.Value);
 
                     }
                 });
