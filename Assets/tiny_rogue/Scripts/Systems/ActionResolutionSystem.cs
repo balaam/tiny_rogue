@@ -11,9 +11,6 @@ using UnityEngine;
 namespace game
 {
 
-    [UpdateAfter(typeof(TurnManagementSystem))]
-    public class TurnSystemGroup : ComponentSystemGroup { }
-
     public enum EInteractionFlags : byte
     {
         None = 0,

@@ -222,6 +222,8 @@ namespace game
                     GenerateLevel();
                     log.AddLog("You descend another floor.");
                     log.ShowNextLog(PostUpdateCommands);
+                    var tms = EntityManager.World.GetExistingSystem<TurnManagementSystem>();
+                    tms.NeedToTickDisplay = true;
                     _state = eGameState.InGame;
                 } break;
                 case eGameState.HiScores:

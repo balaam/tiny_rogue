@@ -6,7 +6,8 @@ namespace game
 {
 
 
-    public class HealthItemsSystem : TurnSystem
+    [UpdateInGroup(typeof(TurnSystemGroup))]
+    public class HealthItemsSystem : ComponentSystem
     {
         protected override void OnUpdate()
         {

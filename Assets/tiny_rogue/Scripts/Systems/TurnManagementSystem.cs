@@ -10,6 +10,11 @@ using UnityEngine.Assertions;
 namespace game
 {
     
+    [UpdateAfter(typeof(TurnSystemGroup))]
+    public class DisplaySystemGroup : ComponentSystemGroup { }
+    
+    [UpdateAfter(typeof(TurnManagementSystem))]
+    public class TurnSystemGroup : ComponentSystemGroup { }
 
     public struct ActionRequest
     {
@@ -27,6 +32,9 @@ namespace game
         private uint _turnCount = 0;
         private NativeQueue<ActionRequest> _actionQueue;
 
+        private TurnSystemGroup _tsg;
+        private DisplaySystemGroup _dsg;
+
         public NativeQueue<ActionRequest> ActionQueue => _actionQueue;
 
         public uint TurnCount
@@ -35,10 +43,12 @@ namespace game
         }
         
         public bool NeedToTickTurn { get; set; }
+        public bool NeedToTickDisplay { get; set; }
 
         public void ResetTurnCount()
         {
             _turnCount = 0;
+            NeedToTickDisplay = true;
         }
 
         public void AddActionRequest(Action a, Entity e, WorldCoord loc, Direction direction, int priority)
@@ -60,6 +70,7 @@ namespace game
         {
             AddActionRequest(a, e, loc, direction, priority);
             NeedToTickTurn = true;
+            NeedToTickDisplay = true;
         }
 
         public void CleanActionQueue()
@@ -79,6 +90,10 @@ namespace game
         {
             base.OnCreate();
             _actionQueue = new NativeQueue<ActionRequest>(Allocator.TempJob);
+            _tsg = EntityManager.World.GetOrCreateSystem<TurnSystemGroup>();
+            _dsg = EntityManager.World.GetOrCreateSystem<DisplaySystemGroup>();
+            _tsg.Enabled = false;
+            _dsg.Enabled = true;
         }    
 
         protected override void OnDestroy()
@@ -91,23 +106,6 @@ namespace game
             base.OnDestroy();
         }
         
-        public void RegisterTurnSystem(ComponentSystemBase system)
-        {
-#if DEBUG
-            Assert.IsFalse(_turnSystems.Contains(system), "Trying to add a system to the turn manager more than once.");
-#endif
-            _turnSystems.Add(system);
-        }
-
-        public void UnregisterTurnSystem(ComponentSystemBase system)
-        {
-            if (_turnSystems.Contains(system))
-            {
-                _turnSystems.Remove(system);
-            }
-        }
-
-
         protected override void OnUpdate()
         {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
@@ -117,24 +115,14 @@ namespace game
             var log = EntityManager.World.GetExistingSystem<LogSystem>();
             
             bool shouldTickSystems = gss.IsInGame && NeedToTickTurn;
-            for (int i = 0; i < _turnSystems.Count; i++)
-            {
-                // We must update these systems on the first turn to display the log, fog, and dungeon
-                if (_turnCount == 0 && (_turnSystems[i] == fog || _turnSystems[i] == gvs || _turnSystems[i] == log))
-                {
-                    _turnSystems[i].Enabled = true;
-                }
-                else
-                    _turnSystems[i].Enabled = shouldTickSystems;
-            }
             
-            // Step forward once but don't tick
-            if(_turnCount == 0)
+            _tsg.Enabled = gss.IsInGame && NeedToTickTurn;
+            _dsg.Enabled = gss.IsInGame && NeedToTickDisplay;
+            if (_tsg.Enabled)
                 _turnCount++;
-
-            if (shouldTickSystems)
-                _turnCount++;
+            
             NeedToTickTurn = false;
+            NeedToTickDisplay = false;
         }
 
     }

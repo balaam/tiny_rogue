@@ -9,12 +9,6 @@ namespace game
     [UpdateBefore(typeof(ActionResolutionSystem))]
     public class CreatureMovementSystem : ComponentSystem
     {
-        protected override void OnCreate()
-        {
-            var tms = EntityManager.World.GetOrCreateSystem<TurnManagementSystem>();
-            tms.RegisterTurnSystem(this);
-            base.OnCreate();
-        }
 
         protected override void OnUpdate()
         {
