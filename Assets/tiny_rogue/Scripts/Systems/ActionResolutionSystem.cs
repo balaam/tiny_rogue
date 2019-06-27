@@ -349,7 +349,7 @@ namespace game
                 }
                 
                 var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
-                anim.StartAnimation(pw.Ent, pw.Ouch ? Action.None :Action.Wait, pw.Dir);
+                anim.StartAnimation(pw.Ent, pw.Ouch ? Action.Bump : Action.Wait, pw.Dir);
             }
 
             PendingAttack pa;

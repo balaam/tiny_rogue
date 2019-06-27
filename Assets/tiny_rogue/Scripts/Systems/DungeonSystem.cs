@@ -349,6 +349,7 @@ namespace game
 
         void CreateDoors()
         {
+            // Check all hallway tiles to see if we can sdd a door.
             for (var i = 0; i < _cells.Length; i++)
             {
                 var current = _cells[i];
@@ -375,6 +376,7 @@ namespace game
                 var horizontal = false;
                 var vertical = false;
                 
+                // Check if doors can be made
                 if (neighbourLeft == Type.eHallway && 
                     neighbourRight == Type.eFloor &&
                     neighbourUp == Type.eWall &&
@@ -404,6 +406,7 @@ namespace game
                     vertical = true;
                 }
 
+                // Set as door if door possible
                 if (horizontal || vertical)
                 {
                     _cells[i] = Type.eDoor;
@@ -411,11 +414,13 @@ namespace game
 
                 if (vertical)
                 {
-                    _verticalDoors.Add(xy);
+                    // Horizontal doors fit in vertical openings
+                    _horizontalDoors.Add(xy);
                 }
 
                 if (horizontal)
                 {
+                    // Vertical doors fit in horizontal openings
                     _verticalDoors.Add(xy);
                 }
             }

@@ -8,7 +8,7 @@ namespace game
         /// <summary>
         /// 1/DoorProbability or being drawn for each door in the level.
         /// </summary>
-        public const int DoorProbability = 5;
+        public const int DoorProbability = 3;
         public const int StartPlayerHealth = 10;
         public const float OffViewport = -9999;
         public const float DefaultColorBase = 168.0f/255.0f;
