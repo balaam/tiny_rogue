@@ -379,11 +379,11 @@ namespace game
             PendingWait pw;
             while (pendingWaits.TryDequeue(out pw))
             {
-                if (pw.Ouch && EntityManager.HasComponent<Player>(pw.Ent))
+                if (EntityManager.HasComponent<Player>(pw.Ent))
                 {
-                    log.AddLog("You bumped into a wall. Ouch.");
+                    log.AddLog(pw.Ouch ? "You bumped into a wall. Ouch." : "You wait a turn.");
                 }
-                
+
                 var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
                 anim.StartAnimation(pw.Ent, pw.Ouch ? Action.Bump : Action.Wait, pw.Dir);
             }

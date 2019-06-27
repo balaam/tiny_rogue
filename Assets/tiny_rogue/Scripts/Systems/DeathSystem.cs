@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace game
 {
-    
+
     [UpdateAfter(typeof(TurnSystemGroup))]
     public class DeathSystem : ComponentSystem
     {
-        protected override void OnUpdate() 
-        { 
+        protected override void OnUpdate()
+        {
             var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
             if (gss.IsInGame)
             {
@@ -40,7 +40,7 @@ namespace game
                             Sprite2DSequencePlayer deathPlayer = new Sprite2DSequencePlayer { speed = 0.5f };
                             Animated deathAnimated = new Animated { Id = animated.Id, Direction = animated.Direction, Action = Action.Die, AnimationTime = 0.75f, AnimationTrigger = true };
                             LayerSorting layerSorting = new LayerSorting { layer = 2 };
-                            
+
                             if (EntityManager.HasComponent(creature, typeof(Player)))
                             {
                                 renderer.color.a = 0f;
@@ -51,10 +51,10 @@ namespace game
                             {
                                 PostUpdateCommands.DestroyEntity(creature);
                             }
-                            
+
                             var anim = EntityManager.World.GetExistingSystem<AnimationSystem>();
                             anim.SetAnimation(ref deathAnimated, ref deathPlayer);
-                            
+
                             PostUpdateCommands.AddComponent(death, parent);
                             PostUpdateCommands.AddComponent(death, trans);
                             PostUpdateCommands.AddComponent(death, deathRenderer);

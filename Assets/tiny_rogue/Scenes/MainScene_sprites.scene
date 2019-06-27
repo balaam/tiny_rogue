@@ -564,6 +564,143 @@
         }]
     }, {
         "Components": [{
+            "$type": "Unity.Tiny.Text.Text2DStyleBitmapFont, Unity.Tiny.Text",
+            "font": "aae78ee7da985b688f3a764093df6da2"
+        }, {
+            "$type": "Unity.Tiny.Text.Text2DRenderer, Unity.Tiny.Text",
+            "style": "1762512202f14e5a9777d860fe89ad9e",
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            },
+            "blending": 0
+        }, {
+            "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
+            "Value": "f35e8402a9934d8dbb3eca002528935e"
+        }, {
+            "$type": "game.LogEntry, tiny_rogue",
+            "Line": 2
+        }, {
+            "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
+            "color": {
+                "r": 1,
+                "g": 1,
+                "b": 1,
+                "a": 1
+            },
+            "size": 18
+        }, {
+            "$type": "Unity.Authoring.Core.SiblingIndex, Unity.Authoring.Core",
+            "Index": 3
+        }, {
+            "$type": "Unity.Tiny.UILayout.RectTransform, Unity.Tiny.UILayout",
+            "anchorMin": {},
+            "anchorMax": {
+                "x": 1,
+                "y": 0.48
+            },
+            "sizeDelta": {
+                "y": 21.8
+            },
+            "anchoredPosition": {
+                "y": -2
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }, {
+            "$type": "Unity.Entities.EntityGuid, Unity.Entities",
+            "a": 1684998417110093402,
+            "b": 10914430133054582174
+        }, {
+            "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
+            "Value": {
+                "y": 49.84
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.Rotation, Unity.Tiny.Core2D",
+            "Value": {
+                "value": {
+                    "w": 1
+                }
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.NonUniformScale, Unity.Tiny.Core2D",
+            "Value": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            }
+        }, {
+            "$type": "Unity.Tiny.Core2D.LayerSorting, Unity.Tiny.Core2D",
+            "layer": 4,
+            "order": 21,
+            "id": -970378025
+        }, {
+            "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
+            "Elements": []
+        }, {
+            "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
+            "Elements": [{
+                "c": "L"
+            }, {
+                "c": "o"
+            }, {
+                "c": "g"
+            }, {
+                "c": " "
+            }, {
+                "c": "T"
+            }, {
+                "c": "e"
+            }, {
+                "c": "x"
+            }, {
+                "c": "t"
+            }, {
+                "c": " "
+            }, {
+                "c": "("
+            }, {
+                "c": "2"
+            }, {
+                "c": ")"
+            }]
+        }, {
+            "$type": "Unity.Authoring.Core.ComponentOrder, Unity.Authoring.Core",
+            "Elements": [{
+                "StableTypeHash": 7960064150805274675
+            }, {
+                "StableTypeHash": 793987765392955020
+            }, {
+                "StableTypeHash": 12662904853204722592
+            }, {
+                "StableTypeHash": 266869500686333426
+            }, {
+                "StableTypeHash": 9104342357061045742
+            }, {
+                "StableTypeHash": 17378348762221180850
+            }, {
+                "StableTypeHash": 874803706151837934
+            }, {
+                "StableTypeHash": 11301794271907081408
+            }, {
+                "StableTypeHash": 5953061511517805254
+            }, {
+                "StableTypeHash": 15392216118221209652
+            }, {
+                "StableTypeHash": 1511947279668656474
+            }, {
+                "StableTypeHash": 17649336122499667438
+            }, {
+                "StableTypeHash": 16791256614846730296
+            }, {
+                "StableTypeHash": 8246040121190563021
+            }]
+        }]
+    }, {
+        "Components": [{
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "64e2d9cf1efb457b81f6e68794066adc"
         }, {
@@ -1721,11 +1858,14 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "f35e8402a9934d8dbb3eca002528935e"
         }, {
+            "$type": "game.LogEntry, tiny_rogue",
+            "Line": 1
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
-                "r": 1,
-                "g": 1,
-                "b": 1,
+                "r": 0.7843137,
+                "g": 0.7843137,
+                "b": 0.7843137,
                 "a": 1
             },
             "size": 18
@@ -1743,7 +1883,7 @@
                 "y": 21.8
             },
             "anchoredPosition": {
-                "y": 10.9
+                "y": 52
             },
             "pivot": {
                 "x": 0.5,
@@ -1756,7 +1896,7 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Translation, Unity.Tiny.Core2D",
             "Value": {
-                "y": 62.74
+                "y": 103.84
             }
         }, {
             "$type": "Unity.Tiny.Core2D.Rotation, Unity.Tiny.Core2D",
@@ -1779,61 +1919,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "Y"
-            }, {
-                "c": "o"
-            }, {
-                "c": "u"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": "r"
-            }, {
-                "c": "e"
-            }, {
-                "c": " "
-            }, {
-                "c": "i"
-            }, {
-                "c": "n"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": " "
-            }, {
-                "c": "v"
-            }, {
-                "c": "a"
-            }, {
-                "c": "s"
-            }, {
-                "c": "t"
-            }, {
-                "c": " "
-            }, {
-                "c": "c"
-            }, {
-                "c": "a"
-            }, {
-                "c": "v"
-            }, {
-                "c": "e"
-            }, {
-                "c": "r"
-            }, {
-                "c": "n"
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -1889,6 +1975,8 @@
                 "StableTypeHash": 17649336122499667438
             }, {
                 "StableTypeHash": 16791256614846730296
+            }, {
+                "StableTypeHash": 8246040121190563021
             }]
         }]
     }, {
@@ -6434,11 +6522,13 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "f35e8402a9934d8dbb3eca002528935e"
         }, {
+            "$type": "game.LogEntry, tiny_rogue"
+        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
-                "r": 1,
-                "g": 1,
-                "b": 1,
+                "r": 0.5882353,
+                "g": 0.5882353,
+                "b": 0.5882353,
                 "a": 1
             },
             "size": 18
@@ -6494,61 +6584,7 @@
             "id": -970378025
         }, {
             "$type": "Unity.Tiny.Text.TextString, Unity.Tiny.Text",
-            "Elements": [{
-                "c": "Y"
-            }, {
-                "c": "o"
-            }, {
-                "c": "u"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": "r"
-            }, {
-                "c": "e"
-            }, {
-                "c": " "
-            }, {
-                "c": "i"
-            }, {
-                "c": "n"
-            }, {
-                "c": " "
-            }, {
-                "c": "a"
-            }, {
-                "c": " "
-            }, {
-                "c": "v"
-            }, {
-                "c": "a"
-            }, {
-                "c": "s"
-            }, {
-                "c": "t"
-            }, {
-                "c": " "
-            }, {
-                "c": "c"
-            }, {
-                "c": "a"
-            }, {
-                "c": "v"
-            }, {
-                "c": "e"
-            }, {
-                "c": "r"
-            }, {
-                "c": "n"
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }, {
-                "c": "."
-            }]
+            "Elements": []
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
             "Elements": [{
@@ -6604,6 +6640,8 @@
                 "StableTypeHash": 17649336122499667438
             }, {
                 "StableTypeHash": 16791256614846730296
+            }, {
+                "StableTypeHash": 8246040121190563021
             }]
         }]
     }]
