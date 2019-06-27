@@ -2,6 +2,7 @@ using System;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
+using Unity.Tiny.Core;
 using Unity.Tiny.Input;
 using UnityEngine;
 using Color = Unity.Tiny.Core2D.Color;
@@ -70,6 +71,8 @@ namespace game
             int height = -1;
 
             bool foundMap = false;
+
+            World.TinyEnvironment().fixedFrameRateEnabled = true;
 
             Entities.ForEach((Entity entity, ref Viewport view) =>
             {
