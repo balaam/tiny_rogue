@@ -99,7 +99,7 @@ namespace game
                     if (action == Action.None)
                         return;
 
-                    tms.AddActionRequest(action, playerEntity, coord, animated.Direction);
+                    tms.AddActionRequest(action, playerEntity, coord, animated.Direction, 0);
 
                     // Save the action to the action stream if the player has it
                     if (!Replaying)
