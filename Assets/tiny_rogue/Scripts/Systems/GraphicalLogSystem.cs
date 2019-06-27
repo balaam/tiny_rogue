@@ -20,9 +20,9 @@ namespace game
                 _dirty = false;
                 Entities.WithAll<LogEntry>().ForEach((Entity e, ref LogEntry entry) =>
                 {
-                    EntityManager.SetBufferFromString<TextString>(e, entry.Line == 1 
+                    EntityManager.SetBufferFromString<TextString>(e, entry.Line == 2 
                         ? _logString 
-                        : entry.Line == 2 
+                        : entry.Line == 1 
                             ? _oldLogString 
                             : _evenOlderString);
                 });
