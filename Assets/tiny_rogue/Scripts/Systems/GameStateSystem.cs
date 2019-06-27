@@ -338,11 +338,9 @@ namespace game
             RandomRogue.Init(CurrentSeed);
 
             // Clear the screen.
-            Entities.WithAll<Player>().ForEach((Entity player, ref GoldCount gc, ref Level level) =>
+            Entities.WithAll<Player>().ForEach((Entity player, ref GoldCount gc, ref ExperiencePoints xp) =>
             {
-                _scoreManager.SetHiScores(gc.count + (level.level - 1) * 10);
-                level.level = 1;
-                gc.count = 0;
+                _scoreManager.SetHiScores(gc.count + xp.now + (CurrentLevel - 1) * 10);
             });
             ClearView(cb);
 
