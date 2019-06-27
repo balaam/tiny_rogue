@@ -49,6 +49,7 @@ namespace game
                 return;
             
             var tileSprite = Sprite2DRenderer.Default;
+            tileSprite.color = TinyRogueConstants.DefaultColor;
 
             // Set all floor tiles
             tileSprite.sprite = SpriteSystem.IndexSprites[SpriteSystem.ConvertToGraphics('.')];
