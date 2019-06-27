@@ -37,6 +37,24 @@ namespace game
             return color;
         }
         
+        static Color GetColorForDoor(Tile tile)
+        {
+            Color color = TinyRogueConstants.DefaultColor;
+            
+            if (!tile.IsSeen && tile.HasBeenRevealed)
+            {
+                color.r /= 2f;
+                color.g /= 2f;
+                color.b /= 2f;
+            }
+            else if (!tile.IsSeen)
+            {
+                color.a = 0f;
+            }
+
+            return color;
+        }
+        
         static float GetColorForMobileEntity(Tile tile)
         {
             return tile.IsSeen ? 1f : 0f;
@@ -83,8 +101,16 @@ namespace game
                 var tileIndex = View.XYToIndex(new int2(coord.x, coord.y), GameStateSystem.GameView.Width);
                 var tileEntity = GameStateSystem.GameView.ViewTiles[tileIndex];
                 var tile = EntityManager.GetComponentData<Tile>(tileEntity);
-                doorSprite.color.a = GetAlphaForStaticTile(tile);
-                
+                // Setting alpha on a door onto of a tile only works for ascii. For graphics, dim the colours instead.
+                if (GlobalGraphicsSettings.ascii)
+                {
+                    doorSprite.color.a = GetAlphaForStaticTile(tile);
+                }
+                else
+                {
+                    doorSprite.color = GetColorForDoor(tile);
+                }
+
                 PostUpdateCommands.SetComponent(e, doorSprite);
             });
             
