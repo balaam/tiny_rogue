@@ -20,7 +20,8 @@ namespace game
         Floor,
         Floor1,
         Floor2,
-        Floor3
+        Floor3,
+        HealthPotion
     }
     /// <summary>
     /// Reads in the ASCII sprites and stores then in an array indexable by the chars decimal value. i.e. A is 65
@@ -62,6 +63,9 @@ namespace game
                     break;
                 case (char)236:
                     result = (char) SpriteEnum.Gold;
+                    break;
+                case (char)235:
+                    result = (char)SpriteEnum.HealthPotion;
                     break;
                 case '/':
                     result = (char) SpriteEnum.OpenVerticalDoor;
