@@ -17,7 +17,6 @@ namespace game
         {
             if (_dirty)
             {
-                Debug.Log("Update log");
                 _dirty = false;
                 Entities.WithAll<LogEntry>().ForEach((Entity e, ref LogEntry entry) =>
                 {
