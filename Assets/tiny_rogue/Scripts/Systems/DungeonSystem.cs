@@ -162,7 +162,7 @@ namespace game
                 int creatureCount = RandomRogue.Next(spawnParams.SpawnMin, spawnParams.SpawnMax+1);
                 for (int j = 0; j < creatureCount; j++)
                 {
-                    int cIdx = RandomRogue.Next(1, spawnParams.Creatures.Length);
+                    int cIdx = RandomRogue.Next(0, spawnParams.Creatures.Length);
                     var worldCoord = GetRandomPositionInRandomRoom();
                     var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
                     Entity cEntity = _creatureLibrary.SpawnCreature(_ecb, spawnParams.Creatures[cIdx]);
