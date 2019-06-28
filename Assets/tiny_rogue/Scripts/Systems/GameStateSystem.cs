@@ -260,8 +260,9 @@ namespace game
                 cb.DestroyEntity(entity);
             });
 
-            Entities.WithAll<Player>().ForEach((ref Translation pos) =>
+            Entities.WithAll<Player>().ForEach((ref Player player, ref Translation pos) =>
             {
+                player.Dead = false;
                 pos.Value = TinyRogueConstants.OffViewport;
             });
         }
