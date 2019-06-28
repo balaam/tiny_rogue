@@ -41,6 +41,8 @@ namespace game
                         {
                             logSystem.AddLog($"You picked up a {pickable.name}");
                             AddItem(pickable);
+                            
+                            UseItem(pickable);
 
                             PostUpdateCommands.DestroyEntity(item);
                         }
@@ -86,6 +88,31 @@ namespace game
         void AddItem(CanBePickedUp pickable)
         {
             inventoryItems.Add(new InventoryItem(){name = pickable.name, description = pickable.description, appearance = pickable.appearance});
+        }
+
+        void UseItem(CanBePickedUp pickable)
+        {
+
+            Entities.WithAll<Player>().ForEach((Entity player, ref WorldCoord coord, ref HealthPoints hp, 
+                ref ArmorClass ac, ref AttackStat atak) =>
+            {
+
+                if (pickable.healthBonus != 0)
+                {
+                    hp.now += pickable.healthBonus;
+                }
+
+                if (pickable.armorBonus != 0)
+                {
+                    ac.AC += pickable.armorBonus;
+                }
+
+                if (pickable.attackBonus != 0)
+                {
+                    atak.range.x += pickable.attackBonus;
+                    atak.range.y += pickable.attackBonus;
+                }
+            });
         }
     }
 }

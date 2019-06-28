@@ -90,6 +90,10 @@
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -2326089145535536525, "Type": 3},
         { "Guid": "97afcb24447832d46b3a4a9379fca68c", "FileId": -7959244921154816734, "Type": 3},
         { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300166, "Type": 3},
+        { "Guid": "df475df384600ca428e797bf457f8cf9", "FileId": 21300000, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300170, "Type": 3},
+        { "Guid": "52cb17a44201e914295c92336a633447", "FileId": 21300000, "Type": 3},
+        { "Guid": "0416f7e17bb3c448a8174b06dea18563", "FileId": 21300176, "Type": 3},
         { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": -1819133959599894686, "Type": 3},
         { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": 2016970530771397890, "Type": 3},
         { "Guid": "b9db7175cea0f914aae6caffd698211f", "FileId": -31335849815105806, "Type": 3},
@@ -110,7 +114,6 @@
         { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": -4521056767328005949, "Type": 3},
         { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": -6596337670695716646, "Type": 3},
         { "Guid": "2c9857a7e99041649a1002901c2af63c", "FileId": -4176208147106487414, "Type": 3},
-        { "Guid": "df475df384600ca428e797bf457f8cf9", "FileId": 21300000, "Type": 3},
         { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -4777356578409548835, "Type": 3},
         { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": 8525569710601911754, "Type": 3},
         { "Guid": "6f9a492f13684c544b98736d5ac6f909", "FileId": -748415228597202318, "Type": 3},
@@ -192,7 +195,6 @@
         { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -5841076631399524356, "Type": 3},
         { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": -2736020979966418357, "Type": 3},
         { "Guid": "b0f7ba6ce1ca8ba49b8424dacb9a7113", "FileId": 8040722274139258807, "Type": 3},
-        { "Guid": "52cb17a44201e914295c92336a633447", "FileId": 21300000, "Type": 3},
         { "Guid": "11d4cd1f8f67a044aaf2df44bbff0f71", "FileId": 11400000, "Type": 2},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 1899901556599167055, "Type": 3},
         { "Guid": "96c226f02bb37104c8425d5fd0715584", "FileId": 6399280041854345734, "Type": 3},
@@ -2165,7 +2167,7 @@
             "MaxNumberOfRooms": 11,
             "MinRoomSize": 6,
             "MaxRoomSize": 10,
-            "NumberOfCollectibles": 5
+            "NumberOfCollectibles": 25
         }, {
             "$type": "game.Viewport, tiny_rogue",
             "width": 50,
@@ -2456,8 +2458,20 @@
                 "spriteGraphics": "3d2da7ef9d6d53183eab77b6a4c827b9",
                 "spriteAscii": "60c16d73a198d81e70360d6fc0785685",
                 "name": "health potion",
-                "description": "adss 5 HP",
+                "description": "adds 5 HP",
                 "healthBonus": 5
+            }, {
+                "spriteGraphics": "4b0beda21c4af589a7d6730b633c6c24",
+                "spriteAscii": "c9ff5f02326e699155e2b7561bbbd0a3",
+                "name": "platinum sword",
+                "description": "adds 5 attack",
+                "attackBonus": 5
+            }, {
+                "spriteGraphics": "b5924a113994bf94237a64b79dfa0770",
+                "spriteAscii": "9d0b3849444ea720a50d4f5fd8f2da27",
+                "name": "armor of god",
+                "description": "adds 5 armor",
+                "armorBonus": 5
             }]
         }, {
             "$type": "Unity.Tiny.Core.EntityName, Unity.Tiny.Core",
@@ -2506,6 +2520,8 @@
                 "StableTypeHash": 811236308990524696
             }, {
                 "StableTypeHash": 15630053096561400185
+            }, {
+                "StableTypeHash": 447167572816380576
             }]
         }, {
             "$type": "game.CollectibleLookup, tiny_rogue"

@@ -20,5 +20,9 @@ namespace game
 
         public int healthBonus;
 
+        public int attackBonus;
+
+        public int armorBonus;
+
     }
 }

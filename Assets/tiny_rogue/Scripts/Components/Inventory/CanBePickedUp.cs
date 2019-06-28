@@ -9,5 +9,9 @@ namespace game
         public NativeString64 name;
         public NativeString64 description;
         public Sprite2DRenderer appearance;
+        public int healthBonus;
+        public int attackBonus;
+        public int armorBonus;
+
     }
 }

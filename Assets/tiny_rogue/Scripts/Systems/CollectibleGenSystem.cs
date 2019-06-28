@@ -28,6 +28,9 @@ public class CollectibleGenSystem : ComponentSystem
         c.appearance.sprite = GlobalGraphicsSettings.ascii ? colEntry.spriteAscii : colEntry.spriteGraphics;
         c.description = colEntry.description;
         c.name = colEntry.name;
+        c.healthBonus = colEntry.healthBonus;
+        c.armorBonus = colEntry.armorBonus;
+        c.attackBonus = colEntry.attackBonus;
 
         
         if (colEntry.healthBonus != 0)
