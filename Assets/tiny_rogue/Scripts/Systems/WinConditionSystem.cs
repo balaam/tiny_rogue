@@ -5,6 +5,7 @@ using Unity.Entities;
 namespace game
 {
     // The WinCondition detection should be finer and only trigger a specific number of events.
+    [UpdateAfter(typeof(ActionResolutionSystem))]
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public class WinConditionSystem : ComponentSystem
     {

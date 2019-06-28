@@ -7,6 +7,7 @@ namespace game
 {
     // Notes:
     // - 
+    [UpdateAfter(typeof(ActionResolutionSystem))]
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public class GoldSystem : ComponentSystem
     {
