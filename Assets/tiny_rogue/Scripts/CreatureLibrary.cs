@@ -10,7 +10,7 @@ namespace game
 {
     public enum ECreatureId : int
     {
-        Rat,
+        Fireskull,
         Kobold,
         
         SpawnableCount,
