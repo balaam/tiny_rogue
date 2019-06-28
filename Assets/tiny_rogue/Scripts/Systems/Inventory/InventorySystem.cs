@@ -39,7 +39,7 @@ namespace game
                     {
                         if (playerPosition.x == itemCoord.x && playerPosition.y == itemCoord.y)
                         {
-                            logSystem.AddLog($"You picked up a {pickable.name}");
+                            logSystem.AddLog($"You picked up a {pickable.name.ToString()}");
                             AddItem(pickable);
                             
                             UseItem(pickable);
@@ -73,7 +73,7 @@ namespace game
                 {
                     if (playerPos.x == itemCoord.x && playerPos.y == itemCoord.y)
                     {
-                        logSystem.AddLog($"You found a {pickable.name}");
+                        logSystem.AddLog($"You found a {pickable.name.ToString()}");
                     }
                 });
         }
