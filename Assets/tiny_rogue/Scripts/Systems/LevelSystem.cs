@@ -7,6 +7,8 @@ using Unity.Tiny.Core2D;
 
 namespace game
 {
+    [UpdateAfter(typeof(DeathSystem))]
+    [UpdateInGroup(typeof(TurnSystemGroup))]
     public class LevelSystem : ComponentSystem
     {
 

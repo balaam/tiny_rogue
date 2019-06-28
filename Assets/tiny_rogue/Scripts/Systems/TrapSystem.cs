@@ -8,6 +8,9 @@ namespace game
     // Notes:
     // - This could be more less specific - i.e. it only handles spear traps what about other traps?
     // - The for loop nesting should be reversed. There are probably less traps than living things generally?
+    
+    [UpdateAfter(typeof(ActionResolutionSystem))]
+    [UpdateInGroup(typeof(TurnSystemGroup))]
     public class TrapSystem : ComponentSystem
     {
         protected override void OnUpdate()

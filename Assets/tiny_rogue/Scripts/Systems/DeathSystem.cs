@@ -7,7 +7,10 @@ using UnityEngine;
 namespace game
 {
 
-    [UpdateAfter(typeof(TurnSystemGroup))]
+    [UpdateInGroup(typeof(TurnSystemGroup))]
+    [UpdateAfter(typeof(ActionResolutionSystem))]
+    [UpdateAfter(typeof(TrapSystem))]
+    [UpdateAfter(typeof(HealthItemsSystem))]
     public class DeathSystem : ComponentSystem
     {
         protected override void OnUpdate()

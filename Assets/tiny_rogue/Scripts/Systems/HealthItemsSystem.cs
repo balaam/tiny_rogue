@@ -6,6 +6,7 @@ namespace game
 {
 
 
+    [UpdateAfter(typeof(ActionResolutionSystem))]
     [UpdateInGroup(typeof(TurnSystemGroup))]
     public class HealthItemsSystem : ComponentSystem
     {
