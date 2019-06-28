@@ -85,8 +85,11 @@ namespace game
 
             if (gss.IsInGame)
             {
-                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Animated animated, ref WorldCoord coord) =>
+                Entities.WithAll<PlayerInput>().ForEach((Entity playerEntity, ref Player player, ref Animated animated, ref WorldCoord coord) =>
                 {
+                    // No input if player is dead
+                    if (player.Dead) return;
+                    
                     // In Graphical, you have to wait for the animation of the action to complete first.
                     if (!GlobalGraphicsSettings.ascii)
                     {

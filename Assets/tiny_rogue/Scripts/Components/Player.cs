@@ -7,8 +7,6 @@ namespace game
     
     public struct Player : IComponentData
     {
-        
-
-        
+        public bool Dead;
     }
 }
