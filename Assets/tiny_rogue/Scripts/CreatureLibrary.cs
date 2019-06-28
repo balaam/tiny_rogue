@@ -12,10 +12,12 @@ namespace game
     {
         Fireskull,
         Kobold,
+        KoboldChampion,
+        KoboldKing,
         
         SpawnableCount,
         
-        Player = SpawnableCount
+        Player = SpawnableCount,
     };
     
     public struct CreatureDescription
@@ -66,6 +68,34 @@ namespace game
                 ac = 9
             },
             
+            /* Kobold Champion*/
+            new CreatureDescription
+            {
+                name = "Kobold Champion", 
+                health = 20,
+                attackRange = new int2(2,3),
+                ascii = 'k',
+                asciiColor = new Color(0.5f, 0.3f, 0.9f, 0f) , // start invisible
+                sightRadius = 4, // Kobolds aren't very good at spotting enemies
+                speed = 2,
+                spriteId = 1,
+                ac = 11
+            },
+            
+            /* Kobold King*/
+            new CreatureDescription
+            {
+                name = "Kobold King", 
+                health = 20,
+                attackRange = new int2(3,5),
+                ascii = 'k',
+                asciiColor = new Color(0.964f, 0.749f, 0.192f, 0f) , // start invisible
+                sightRadius = 6, // Kobolds aren't very good at spotting enemies
+                speed = 1,
+                spriteId = 1,
+                ac = 15
+            },
+            
             // Unspawnables
             /* Player */
             new CreatureDescription
@@ -78,6 +108,7 @@ namespace game
                 spriteId = 0,
                 ac = 13
             },
+            
         };
 
         public void Init(EntityManager em)
