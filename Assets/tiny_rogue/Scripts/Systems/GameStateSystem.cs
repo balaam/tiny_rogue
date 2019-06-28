@@ -285,9 +285,19 @@ namespace game
             });
             ClearView(cb);
 
-            GameView.Blit(cb, new int2(0, 0), "TINY ROGUE");
-            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO BEGIN");
-            GameView.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
+            if (GlobalGraphicsSettings.ascii)
+            {
+                GameView.Blit(cb, new int2(0, 0), "TINY ROGUE");
+                GameView.Blit(cb, new int2(30, 20), "PRESS SPACE TO BEGIN");
+                GameView.Blit(cb, new int2(30, 21), "PRESS H FOR HISCORES");
+            }
+            else
+            {
+                var glog = EntityManager.World.GetExistingSystem<GraphicalLogSystem>();
+                glog.AddToLog("TINY ROGUE");
+                glog.AddToLog("PRESS SPACE TO BEGIN");
+            }
+
             _state = eGameState.Title;
         }
 
@@ -333,27 +343,59 @@ namespace game
         public void MoveToGameOver(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            GameView.Blit(cb, new int2(0, 0), "GAME OVER!");
-            GameView.Blit(cb, new int2(0, 15), "CAUSE OF DEATH: " + LastPlayerHurtLog);
-            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
-            GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
+            if (GlobalGraphicsSettings.ascii)
+            {
+                GameView.Blit(cb, new int2(0, 0), "GAME OVER!");
+                GameView.Blit(cb, new int2(0, 15), "CAUSE OF DEATH: " + LastPlayerHurtLog);
+                GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO TRY AGAIN");
+                GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
+            }
+            else
+            {
+                var glog = EntityManager.World.GetExistingSystem<GraphicalLogSystem>();
+                glog.AddToLog("GAME OVER!");
+                glog.AddToLog("CAUSE OF DEATH: " + LastPlayerHurtLog);
+                glog.AddToLog("PRESS SPACE TO TRY AGAIN, PRESS R FOR REPLAY");
+            }
+            
             _state = eGameState.GameOver;
         }
 
         public void MoveToGameWin(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            GameView.Blit(cb, new int2(0, 0), "YOU WIN!");
-            GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO START AGAIN");
-            GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
+            if (GlobalGraphicsSettings.ascii)
+            {
+                GameView.Blit(cb, new int2(0, 0), "YOU WIN!");
+                GameView.Blit(cb, new int2(30, 20),"PRESS SPACE TO START AGAIN");
+                GameView.Blit(cb, new int2(30, 21),"PRESS R FOR REPLAY");
+            }
+            else
+            {
+                var glog = EntityManager.World.GetExistingSystem<GraphicalLogSystem>();
+                glog.AddToLog("YOU WIN!");
+                glog.AddToLog("PRESS SPACE TO START AGAIN");
+                glog.AddToLog("PRESS R FOR REPLAY");
+            }
+            
             _state = eGameState.GameOver;
         }
 
         public void MoveToNextLevel(EntityCommandBuffer cb)
         {
             CleanUpGameWorld(cb);
-            GameView.Blit(cb, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
-            GameView.Blit(cb, new int2(30, 20), "PRESS SPACE TO CONTINUE");
+            if (GlobalGraphicsSettings.ascii)
+            {
+                GameView.Blit(cb, new int2(0, 0), "YOU FOUND STAIRS LEADING DOWN");
+                GameView.Blit(cb, new int2(30, 20), "PRESS SPACE TO CONTINUE");
+            }
+            else
+            {
+                var glog = EntityManager.World.GetExistingSystem<GraphicalLogSystem>();
+                glog.AddToLog("YOU FOUND STAIRS LEADING DOWN");
+                glog.AddToLog("PRESS SPACE TO CONTINUE");
+            }
+            
             _state = eGameState.NextLevel;
         }
 

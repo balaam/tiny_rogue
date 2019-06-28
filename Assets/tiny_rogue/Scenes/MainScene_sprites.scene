@@ -1035,9 +1035,6 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "5aa6b81e39954e839ccd7dc875d06315"
         }, {
-            "$type": "game.StatBarEntry, tiny_rogue",
-            "Stat": 0
-        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -1381,9 +1378,6 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "e8815d25b39b432489fb105bdb452004"
-        }, {
-            "$type": "game.StatBarEntry, tiny_rogue",
-            "Stat": 4
         }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
@@ -1886,8 +1880,7 @@
             "$type": "game.DungeonGenerator, tiny_rogue",
             "MaxNumberOfRooms": 11,
             "MinRoomSize": 6,
-            "MaxRoomSize": 10,
-            "NumberOfCollectibles": 5
+            "MaxRoomSize": 10
         }, {
             "$type": "game.Viewport, tiny_rogue",
             "width": 50,
@@ -5658,9 +5651,6 @@
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "8942f98e04f4480c9c416e7a40950100"
         }, {
-            "$type": "game.StatBarEntry, tiny_rogue",
-            "Stat": 3
-        }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
                 "r": 1,
@@ -6084,9 +6074,6 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "1f12fd6764ea4204881caca7753e9cc5"
-        }, {
-            "$type": "game.StatBarEntry, tiny_rogue",
-            "Stat": 2
         }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
@@ -6643,9 +6630,6 @@
         }, {
             "$type": "Unity.Tiny.Core2D.Parent, Unity.Tiny.Core2D",
             "Value": "13a8f40fac8f45649bcee8b9a74764f7"
-        }, {
-            "$type": "game.StatBarEntry, tiny_rogue",
-            "Stat": 1
         }, {
             "$type": "Unity.Tiny.Text.Text2DStyle, Unity.Tiny.Text",
             "color": {
