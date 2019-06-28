@@ -133,6 +133,24 @@ namespace game
             });
         }
 
+        void ResetPlayerAnimations()
+        {
+            if (!GlobalGraphicsSettings.ascii)
+            {
+                // Reset death animation
+                Entities.WithAll<Player>().ForEach((ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer) =>
+                {
+                    sequencePlayer.paused = false;
+                    sequencePlayer.time = 0f;
+                    animated.Action = Action.None;
+                    animated.AnimationTrigger = false;
+                    animated.AnimationTime = 0f;
+                    animated.Action = Action.None;
+                    EntityManager.World.GetExistingSystem<AnimationSystem>().SetAnimation(ref animated, ref sequencePlayer);
+                });
+            }
+        }
+
         protected override void OnUpdate()
         {
             switch (_state)
@@ -211,25 +229,14 @@ namespace game
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
                     if (input.GetKeyDown(KeyCode.Space))
                     {
-                        if (!GlobalGraphicsSettings.ascii)
-                        {
-                            // Reset death animation
-                            Entities.WithAll<Player>().ForEach((ref Animated animated, ref Sprite2DSequencePlayer sequencePlayer) =>
-                            {
-                                sequencePlayer.paused = false;
-                                sequencePlayer.time = 0f;
-                                animated.Action = Action.None;
-                                animated.AnimationTrigger = false;
-                                animated.AnimationTime = 0f;
-                                animated.Action = Action.None;
-                                EntityManager.World.GetExistingSystem<AnimationSystem>().SetAnimation(ref animated, ref sequencePlayer);
-                            });
-                        }
-
+                        ResetPlayerAnimations();
                         MoveToTitleScreen(PostUpdateCommands);
                     }
                     else if (input.GetKeyDown(KeyCode.R))
-                            MoveToReplay(PostUpdateCommands);
+                    {
+                        ResetPlayerAnimations();
+                        MoveToReplay(PostUpdateCommands);
+                    }
                 } break;
                 case eGameState.NextLevel:
                 {
