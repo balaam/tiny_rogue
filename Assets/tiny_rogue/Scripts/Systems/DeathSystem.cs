@@ -44,17 +44,16 @@ namespace game
                                 var sequencePlayer = EntityManager.GetComponentData<Sprite2DSequencePlayer>(creature);
                                 
                                 player.Dead = true;
-                                sequencePlayer.loop = LoopMode.Once;
                                 sequencePlayer.speed = 0.5f;
-                                animated.AnimationTime = 10f;
+                                animated.AnimationTime = 0.75f;
                                 animated.Action = Action.Die;
                                 animated.AnimationTrigger = true;
                                 
                                 anim.SetAnimation(ref animated, ref sequencePlayer);
                                 
-                                EntityManager.SetComponentData(creature, player);
-                                EntityManager.SetComponentData(creature, animated);
-                                EntityManager.SetComponentData(creature, sequencePlayer);
+                                PostUpdateCommands.SetComponent(creature, player);
+                                PostUpdateCommands.SetComponent(creature, animated);
+                                PostUpdateCommands.SetComponent(creature, sequencePlayer);
                             }
                             else
                             {

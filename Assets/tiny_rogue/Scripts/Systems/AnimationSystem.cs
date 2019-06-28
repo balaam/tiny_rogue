@@ -51,21 +51,30 @@ public class AnimationSystem : ComponentSystem
                     if (animated.AnimationTime <= 0f)
                     {
                         var prevAction = animated.Action;
-                        
-                        animated.AnimationTrigger = false;
-                        animated.AnimationTime = 0f;
-                        animated.Action = Action.None;
-                        SetAnimation(ref animated, ref sequencePlayer);
 
                         if (prevAction == Action.Die)
                         {
-                            PostUpdateCommands.DestroyEntity(e);
                             // Player death, end game
                             if (animated.Id == 0)
                             {
+                                animated.AnimationTrigger = false;
+                                animated.AnimationTime = 0f;
+                                sequencePlayer.time = 0.75f;
+                                sequencePlayer.paused = true;
                                 var gss = EntityManager.World.GetExistingSystem<GameStateSystem>();
                                 gss.MoveToGameOver(PostUpdateCommands);
                             }
+                            else
+                            {
+                                PostUpdateCommands.DestroyEntity(e);
+                            }
+                        }
+                        else
+                        {
+                            animated.AnimationTrigger = false;
+                            animated.AnimationTime = 0f;
+                            animated.Action = Action.None;
+                            SetAnimation(ref animated, ref sequencePlayer);   
                         }
                     }
                 }
