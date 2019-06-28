@@ -289,7 +289,7 @@ namespace game
 
             var collectibleGenSystem = World.Active.GetOrCreateSystem<CollectibleGenSystem>();
             
-            collectibleGenSystem.GetRandomCollectible(ecb, entity, p, hb);
+            collectibleGenSystem.GetRandomCollectible( ref p, ref hb);
             s.sprite = p.appearance.sprite;
 
             ecb.SetComponent(entity, s);
@@ -297,6 +297,7 @@ namespace game
             ecb.SetComponent(entity, c);
             ecb.SetComponent(entity, l);
             ecb.SetComponent(entity, p);
+            ecb.AddComponent(entity,hb);
 
         }
 

@@ -1,49 +1,48 @@
 using System.Collections.Generic;
 using game;
+using Unity.Collections;
 using Unity.Entities;
 
 public class CollectibleGenSystem : ComponentSystem
 {
-    List<CollectibleEntry> collectiblesList;
+    NativeList<CollectibleEntry> collectiblesList;
     bool _isLoaded;
     
     protected override void OnCreate()
     {
-
+        collectiblesList = new NativeList<CollectibleEntry>(16,Allocator.Persistent);
+        
     }
-    
-    public void GetRandomCollectible(EntityCommandBuffer ecb, Entity entity, CanBePickedUp c, HealthBonus hb )
+
+    protected override void OnDestroy()
     {
-        if (collectiblesList.Count <= 0)
+        collectiblesList.Dispose();
+    }
+
+    public void GetRandomCollectible( ref CanBePickedUp c, ref HealthBonus hb )
+    {
+        if (collectiblesList.Length <= 0)
             return;
         
-        var colEntry = collectiblesList[RandomRogue.Next(0, collectiblesList.Count)];
+        var colEntry = collectiblesList[RandomRogue.Next(0, collectiblesList.Length)];
         c.appearance.sprite = GlobalGraphicsSettings.ascii ? colEntry.spriteAscii : colEntry.spriteGraphics;
         c.description = colEntry.description;
         c.name = colEntry.name;
+        c.healthBonus = colEntry.healthBonus;
+        c.armorBonus = colEntry.armorBonus;
+        c.attackBonus = colEntry.attackBonus;
 
-        ecb.SetComponent(entity, c);
         
         if (colEntry.healthBonus != 0)
         {
             hb.healthAdded = colEntry.healthBonus;
-            
-            //TODO: fix this
-            //entityManager.SetComponentData(entity, hb);
-            ecb.SetComponent(entity, hb);
-
         }
-
-
     }
 
     protected override void OnUpdate()
     {
         if (_isLoaded) 
             return;
-        
-        
-        collectiblesList = new List<CollectibleEntry>();
         
         Entities.WithAll<CollectibleLookup>().ForEach((lookup) =>
         {
