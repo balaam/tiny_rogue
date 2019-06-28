@@ -37,12 +37,12 @@ namespace game
                     hp.now += heal.HealAmount;
 
                     if (heal.HealAmount > 0)
-                        log.AddLog("Healed for " + heal.HealAmount.ToString() + " points.");
+                        log.AddLog($"Healed for {heal.HealAmount.ToString()} points.");
                     else if (heal.HealAmount == 0)
                         log.AddLog("Healed for 0 points.  ...that's disappointing.");
                     else if (heal.HealAmount < 0)
                     {
-                        string dmgLog = "The Kobolds have poisoned the potion!!  " + (-1 * heal.HealAmount).ToString() + " damage taken!";
+                        string dmgLog = $"The Kobolds have poisoned the potion!!  {(-1 * heal.HealAmount).ToString()} damage taken!";
                         log.AddLog(dmgLog);
                         gss.LastPlayerHurtLog = dmgLog; 
                     }
