@@ -171,11 +171,12 @@ namespace game
                 } break;
                 case eGameState.InGame:
                 {
-                    var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.I))
-                    {
-                        MoveToInventoryScreen(PostUpdateCommands);
-                    }
+                    // Remove for build because it crashes
+                    // var input = EntityManager.World.GetExistingSystem<InputSystem>();
+                    // if (input.GetKeyDown(KeyCode.I))
+                    // {
+                    //     MoveToInventoryScreen(PostUpdateCommands);
+                    // }
 
                 } break;
                 case eGameState.Inventory:
