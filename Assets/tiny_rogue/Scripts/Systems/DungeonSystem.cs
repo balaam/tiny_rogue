@@ -37,6 +37,8 @@ namespace game
                 return pos;
             }
         }
+        
+        
 
         enum Type
         {
@@ -60,7 +62,8 @@ namespace game
 
         private EntityCommandBuffer _ecb;
         private CreatureLibrary _creatureLibrary;
-        ArchetypeLibrary _archetypeLibrary;
+        private ArchetypeLibrary _archetypeLibrary;
+        private DungeonGenParams _dungeonGenParams;
 
         private int _creaturnOrderIndex;
         int numberOfCollectibles = 0;
@@ -82,12 +85,13 @@ namespace game
             ClearCurrentLevel();
         }
 
-        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level, bool lastLevel)
+        public void GenerateDungeon(EntityCommandBuffer cb, View view, CreatureLibrary cl, ArchetypeLibrary al, int level, bool isFinalLevel)
         {
             _ecb = cb;
             _view = view;
             _creatureLibrary = cl;
             _archetypeLibrary = al;
+            _dungeonGenParams = DungeonLibrary.GetDungeonParams(level, isFinalLevel);
             _creaturnOrderIndex = 0;
 
             ClearDungeon(cb, view);
@@ -134,7 +138,7 @@ namespace game
 
             PlaceDungeon();
             PlacePlayer(level == 1);
-            PlaceExit(lastLevel);
+            PlaceExit(isFinalLevel);
         }
 
         private void PlaceExit(bool lastLevel)
@@ -154,21 +158,21 @@ namespace game
 
         private void PlaceCreatures()
         {
-            int minCreatureCount = 4;
-            int maxCreatureCount = 12;
-            
-            int creatureCount = RandomRogue.Next(minCreatureCount, maxCreatureCount);
-            int creatureTypeCount = (int)ECreatureId.SpawnableCount;
-            for (int i = 0; i < creatureCount; i++)
+            for (int i = 0; i < _dungeonGenParams.CreatureSpawns.Length; i++)
             {
-                int creatureId = RandomRogue.Next(0, creatureTypeCount);
-                var worldCoord = GetRandomPositionInRandomRoom();
-                var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
-                Entity cr = _creatureLibrary.SpawnCreature(_ecb, (ECreatureId)creatureId, _creaturnOrderIndex++);
-
-                _ecb.SetComponent(cr, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
-                _ecb.SetComponent(cr, new Translation {Value = viewCoord});
-                _ecb.SetComponent(cr, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
+                CreatureSpawnParams spawnParams = _dungeonGenParams.CreatureSpawns[i];
+                
+                int creatureCount = RandomRogue.Next(spawnParams.SpawnMin, spawnParams.SpawnMax+1);
+                for (int j = 0; j < creatureCount; j++)
+                {
+                    int cIdx = RandomRogue.Next(0, spawnParams.Creatures.Length);
+                    var worldCoord = GetRandomPositionInRandomRoom();
+                    var viewCoord = _view.ViewCoordToWorldPos(worldCoord);
+                    Entity cEntity = _creatureLibrary.SpawnCreature(_ecb, spawnParams.Creatures[cIdx], _creaturnOrderIndex++);
+                    _ecb.SetComponent(cEntity, new WorldCoord {x = worldCoord.x, y = worldCoord.y});
+                    _ecb.SetComponent(cEntity, new Translation {Value = viewCoord});
+                    _ecb.SetComponent(cEntity, new PatrollingState {destination = GetRandomPositionInRandomRoom()});
+                }
             }
         }
 
@@ -218,22 +222,32 @@ namespace game
         
         void CreateHealingItems()
         {
-            int healingItems = RandomRogue.Next(0, 5);
-            for (int i = 0; i < healingItems; i++)
+            for (int i = 0; i < _dungeonGenParams.PotionSpawns.Length; i++)
             {
-                var healCoord = GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateHealingItem(_ecb, healCoord, _view.ViewCoordToWorldPos(healCoord),
-                    RandomRogue.Next(-2, 6));
+                var potionSpawnParam = _dungeonGenParams.PotionSpawns[i];
+                int spawnCount = RandomRogue.Next(potionSpawnParam.SpawnMin, potionSpawnParam.SpawnMax+1);
+                for (int j = 0; j < spawnCount; j++)
+                {
+                    var potionCoord = GetRandomPositionInRandomRoom();
+                    var healAmount = RandomRogue.Next(potionSpawnParam.ValueMin, potionSpawnParam.ValueMax + 1);
+                    _archetypeLibrary.CreateHealingItem(_ecb, potionCoord, _view.ViewCoordToWorldPos(potionCoord), healAmount);
+                }
+                
             }
         }
         
         void CreateCollectibles()
-        { 
-            for (int i = 0; i < NumberOfCollectibles; i++)
+        {
+            for (int i = 0; i < _dungeonGenParams.CollectibleSpawns.Length; i++)
             {
-                //TODO: figure out how it can know to avoid tiles that already have an entity
-                var collectibleCoord = GetRandomPositionInRandomRoom();
-                _archetypeLibrary.CreateCollectible(_ecb, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+                var collectibleSpawn = _dungeonGenParams.CollectibleSpawns[i];
+                var spawnCount = RandomRogue.Next(collectibleSpawn.SpawnMin, collectibleSpawn.SpawnMax + 1);
+                for (int j = 0; j < spawnCount; j++)
+                {
+                    //TODO: figure out how it can know to avoid tiles that already have an entity
+                    var collectibleCoord = GetRandomPositionInRandomRoom();
+                    _archetypeLibrary.CreateCollectible(_ecb, collectibleCoord, _view.ViewCoordToWorldPos(collectibleCoord));
+                }
             }
         }
 
@@ -241,7 +255,7 @@ namespace game
         {
             // Saving the num in a variable so it can be used for
             // the replay system, if need be
-            int goldPiles = RandomRogue.Next(10);
+            int goldPiles = RandomRogue.Next(_dungeonGenParams.GoldSpawn.SpawnMin, _dungeonGenParams.GoldSpawn.SpawnMax+1);
             for (int i = 0; i < goldPiles; i++)
             {
                 //TODO: figure out how it can know to avoid tiles that already have an entity
@@ -252,12 +266,15 @@ namespace game
 
         private void CreateTraps()
         {
-            
-            // Hard code a couple of spear traps, so the player can die.
-            var trap1Coord = GetRandomPositionInRandomRoom();
-            var trap2Coord = GetRandomPositionInRandomRoom();
-            _archetypeLibrary.CreateSpearTrap(_ecb, trap1Coord, _view.ViewCoordToWorldPos(trap1Coord));
-            _archetypeLibrary.CreateSpearTrap(_ecb, trap2Coord, _view.ViewCoordToWorldPos(trap2Coord));
+
+            int trapCount = RandomRogue.Next(_dungeonGenParams.TrapSpawn.SpawnMin,
+                _dungeonGenParams.TrapSpawn.SpawnMax + 1);
+            for (int i = 0; i < trapCount; i++)
+            {
+                var trapCoord = GetRandomPositionInRandomRoom();
+                _archetypeLibrary.CreateSpearTrap(_ecb, trapCoord, _view.ViewCoordToWorldPos(trapCoord));
+            }
+                
         }
 
         private void CreateRooms()
