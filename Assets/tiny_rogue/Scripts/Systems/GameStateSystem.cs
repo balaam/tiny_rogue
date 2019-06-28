@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Tiny.Core2D;
 using Unity.Mathematics;
@@ -49,7 +50,7 @@ namespace game
         public int CurrentLevel = 0;
         private int LastDungeonNumber;
         
-        List<Sprite2DRenderer> spriteRenderers = new List<Sprite2DRenderer>();
+        NativeList<Sprite2DRenderer> spriteRenderers;
         bool populateInventory = false;
 
 
@@ -65,7 +66,14 @@ namespace game
         {
             base.OnCreate();
             _creatureLibrary.Init(EntityManager);
+            spriteRenderers = new NativeList<Sprite2DRenderer>(12, Allocator.Persistent);
         }
+
+        protected override void OnDestroy()
+        {
+            spriteRenderers.Dispose();
+        }
+
 
         private bool TryGenerateViewport()
         {
