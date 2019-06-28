@@ -180,11 +180,12 @@ namespace game
                 case eGameState.InGame:
                 {
                     var input = EntityManager.World.GetExistingSystem<InputSystem>();
-                    if (input.GetKeyDown(KeyCode.I))
-                    {
-                        MoveToInventoryScreen(PostUpdateCommands);
-                    }
-
+                    //TODO: re-able when inventory works
+                    //if (input.GetKeyDown(KeyCode.I))
+                    //{
+                    //    MoveToInventoryScreen(PostUpdateCommands);
+                    //}
+ 
                 } break;
                 case eGameState.Inventory:
                 {
